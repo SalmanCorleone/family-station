@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
-import InputSection from './_components/InputSection';
 import { getRecords } from './api';
-import RecordItem from './_components/RecordItem';
+import AddRecordSection from './_components/addRecordSection';
+import Record from './_components/record';
 
 const Budget = async () => {
   const financialRecords = await getRecords();
@@ -11,12 +11,12 @@ const Budget = async () => {
       <h1>Budget</h1>
 
       <div className="flex flex-col gap-4 mt-8">
-        <InputSection />
+        <AddRecordSection />
 
         <Suspense fallback={<div>Loading...</div>}>
           <div className="flex flex-col gap-4">
             {financialRecords?.map((record) => (
-              <RecordItem key={record.id} record={record} />
+              <Record key={record.id} record={record} />
             ))}
           </div>
         </Suspense>
