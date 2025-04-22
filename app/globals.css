@@ -1,26 +1,63 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root {
+/* :root {
   --background: #ffffff;
   --foreground: #171717;
+} */
+
+@theme {
+  --color-white: #fff;
+  --color-black: #000;
+  --color-light: #fff6e3;
+  --color-lightPurple: #cdc1ff;
+  --color-lightBlue: #bfecff;
+  --color-pink: #ffccea;
+  --color-lightgreen: #81e7af;
+  --color-green: #03a791;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-light);
+  color: var(--color-gray-700);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.ReactModal__Overlay {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.ReactModal__Content {
+  border-radius: 10px !important;
+  outline: none !important;
+  animation: fadeInBottom 0.3s cubic-bezier(0.76, 0, 0.24, 1) both;
+}
+
+@keyframes fadeInBottom {
+  0% {
+    opacity: 0;
+    top: 55%;
+  }
+  100% {
+    opacity: 1;
+    top: 50%;
+  }
 }
