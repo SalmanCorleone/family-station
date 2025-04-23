@@ -177,3 +177,7 @@ input[type='number'] {
     @apply bg-background text-foreground;
   }
 }
+
+input:focus {
+  outline: none;
+}

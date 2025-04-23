@@ -6,16 +6,21 @@ import { revalidatePath } from 'next/cache';
 
 export const getRecords = async () => {
   const supabase = await createClient();
-  const { data, error } = await supabase.from('financial_records').select('*');
+  const { data, error } = await supabase
+    .from('financial_records')
+    .select('*')
+    .order('created_at', { ascending: false });
   if (error) console.log(error);
-  console.table(data);
   return data;
 };
 
-export const createRecord = async (record: Tables<'financial_records'>) => {
+export const createRecord = async (record: Tables<'financial_records'>): Promise<boolean> => {
   const supabase = await createClient();
   const { error } = await supabase.from('financial_records').insert(record);
-  if (error) console.log(error);
+  if (error) {
+    console.log(error);
+    return false;
+  }
   revalidatePath('/budget');
   return true;
 };
