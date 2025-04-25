@@ -1,7 +1,6 @@
-// declare module 'react-modal';
-
 type CategoryType = {
   title: string;
   color: string;
-  icon?: React.ReactNode;
+  type: import('../utils/const').CATEGORY_TYPE;
+  icon: (props?: import('lucide-react').LucideProps) => React.ReactElement;
 };
