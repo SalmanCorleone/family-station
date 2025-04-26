@@ -21,7 +21,7 @@ const DateSelector = ({ activeDate, setActiveDate }: ICategorySelector) => {
           <div>{formatDate(activeDate)}</div>
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-light w-xs">
+      <DialogContent className="bg-light w-auto">
         <DialogHeader>
           <DialogTitle>Pick a date</DialogTitle>
         </DialogHeader>
