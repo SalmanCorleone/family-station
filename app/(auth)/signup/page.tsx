@@ -1,16 +1,16 @@
 import { Button } from '@/components/ui/button';
-import SignInWithGoogle from './_components/signInWithGoogle';
-import { login } from '../actions';
+import { signup } from '../actions';
+import SignInWithGoogle from '../login/_components/signInWithGoogle';
 
-const Login = () => {
+const Signup = () => {
   return (
     <div className="bg-white flex flex-col items-center justify-center p-4 xl:p-8 rounded-xl">
       <div className="w-sm">
         <div>
-          <h2 className="text-2xl font-bold">Login</h2>
-          <p className="mt-2 text-sm">Enter your email below to login to your account</p>
+          <h2 className="text-2xl font-bold">Sign Up</h2>
+          <p className="mt-2 text-sm">Enter your information to create an account</p>
         </div>
-        <form action={login}>
+        <form action={signup}>
           <div className="flex flex-col gap-6 mt-4">
             <div className="grid gap-2">
               <label htmlFor="email" className="text-sm font-medium">
@@ -44,14 +44,14 @@ const Login = () => {
               />
             </div>
             <Button type="submit" className="w-full">
-              Login
+              Sign up
             </Button>
             <SignInWithGoogle />
           </div>
           <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{' '}
-            <a href="/signup" className="underline underline-offset-4">
-              Sign up
+            Already have an account?{' '}
+            <a href="/login" className="underline underline-offset-4">
+              Login
             </a>
           </div>
         </form>
@@ -60,4 +60,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;

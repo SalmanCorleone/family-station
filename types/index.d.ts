@@ -5,3 +5,9 @@ type CategoryType = {
   icon: (props?: import('lucide-react').LucideProps) => React.ReactElement;
   placeHolderNote?: string;
 };
+
+type NavItemType = {
+  name: string;
+  href: string;
+  icon: (props?: import('lucide-react').LucideProps) => React.ReactElement;
+};

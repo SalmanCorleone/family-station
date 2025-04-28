@@ -1,4 +1,5 @@
 import {
+  Banknote,
   Blend,
   Car,
   Gift,
@@ -6,6 +7,8 @@ import {
   HousePlug,
   Landmark,
   Leaf,
+  List,
+  MessageSquareMore,
   PartyPopper,
   ShieldAlert,
   ShoppingBag,
@@ -103,4 +106,10 @@ export const categoryList: CategoryType[] = [
     type: CATEGORY_TYPE.OCCASIONAL,
     icon: (props) => <Blend fill={'var(--color-gray-200)'} color={borderColor} {...props} />,
   },
+];
+
+export const navItemList: NavItemType[] = [
+  { name: 'Budget', href: '/budget', icon: (props) => <Banknote fill="var(--color-lightGreen)" {...props} /> },
+  { name: 'Chat', href: '/chat', icon: (props) => <MessageSquareMore fill="var(--color-pink)" {...props} /> },
+  { name: 'To-do', href: '/to-do', icon: (props) => <List fill="var(--color-blue)" {...props} /> },
 ];

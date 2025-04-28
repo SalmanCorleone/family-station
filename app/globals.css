@@ -19,7 +19,8 @@
   --color-darkGreen: #003d5b;
   --color-lime: #00afb9;
   --color-blueGreen: #0081a7;
-  --color-yellow: #eaf2d7;
+  --color-yellow: #fdfcdc;
+  --color-lightPale: #feebca;
   --color-pale: #fed9b7;
   --color-orange: #f07167;
   --color-lightBlue: #00b4d8;
@@ -192,4 +193,9 @@ input[type='number'] {
 
 input:focus {
   outline: none;
+}
+
+.no-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

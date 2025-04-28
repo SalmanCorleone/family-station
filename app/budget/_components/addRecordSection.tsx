@@ -86,7 +86,7 @@ const AddRecordSection = () => {
               autoFocus
               type="number"
               onChange={(e) => setAmount(+e.currentTarget.value)}
-              className="text-end p-0 border-0 m-0 text-5xl lg:w-72 w-32 pr-2"
+              className="text-end p-0 border-0 m-0 text-3xl xl:text-5xl lg:w-72 w-32 pr-2"
               placeholder="Amount"
               onKeyDown={onKeyDown}
             />
