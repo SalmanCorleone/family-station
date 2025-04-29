@@ -1,12 +1,19 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils/clsx';
 import { navItemList } from '@/utils/const';
-import { CircleUserRound, Settings2 } from 'lucide-react';
+import { Tables } from '@/utils/supabase/db';
+import { Settings2 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
-const Navigation = ({ children }: Readonly<{ children: React.ReactNode }>) => {
+interface INavigationProps {
+  profile: Tables<'profiles'>;
+  children: React.ReactNode;
+}
+
+const Navigation = ({ children, profile }: INavigationProps) => {
   const pathname = usePathname();
 
   return (
@@ -40,8 +47,11 @@ const Navigation = ({ children }: Readonly<{ children: React.ReactNode }>) => {
         <div className="flex items-center justify-between gap-2 py-4 px-4">
           <Link href="/account">
             <div className="flex gap-2 items-center">
-              <CircleUserRound />
-              <p className="">User name</p>
+              <Avatar>
+                <AvatarImage src={profile.avatar_url || undefined} />
+                <AvatarFallback>{profile.full_name?.charAt(0) ?? profile.email?.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <p className="">{profile.full_name}</p>
             </div>
           </Link>
 

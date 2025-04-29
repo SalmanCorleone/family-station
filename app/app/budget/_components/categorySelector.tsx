@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils/clsx';
 import { CATEGORY_TYPE, categoryList } from '@/utils/const';
 
 interface ICategorySelector {
