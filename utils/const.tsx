@@ -109,7 +109,7 @@ export const categoryList: CategoryType[] = [
 ];
 
 export const navItemList: NavItemType[] = [
-  { name: 'Budget', href: '/budget', icon: (props) => <Banknote fill="var(--color-lightGreen)" {...props} /> },
-  { name: 'Chat', href: '/chat', icon: (props) => <MessageSquareMore fill="var(--color-pink)" {...props} /> },
-  { name: 'To-do', href: '/to-do', icon: (props) => <List fill="var(--color-blue)" {...props} /> },
+  { name: 'Budget', href: '/app/budget', icon: (props) => <Banknote fill="var(--color-lightGreen)" {...props} /> },
+  { name: 'Chat', href: '/app/chat', icon: (props) => <MessageSquareMore fill="var(--color-pink)" {...props} /> },
+  { name: 'To-do', href: '/app/to-do', icon: (props) => <List fill="var(--color-blue)" {...props} /> },
 ];

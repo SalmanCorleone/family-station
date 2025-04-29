@@ -13,7 +13,7 @@ const Navigation = ({ children }: Readonly<{ children: React.ReactNode }>) => {
     <nav className="flex flex-col xl:flex-row gap-4 xl:p-4 h-screen bg-pale">
       <div className="hidden xl:flex flex-col rounded-2xl">
         {/* Header */}
-        <Link href="/">
+        <Link href="/app">
           <div className="flex items-center justify-center gap-2 py-8 pr-8">
             {/* <Heart size={32} fill="var(--color-orange)" /> */}
             <p className="text-3xl">Family Station</p>

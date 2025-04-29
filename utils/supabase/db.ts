@@ -28,12 +28,130 @@ export type Database = {
   };
   public: {
     Tables: {
+      chat_history: {
+        Row: {
+          created_at: string;
+          family_id: number | null;
+          id: number;
+          is_deleted: boolean | null;
+          profile_id: string | null;
+          status: string | null;
+          text: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          family_id?: number | null;
+          id?: number;
+          is_deleted?: boolean | null;
+          profile_id?: string | null;
+          status?: string | null;
+          text?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          family_id?: number | null;
+          id?: number;
+          is_deleted?: boolean | null;
+          profile_id?: string | null;
+          status?: string | null;
+          text?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'chat_history_family_id_fkey';
+            columns: ['family_id'];
+            isOneToOne: false;
+            referencedRelation: 'family';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'chat_history_profile_id_fkey';
+            columns: ['profile_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      family: {
+        Row: {
+          created_at: string;
+          id: number;
+          image: string | null;
+          owner: string | null;
+          setings: Json | null;
+          title: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: number;
+          image?: string | null;
+          owner?: string | null;
+          setings?: Json | null;
+          title?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          image?: string | null;
+          owner?: string | null;
+          setings?: Json | null;
+          title?: string | null;
+        };
+        Relationships: [];
+      };
+      family_members: {
+        Row: {
+          created_at: string;
+          family_id: number | null;
+          id: number;
+          owner: boolean | null;
+          profile_id: string | null;
+          role: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          family_id?: number | null;
+          id?: number;
+          owner?: boolean | null;
+          profile_id?: string | null;
+          role?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          family_id?: number | null;
+          id?: number;
+          owner?: boolean | null;
+          profile_id?: string | null;
+          role?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'family_members_family_id_fkey';
+            columns: ['family_id'];
+            isOneToOne: false;
+            referencedRelation: 'family';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'family_members_profile_id_fkey';
+            columns: ['profile_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       financial_records: {
         Row: {
-          id?: number;
           amount: number | null;
           category: string | null;
-          created_at?: string;
+          created_at: string;
+          family_id: number | null;
+          id: number;
           note: string | null;
           user_id: number | null;
         };
@@ -41,6 +159,7 @@ export type Database = {
           amount?: number | null;
           category?: string | null;
           created_at?: string;
+          family_id?: number | null;
           id?: number;
           note?: string | null;
           user_id?: number | null;
@@ -49,11 +168,58 @@ export type Database = {
           amount?: number | null;
           category?: string | null;
           created_at?: string;
+          family_id?: number | null;
           id?: number;
           note?: string | null;
           user_id?: number | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: 'financial_records_family_id_fkey';
+            columns: ['family_id'];
+            isOneToOne: false;
+            referencedRelation: 'family';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      profiles: {
+        Row: {
+          avatar_url: string | null;
+          email: string | null;
+          family_id: number | null;
+          full_name: string | null;
+          id: string;
+          phone: string | null;
+          socials: Json | null;
+        };
+        Insert: {
+          avatar_url?: string | null;
+          email?: string | null;
+          family_id?: number | null;
+          full_name?: string | null;
+          id: string;
+          phone?: string | null;
+          socials?: Json | null;
+        };
+        Update: {
+          avatar_url?: string | null;
+          email?: string | null;
+          family_id?: number | null;
+          full_name?: string | null;
+          id?: string;
+          phone?: string | null;
+          socials?: Json | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'profiles_family_id_fkey';
+            columns: ['family_id'];
+            isOneToOne: false;
+            referencedRelation: 'family';
+            referencedColumns: ['id'];
+          },
+        ];
       };
     };
     Views: {

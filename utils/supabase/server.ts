@@ -5,7 +5,7 @@ import { Database } from './db';
 export async function createClient() {
   const cookieStore = await cookies();
 
-  return createServerClient<Database>(process.env.DB_URL!, process.env.DB_KEY!, {
+  return createServerClient<Database>(process.env.NEXT_PUBLIC_DB_URL!, process.env.NEXT_PUBLIC_DB_KEY!, {
     cookies: {
       getAll() {
         return cookieStore.getAll();

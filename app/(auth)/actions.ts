@@ -88,7 +88,7 @@ export async function signout() {
   redirect('/logout');
 }
 
-export async function signInWithGoogle() {
+export async function signInWithGoogle(origin: string) {
   // console.log({ origin });
   // return;
   const supabase = await createClient();
@@ -96,6 +96,7 @@ export async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
+      redirectTo: `${origin}/auth/callback`,
       queryParams: {
         access_type: 'offline',
         prompt: 'consent',
