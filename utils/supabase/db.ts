@@ -81,6 +81,7 @@ export type Database = {
           created_at: string;
           id: number;
           image: string | null;
+          invitation_token: string | null;
           owner: string | null;
           setings: Json | null;
           title: string | null;
@@ -89,6 +90,7 @@ export type Database = {
           created_at?: string;
           id?: number;
           image?: string | null;
+          invitation_token?: string | null;
           owner?: string | null;
           setings?: Json | null;
           title?: string | null;
@@ -97,6 +99,7 @@ export type Database = {
           created_at?: string;
           id?: number;
           image?: string | null;
+          invitation_token?: string | null;
           owner?: string | null;
           setings?: Json | null;
           title?: string | null;
@@ -106,27 +109,33 @@ export type Database = {
       family_members: {
         Row: {
           created_at: string;
+          email: string | null;
           family_id: number | null;
           id: number;
           owner: boolean | null;
           profile_id: string | null;
           role: string | null;
+          status: string | null;
         };
         Insert: {
           created_at?: string;
+          email?: string | null;
           family_id?: number | null;
           id?: number;
           owner?: boolean | null;
           profile_id?: string | null;
           role?: string | null;
+          status?: string | null;
         };
         Update: {
           created_at?: string;
+          email?: string | null;
           family_id?: number | null;
           id?: number;
           owner?: boolean | null;
           profile_id?: string | null;
           role?: string | null;
+          status?: string | null;
         };
         Relationships: [
           {

@@ -17,7 +17,7 @@ const Navigation = ({ children, profile }: INavigationProps) => {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-col xl:flex-row gap-4 xl:p-4 h-screen bg-pale">
+    <nav className="flex flex-col xl:flex-row gap-4 xl:p-4 h-screen bg-white">
       <div className="hidden xl:flex flex-col rounded-2xl">
         {/* Header */}
         <Link href="/app">
