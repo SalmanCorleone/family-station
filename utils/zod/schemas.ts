@@ -15,4 +15,23 @@ const familyInfoSchema = z.object({
     .optional(),
 });
 
-export { familyInfoSchema, ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE };
+const inviteSchema = z.object({
+  email: z.string().email('Invalid email'),
+});
+
+const inviteFormSchema = z.object({
+  invitees: z.array(inviteSchema).min(1, {
+    message: 'You need at least one invitee.',
+  }),
+});
+
+const signUpSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(50, 'name must be 50 characters or less'),
+  email: z.string().email('Invalid email address'),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters long')
+    .max(100, 'Password must be 100 characters or less'),
+});
+
+export { familyInfoSchema, ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE, inviteFormSchema, signUpSchema };

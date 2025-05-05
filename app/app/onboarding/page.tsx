@@ -1,4 +1,4 @@
-import OnboardingSteps from './_components/onboaardingSteps';
+import OnboardingSteps from './_components/onboardingSteps';
 
 const OnboardingPage = async () => {
   return (

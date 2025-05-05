@@ -1,8 +1,9 @@
 // import Image from 'next/image';
 
+import { Button } from '@/components/ui/button';
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
-import UserGreetText from './tempComp';
+import CheckInvitationToken from './_components/checkInvitationToken';
 
 export default async function Home() {
   const supabase = await createClient();
@@ -19,7 +20,7 @@ export default async function Home() {
       <Link href="/signup">
         <div className="p-4 rounded border">Sign Up</div>
       </Link>
-      <Link href="/signup">
+      <Link href="/auth/logout">
         <div className="p-4 rounded border">Log Out</div>
       </Link>
       <Link href="/account">
@@ -29,7 +30,9 @@ export default async function Home() {
         <div className="p-4 rounded border">Go to app</div>
       </Link>
 
-      <UserGreetText />
+      <Button>{user.data.user?.user_metadata.email}</Button>
+
+      <CheckInvitationToken />
     </div>
   );
 }

@@ -8,7 +8,7 @@ import InviteMembersForm from './inviteMembersForm';
 import { createFamily } from '../actions';
 
 const OnboardingSteps = () => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
   const [inviteLink, setInviteLink] = useState('');
   const origin = window.location.origin;
 
@@ -25,7 +25,7 @@ const OnboardingSteps = () => {
   const onContinueFromInvite = () => {};
 
   return (
-    <div className="border rounded-md w-full lg:w-[30vw]">
+    <div className="rounded-md w-full lg:w-[40vw]">
       {step === 1 && <FamilyInfoForm onSubmit={onFamilyFormSubmit} />}
       {step === 2 && <InviteMembersForm inviteLink={inviteLink} onSubmit={onContinueFromInvite} />}
     </div>
