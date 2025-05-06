@@ -34,4 +34,12 @@ const signUpSchema = z.object({
     .max(100, 'Password must be 100 characters or less'),
 });
 
-export { familyInfoSchema, ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE, inviteFormSchema, signUpSchema };
+const loginSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters long')
+    .max(100, 'Password must be 100 characters or less'),
+});
+
+export { familyInfoSchema, ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE, inviteFormSchema, signUpSchema, loginSchema };

@@ -16,11 +16,9 @@ const SignupForm = () => {
 
   const handleSubmit = async (data: z.infer<typeof signUpSchema>) => {
     const res = await signup(data);
-    res.json().then((data) => {
-      if (data.message) {
-        toast.error(data.message);
-      }
-    });
+    if (!res.success) {
+      toast.error(res.message);
+    }
   };
 
   return (

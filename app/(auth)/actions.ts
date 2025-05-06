@@ -7,7 +7,6 @@ import { createClient } from '@/utils/supabase/server';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { signUpSchema } from '@/utils/zod/schemas';
-import { NextResponse } from 'next/server';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -17,25 +16,21 @@ const loginSchema = z.object({
     .max(16, 'Password must be 16 characters or less'),
 });
 
-export async function login(formData: FormData) {
+export async function login(data: z.infer<typeof loginSchema>) {
   const supabase = await createClient();
-  const jsonData = Object.fromEntries(formData);
-  const validation = loginSchema.safeParse(jsonData);
-  console.log({ validation });
+  const validation = loginSchema.safeParse(data);
   if (!validation.success) {
     console.log(validation.error.flatten());
-    return;
-  } else {
-    console.log('Validation succeeded:', validation.data);
+    return { message: 'Invalid email or password', success: false };
   }
   const { error } = await supabase.auth.signInWithPassword(validation.data);
   if (error) {
-    // redirect('/error');
     toast.error(error.message);
-    return;
+    return { message: error.message, success: false };
   }
   revalidatePath('/', 'layout');
   redirect('/');
+  return { success: true, message: 'Success' };
 }
 
 export const signup = async (data: z.infer<typeof signUpSchema>) => {
@@ -43,7 +38,7 @@ export const signup = async (data: z.infer<typeof signUpSchema>) => {
   const validatedRee = signUpSchema.safeParse(data);
   if (!validatedRee.success) {
     console.log(validatedRee.error.flatten());
-    return NextResponse.json({ message: validatedRee.error.flatten() });
+    return { message: 'Invalid email or password', success: false };
   }
   const payload = {
     ...validatedRee.data,
@@ -56,10 +51,11 @@ export const signup = async (data: z.infer<typeof signUpSchema>) => {
   };
   const { error } = await supabase.auth.signUp(payload);
   if (error) {
-    return NextResponse.json({ message: error.message });
+    return { message: error.message, success: false };
   }
   revalidatePath('/', 'layout');
   redirect(`/signup/emailSent?email=${data.email}`);
+  return { success: true, message: 'Success' };
 };
 
 //todo: remove cuz unused, replaced by /auth/logout/route.ts
