@@ -1,30 +1,33 @@
 import { Suspense } from 'react';
-import { getRecords } from './api';
 import AddRecordSection from './_components/addRecordSection';
 import Record from './_components/record';
 import { formatDate } from '@/utils';
 import { Tables } from '@/utils/supabase/db';
+import { createRecord, getRecords } from './actions';
 
 const Budget = async () => {
   const financialRecords = await getRecords();
 
   const financialRecordsGroupedByDate =
     !!financialRecords &&
-    financialRecords.reduce((acc, record) => {
-      const date = formatDate(record.created_at);
-      if (!acc[date]) {
-        acc[date] = [];
-      }
-      acc[date].push(record);
-      return acc;
-    }, {} as Record<string, Tables<'financial_records'>[]>);
+    financialRecords.reduce(
+      (acc, record) => {
+        const date = formatDate(record.created_at);
+        if (!acc[date]) {
+          acc[date] = [];
+        }
+        acc[date].push(record);
+        return acc;
+      },
+      {} as Record<string, Tables<'financial_records'>[]>,
+    );
 
   return (
     <div className="flex flex-col lg:items-center justify-center p-4 lg:p-12 budget-screen">
       <h1>Budget</h1>
 
       <div className="flex flex-col gap-4 mt-8">
-        <AddRecordSection />
+        <AddRecordSection onSubmit={createRecord} />
 
         <Suspense fallback={<div>Loading...</div>}>
           <div className="flex flex-col gap-4">

@@ -43,7 +43,9 @@ const NoteDialog = ({ note, setNote }: INoteDialog) => {
             onKeyDown={onkeydown}
           />
         </div>
-        <Button variant={'default'}>Add</Button>
+        <Button variant={'default'} onClick={() => setOpen(false)}>
+          Add
+        </Button>
       </DialogContent>
     </Dialog>
   );

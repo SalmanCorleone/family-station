@@ -162,7 +162,7 @@ export type Database = {
           family_id: number | null;
           id: number;
           note: string | null;
-          user_id: number | null;
+          profile_id: string | null;
         };
         Insert: {
           amount?: number | null;
@@ -171,7 +171,7 @@ export type Database = {
           family_id?: number | null;
           id?: number;
           note?: string | null;
-          user_id?: number | null;
+          profile_id?: string | null;
         };
         Update: {
           amount?: number | null;
@@ -180,7 +180,7 @@ export type Database = {
           family_id?: number | null;
           id?: number;
           note?: string | null;
-          user_id?: number | null;
+          profile_id?: string | null;
         };
         Relationships: [
           {
@@ -188,6 +188,13 @@ export type Database = {
             columns: ['family_id'];
             isOneToOne: false;
             referencedRelation: 'family';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'financial_records_profile_id_fkey';
+            columns: ['profile_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
             referencedColumns: ['id'];
           },
         ];

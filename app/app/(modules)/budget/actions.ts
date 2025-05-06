@@ -1,7 +1,7 @@
 'use server';
 
-import { type Tables } from '@/utils/supabase/db';
 import { createClient } from '@/utils/supabase/server';
+import { addFinancialRecordSchema } from '@/utils/zod/schemas';
 import { revalidatePath } from 'next/cache';
 
 export const getRecords = async () => {
@@ -14,11 +14,16 @@ export const getRecords = async () => {
   return data;
 };
 
-export const createRecord = async (record: Tables<'financial_records'>): Promise<boolean> => {
+export const createRecord = async (payload: AddFinancialRecordPayloadType): Promise<boolean> => {
+  const validatedPayload = addFinancialRecordSchema.safeParse(payload);
+  if (validatedPayload.error) {
+    console.log(validatedPayload.error.flatten());
+    return false;
+  }
   const supabase = await createClient();
-  const { error } = await supabase.from('financial_records').insert(record);
+  const { error } = await supabase.from('financial_records').insert(validatedPayload.data);
   if (error) {
-    console.log(error);
+    console.log(error.message);
     return false;
   }
   revalidatePath('/budget');

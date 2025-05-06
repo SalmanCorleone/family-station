@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useRef, useState } from 'react';
-import { createRecord } from '../api';
 import { categoryList } from '@/utils/const';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -10,47 +9,44 @@ import CategorySelector from './categorySelector';
 import DateSelector from './dateSelector';
 import dayjs from 'dayjs';
 import NoteDialog from './noteDialog';
+import { useProfile } from '@/utils/context/profileContext';
 
-const AddRecordSection = () => {
+interface IAddRecordSectionProps {
+  onSubmit: (record: Partial<Tables<'financial_records'>>) => Promise<boolean>;
+}
+
+const AddRecordSection = ({ onSubmit }: IAddRecordSectionProps) => {
   const [activeCategory, setCategory] = useState<CategoryType>(categoryList[0]);
   const [activeDate, setActiveDate] = useState<Date>(dayjs().toDate());
   const [loading, setLoading] = useState<boolean>(false);
   const [amount, setAmount] = useState<number>(0);
   const [note, setNote] = useState<string>('');
+  const { profile } = useProfile();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const validateData = useCallback((): Tables<'financial_records'> | null => {
-    if (!amount) {
-      toast.error('Invalid amount!');
-      return null;
-    } else if (!activeCategory?.title) {
-      toast.error('Please select a category!');
-      return null;
+  const submitRecord = useCallback(async () => {
+    if (!profile?.id) {
+      toast.error('Please try again after logging in');
+      return;
     }
-    return {
-      category: activeCategory.title,
+    const payload: AddFinancialRecordPayloadType = {
       amount,
-      user_id: 1234, // todo: fix user_id
+      category: activeCategory.title,
       note,
       created_at: activeDate.toISOString(),
+      profile_id: profile?.id,
+      family_id: profile?.family_id,
     };
-  }, [amount, activeCategory?.title, activeDate, note]);
-
-  const submitRecord = useCallback(async () => {
-    const validatedPayload = validateData();
-    if (!validatedPayload) return;
     setLoading(true);
-    const res = await createRecord(validatedPayload);
-    if (res) {
-      toast.success('Record added successfully!');
-    } else {
+    const res = await onSubmit(payload);
+    if (!res) {
       toast.error('Oops! Something went wrong!');
     }
     if (inputRef.current) inputRef.current.value = '';
     inputRef.current?.focus();
     setAmount(0);
     setLoading(false);
-  }, [validateData]);
+  }, [profile, activeCategory.title, activeDate, amount, note, onSubmit]);
 
   const onKeyDown = useCallback(
     async (e: React.KeyboardEvent<HTMLInputElement>) => {

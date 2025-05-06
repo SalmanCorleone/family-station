@@ -42,4 +42,21 @@ const loginSchema = z.object({
     .max(100, 'Password must be 100 characters or less'),
 });
 
-export { familyInfoSchema, ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE, inviteFormSchema, signUpSchema, loginSchema };
+const addFinancialRecordSchema = z.object({
+  amount: z.number().min(1, 'Amount must be greater than 0'),
+  category: z.string().min(1, 'Category is required'),
+  note: z.string().optional(),
+  created_at: z.string().optional(),
+  profile_id: z.string(),
+  family_id: z.number(),
+});
+
+export {
+  familyInfoSchema,
+  ACCEPTED_IMAGE_TYPES,
+  MAX_FILE_SIZE,
+  inviteFormSchema,
+  signUpSchema,
+  loginSchema,
+  addFinancialRecordSchema,
+};

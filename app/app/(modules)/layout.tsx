@@ -7,11 +7,7 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
     return <div>no profile</div>;
   }
 
-  return (
-    <div className="">
-      <Navigation profile={profile}>{children}</Navigation>
-    </div>
-  );
+  return <Navigation profile={profile}>{children}</Navigation>;
 };
 
 export default AppLayout;

@@ -54,7 +54,7 @@ export const signup = async (data: z.infer<typeof signUpSchema>) => {
     return { message: error.message, success: false };
   }
   revalidatePath('/', 'layout');
-  redirect(`/signup/emailSent?email=${data.email}`);
+  redirect(`/signup/email-sent?email=${data.email}`);
   return { success: true, message: 'Success' };
 };
 
