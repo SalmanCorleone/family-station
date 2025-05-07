@@ -4,6 +4,9 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
+  const host = request.headers.get('host');
+  const protocol = request.headers.get('x-forwarded-proto') || 'http';
+  const baseUrl = `${protocol}://${host}`;
   // Check if a user's logged in
   const {
     data: { user },
@@ -13,5 +16,5 @@ export async function GET(request: NextRequest) {
   }
   console.log('logout', { user });
   revalidatePath('/', 'layout');
-  return NextResponse.redirect(new URL('/login', request.url));
+  return NextResponse.redirect(`${baseUrl}/login`);
 }

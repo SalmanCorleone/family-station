@@ -1,9 +1,9 @@
 'use client';
 
-import { createContext, useContext, useReducer, useEffect, ReactNode, Dispatch } from 'react';
+import { createContext, useContext, useReducer, useEffect, ReactNode, Dispatch, useState } from 'react';
 import { Tables } from '../supabase/db';
-// import { createClient } from '../supabase/client';
 import { getProfile } from '@/app/app/(modules)/account/api';
+import { usePathname } from 'next/navigation';
 
 type Profile = Tables<'profiles'>;
 
@@ -39,6 +39,8 @@ const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
 export const ProfileProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(profileReducer, initialState);
+  const [fetchCount, setFetchCount] = useState(0);
+  const pathname = usePathname();
 
   const refetchProfile = async () => {
     const res = await getProfile();
@@ -49,11 +51,17 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
     }
     console.log('Setting profile', { profile: res });
     dispatch({ type: 'SET_PROFILE', payload: res });
+    setFetchCount((c) => c + 1);
   };
 
+  // console.log({ pathname });
+
   useEffect(() => {
+    if (fetchCount > 0) return;
+    if (pathname !== '/') return;
+    if (state.profile) return;
     refetchProfile();
-  }, []);
+  }, [fetchCount, pathname, state.profile]);
 
   return <ProfileContext.Provider value={{ ...state, dispatch, refetchProfile }}>{children}</ProfileContext.Provider>;
 };

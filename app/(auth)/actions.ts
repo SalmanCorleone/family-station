@@ -5,7 +5,6 @@ import { redirect } from 'next/navigation';
 
 import { createClient } from '@/utils/supabase/server';
 import { z } from 'zod';
-import { toast } from 'sonner';
 import { signUpSchema } from '@/utils/zod/schemas';
 
 const loginSchema = z.object({
@@ -25,12 +24,11 @@ export async function login(data: z.infer<typeof loginSchema>) {
   }
   const { error } = await supabase.auth.signInWithPassword(validation.data);
   if (error) {
-    toast.error(error.message);
+    console.log(error.message);
     return { message: error.message, success: false };
   }
   revalidatePath('/', 'layout');
   redirect('/');
-  return { success: true, message: 'Success' };
 }
 
 export const signup = async (data: z.infer<typeof signUpSchema>) => {

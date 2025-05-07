@@ -1,11 +1,12 @@
 'use client';
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { categoryList } from '@/utils/const';
-import { Tables } from '@/utils/supabase/db';
 import { useMemo } from 'react';
+import { FinancialRecord } from '../actions';
 
 interface IRecordItem {
-  record: Tables<'financial_records'>;
+  record: FinancialRecord;
 }
 
 const Record = ({ record }: IRecordItem) => {
@@ -20,15 +21,17 @@ const Record = ({ record }: IRecordItem) => {
         <div className="flex gap-2 items-center">
           <p className="text-2xl">{category.icon()}</p>
           <p className="text-2xl">{category.title}</p>
+          <Avatar style={{ width: 24, height: 24 }}>
+            <AvatarImage src={record.profiles?.avatar_url || undefined} />
+            <AvatarFallback>{record.profiles?.full_name?.charAt(0) ?? '😊'}</AvatarFallback>
+          </Avatar>
         </div>
         <div className="flex gap-2 text-gray-400 items-center">
-          <div className="w-4 h-4 rounded-full bg-gray-300"></div>
-          <p className="text-sm">{record.note}</p>
+          {record.note && <p className="text-sm">&quot;{record.note}&quot;</p>}
         </div>
       </div>
       <div className="flex flex-col justify-center pl-4 text-end">
-        <p className="text-2xl">${record.amount}</p>
-        {/* <p className="text-sm">{formatDate(record.created_at, true)}</p> */}
+        <p className="text-3xl font-medium">${record.amount}</p>
       </div>
     </div>
   );

@@ -2,8 +2,7 @@ import { Suspense } from 'react';
 import AddRecordSection from './_components/addRecordSection';
 import Record from './_components/record';
 import { formatDate } from '@/utils';
-import { Tables } from '@/utils/supabase/db';
-import { createRecord, getRecords } from './actions';
+import { createRecord, FinancialRecord, getRecords } from './actions';
 
 const Budget = async () => {
   const financialRecords = await getRecords();
@@ -19,7 +18,7 @@ const Budget = async () => {
         acc[date].push(record);
         return acc;
       },
-      {} as Record<string, Tables<'financial_records'>[]>,
+      {} as Record<string, FinancialRecord[]>,
     );
 
   return (

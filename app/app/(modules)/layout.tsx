@@ -4,7 +4,7 @@ import { getProfile } from './account/api';
 const AppLayout = async ({ children }: { children: React.ReactNode }) => {
   const profile = await getProfile();
   if (!profile) {
-    return <div>no profile</div>;
+    return null;
   }
 
   return <Navigation profile={profile}>{children}</Navigation>;
