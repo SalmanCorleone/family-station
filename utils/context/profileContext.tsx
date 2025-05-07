@@ -3,7 +3,6 @@
 import { createContext, useContext, useReducer, useEffect, ReactNode, Dispatch, useState } from 'react';
 import { Tables } from '../supabase/db';
 import { getProfile } from '@/app/app/(modules)/account/api';
-import { usePathname } from 'next/navigation';
 
 type Profile = Tables<'profiles'>;
 
@@ -40,7 +39,6 @@ const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 export const ProfileProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(profileReducer, initialState);
   const [fetchCount, setFetchCount] = useState(0);
-  const pathname = usePathname();
 
   const refetchProfile = async () => {
     const res = await getProfile();
@@ -58,10 +56,10 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (fetchCount > 0) return;
-    if (pathname !== '/') return;
+    // if (pathname !== '/') return;
     if (state.profile) return;
     refetchProfile();
-  }, [fetchCount, pathname, state.profile]);
+  }, [fetchCount, state.profile]);
 
   return <ProfileContext.Provider value={{ ...state, dispatch, refetchProfile }}>{children}</ProfileContext.Provider>;
 };

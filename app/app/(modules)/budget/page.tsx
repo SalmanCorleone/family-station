@@ -22,7 +22,7 @@ const Budget = async () => {
     );
 
   return (
-    <div className="flex flex-col lg:items-center justify-center p-4 lg:p-12 budget-screen">
+    <div className="flex flex-col lg:items-center justify-center p-4 lg:p-12">
       <h1>Budget</h1>
 
       <div className="flex flex-col gap-4 mt-8">
