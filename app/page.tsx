@@ -3,14 +3,9 @@
 import Link from 'next/link';
 import CheckInvitationToken from './_components/checkInvitationToken';
 import ProfileCard from './_components/profileCard';
+import RefetchOnMount from './_components/refetchOnMount';
 
 export default async function Home() {
-  // const supabase = await createClient();
-
-  // const user = await supabase.auth.getUser();
-
-  // console.log({ user });
-
   return (
     <div className="flex flex-col items-center justify-center h-screen gap-4">
       <ProfileCard />
@@ -31,6 +26,7 @@ export default async function Home() {
           <div className="p-4 rounded border">Go to app</div>
         </Link>
         <CheckInvitationToken />
+        <RefetchOnMount />
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import {
   Banknote,
   Blend,
   Car,
+  CircleGauge,
   ClipboardList,
   Gift,
   HeartPulse,
@@ -109,6 +110,11 @@ export const categoryList: CategoryType[] = [
 ];
 
 export const navItemList: NavItemType[] = [
+  {
+    name: 'Dashboard',
+    href: '/app',
+    icon: (props) => <CircleGauge fill="var(--color-lime)" {...props} />,
+  },
   { name: 'Budget', href: '/app/budget', icon: (props) => <Banknote fill="var(--color-lightGreen)" {...props} /> },
   { name: 'Chat', href: '/app/chat', icon: (props) => <MessageSquareMore fill="var(--color-pink)" {...props} /> },
   { name: 'To-do', href: '/app/to-do', icon: (props) => <ClipboardList fill="var(--color-lightBlue)" {...props} /> },
