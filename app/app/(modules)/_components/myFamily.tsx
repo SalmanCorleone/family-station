@@ -9,11 +9,11 @@ const MyFamily = () => {
 
   return (
     <div className="rounded-lg p-4 col-span-4 row-span-1">
-      <p>My Family</p>
+      <p className="text-lg font-medium">Family: {family?.title}</p>
 
-      <div className="mt-4">
+    <div className="mt-2">
         {members?.length ? (
-          <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mt-4">
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
             {members.map((member) => (
               <div key={member.id} className="flex flex-col shadow-sm gap-1 p-4 rounded-lg bg-white">
                 <div className="flex justify-between">

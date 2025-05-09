@@ -54,7 +54,7 @@ const Navigation = ({ children }: INavigationProps) => {
 
         {/* Account */}
         <div className="flex items-center justify-between gap-2 p-2 mb-2 rounded-2xl bg-white shadow-sm">
-          <Link href="/account">
+          <Link href="/app/account">
             <div className="flex gap-2 items-center">
               <Avatar>
                 <AvatarImage src={profile?.avatar_url || undefined} />
@@ -65,14 +65,34 @@ const Navigation = ({ children }: INavigationProps) => {
               </div>
             </div>
           </Link>
-          <Link href="/settings">
+          <Link href="/app/settings">
             <div className="border p-2 rounded-lg border-gray-300 hover:bg-gray-50">
               <Settings2 size={16} />
             </div>
           </Link>
         </div>
       </div>
-      <div className="bg-light flex-1 overflow-y-auto no-scroll shadow ml-0 my-2 mr-2 rounded-2xl">{children}</div>
+
+      {/* Content */}
+      <div className="bg-light flex-1 overflow-y-auto no-scroll shadow my-2 mr-2 xl:ml-0 ml-2 rounded-2xl">
+        {children}
+      </div>
+
+      {/* Mobile nav */}
+      <div className="xl:hidden flex justify-around items-center gap-2 rounded-2xl bg-light shadow-sm mx-2 mb-2">
+        {navItemList.map((navItem) => (
+          <Link href={navItem.href} key={navItem.href}>
+            <div
+              className={cn('flex flex-col gap-1 items-center justify-start p-2', {
+                'bg-lightPale shadow-sm': pathname === navItem.href,
+              })}
+            >
+              <navItem.icon size={20} />
+              <div className="text-xs font-medium">{navItem.name}</div>
+            </div>
+          </Link>
+        ))}
+      </div>
     </nav>
   );
 };
