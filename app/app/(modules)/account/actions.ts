@@ -30,7 +30,10 @@ export const getFamilyMembers = async (id: number) => {
     console.log('no user');
     return;
   }
-  const { data: familyMembers, error } = await supabase.from('family_members').select('*').eq('family_id', id);
+  const { data: familyMembers, error } = await supabase
+    .from('family_members')
+    .select('*, profiles(*)')
+    .eq('family_id', id);
   if (error) {
     console.log(error.message);
     return;
@@ -38,3 +41,6 @@ export const getFamilyMembers = async (id: number) => {
   console.log('members', familyMembers);
   return familyMembers;
 };
+
+export type ProfileType = NonNullable<Awaited<ReturnType<typeof getProfile>>>;
+export type FamilyMemberType = NonNullable<Awaited<ReturnType<typeof getFamilyMembers>>>[0];

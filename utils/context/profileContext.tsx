@@ -1,13 +1,12 @@
 'use client';
 
 import { createContext, useContext, useReducer, useEffect, ReactNode, Dispatch } from 'react';
-import { Tables } from '../supabase/db';
-import { getFamilyMembers, getProfile } from '@/app/app/(modules)/account/actions';
+import { FamilyMemberType, getFamilyMembers, getProfile, ProfileType } from '@/app/app/(modules)/account/actions';
 import { createClient } from '../supabase/client';
 
-type Profile = Tables<'profiles'>;
-type Family = Tables<'family'>;
-type FamilyMember = Tables<'family_members'>;
+type Profile = ProfileType;
+type Family = ProfileType['family'];
+type FamilyMember = FamilyMemberType;
 
 type State = {
   profile: Profile | null;
@@ -64,7 +63,9 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
     }
     if (profile.family_id) {
       const familyMembers = await getFamilyMembers(profile.family_id);
-      if (familyMembers) dispatch({ type: 'SET_MEMBERS', payload: familyMembers });
+      if (familyMembers) {
+        dispatch({ type: 'SET_MEMBERS', payload: familyMembers });
+      }
     }
     if (profile.family) {
       const { data } = supabase.storage.from('').getPublicUrl(profile.family.image ?? '');

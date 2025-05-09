@@ -19,17 +19,18 @@ const Navigation = ({ children }: INavigationProps) => {
 
   return (
     <nav className="flex flex-col xl:flex-row h-screen bg-ash/10">
-      <div className="hidden xl:flex flex-col bg-light px-2 m-2 shadow gap-4 rounded-2xl max-w-[20vw]">
+      <div className="hidden xl:flex flex-col bg-light px-2 m-2 shadow gap-4 rounded-2xl max-w-[14vw]">
         {/* Header */}
         <div className="flex flex-col items-center justify-center gap-2 p-2 mt-2 rounded-2xl bg-white shadow-sm">
-          <Image
-            src={'/family.jpg'}
-            // src={family?.image ?? '/family.jpg'}
-            alt={family?.title ?? 'my-family'}
-            width={100}
-            height={60}
-            className="rounded-lg"
-          />
+          <div className="relative w-full h-20 rounded-lg overflow-hidden border border-ash/50">
+            <Image
+              // src={'/family.jpg'}
+              src={family?.image ?? '/family.jpg'}
+              alt={family?.title ?? 'my-family'}
+              fill
+              className="object-cover object-center"
+            />
+          </div>
           <div>
             <p className="text-lg font-semibold">{family?.title}</p>
           </div>
@@ -60,12 +61,12 @@ const Navigation = ({ children }: INavigationProps) => {
                 <AvatarFallback>{profile?.full_name?.charAt(0) ?? profile?.email?.charAt(0)}</AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-medium">{profile?.full_name}</p>
+                <p className="font-medium text-xs">{profile?.full_name}</p>
               </div>
             </div>
           </Link>
           <Link href="/settings">
-            <div className="border p-2 rounded-lg border-gray-300">
+            <div className="border p-2 rounded-lg border-gray-300 hover:bg-gray-50">
               <Settings2 size={16} />
             </div>
           </Link>
