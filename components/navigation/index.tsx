@@ -8,6 +8,8 @@ import { usePathname } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { useProfile } from '@/utils/context/profileContext';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 
 interface INavigationProps {
   children: React.ReactNode;
@@ -15,7 +17,15 @@ interface INavigationProps {
 
 const Navigation = ({ children }: INavigationProps) => {
   const pathname = usePathname();
+  const [activeNavItem, setActiveNavItem] = useState<NavItemType>(navItemList[0]);
   const { profile, family } = useProfile();
+
+  useEffect(() => {
+    if (!pathname) return;
+    const currentNav = navItemList.find((navItem) => pathname === navItem.href);
+    if (currentNav) setActiveNavItem(currentNav);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <nav className="flex flex-col xl:flex-row h-screen bg-ash/10">
@@ -39,14 +49,17 @@ const Navigation = ({ children }: INavigationProps) => {
         {/* Nav items */}
         <div className="flex-1 flex flex-col justify-center">
           {navItemList.map((navItem) => (
-            <Link href={navItem.href} key={navItem.href}>
-              <div
-                className={cn('flex flex-col gap-2 items-center justify-start p-4 rounded-lg', {
-                  'bg-lightPale shadow-sm': pathname === navItem.href,
-                })}
-              >
-                <navItem.icon size={48} />
-                <div className="text-md font-medium">{navItem.name}</div>
+            <Link href={navItem.href} key={navItem.href} onClick={() => setActiveNavItem(navItem)}>
+              <div className={cn('flex flex-col gap-2 items-center justify-start p-4 rounded-lg relative')}>
+                {activeNavItem.href === navItem.href && (
+                  <motion.div
+                    layoutId="activeNav"
+                    id="activeNav"
+                    className="inset-0 absolute bg-lightPale shadow-sm rounded-lg"
+                  />
+                )}
+                <navItem.icon size={48} className="relative z-10" />
+                <div className="text-md font-medium relative z-10">{navItem.name}</div>
               </div>
             </Link>
           ))}
@@ -81,14 +94,17 @@ const Navigation = ({ children }: INavigationProps) => {
       {/* Mobile nav */}
       <div className="xl:hidden flex justify-around items-center gap-2 rounded-2xl bg-light shadow-sm mx-2 mb-2">
         {navItemList.map((navItem) => (
-          <Link href={navItem.href} key={navItem.href}>
-            <div
-              className={cn('flex flex-col gap-1 items-center justify-start p-2', {
-                'bg-lightPale shadow-sm': pathname === navItem.href,
-              })}
-            >
-              <navItem.icon size={20} />
-              <div className="text-xs font-medium">{navItem.name}</div>
+          <Link href={navItem.href} key={navItem.href} onClick={() => setActiveNavItem(navItem)}>
+            <div className={cn('flex flex-col gap-1 items-center justify-start p-2 relative')}>
+              {activeNavItem.href === navItem.href && (
+                <motion.div
+                  layoutId="activeNavMobile"
+                  id="activeNavMobile"
+                  className="inset-0 absolute bg-lightPale shadow-sm rounded-lg"
+                />
+              )}
+              <navItem.icon size={20} className="relative z-10" />
+              <div className="text-xs font-medium relative z-10">{navItem.name}</div>
             </div>
           </Link>
         ))}
