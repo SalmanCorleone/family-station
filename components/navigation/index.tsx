@@ -2,7 +2,7 @@
 
 import { cn } from '@/utils/clsx';
 import { navItemList } from '@/utils/const';
-import { Settings2 } from 'lucide-react';
+import { Loader, Settings2 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -18,7 +18,7 @@ interface INavigationProps {
 const Navigation = ({ children }: INavigationProps) => {
   const pathname = usePathname();
   const [activeNavItem, setActiveNavItem] = useState<NavItemType>(navItemList[0]);
-  const { profile, family } = useProfile();
+  const { profile, family, isLoading } = useProfile();
 
   useEffect(() => {
     if (!pathname) return;
@@ -31,7 +31,7 @@ const Navigation = ({ children }: INavigationProps) => {
     <nav className="flex flex-col xl:flex-row h-screen bg-ash/10">
       <div className="hidden xl:flex flex-col bg-light px-2 m-2 shadow gap-4 rounded-2xl max-w-[14vw]">
         {/* Header */}
-        <div className="flex flex-col items-center justify-center gap-2 p-2 mt-2 rounded-2xl bg-white shadow-sm">
+        <div className="flex flex-col items-center justify-center gap-1 p-2 mt-2 rounded-2xl bg-white shadow-sm">
           <div className="relative w-full h-20 rounded-lg overflow-hidden border border-ash/50">
             <Image
               // src={'/family.jpg'}
@@ -42,7 +42,7 @@ const Navigation = ({ children }: INavigationProps) => {
             />
           </div>
           <div>
-            <p className="text-lg font-semibold">{family?.title}</p>
+            <p className="text-md font-semibold">{family?.title}</p>
           </div>
         </div>
 
@@ -80,7 +80,7 @@ const Navigation = ({ children }: INavigationProps) => {
           </Link>
           <Link href="/app/settings">
             <div className="border p-2 rounded-lg border-gray-300 hover:bg-gray-50">
-              <Settings2 size={16} />
+              {isLoading ? <Loader className="animate-spin" /> : <Settings2 size={16} />}
             </div>
           </Link>
         </div>

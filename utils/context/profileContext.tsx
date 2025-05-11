@@ -23,6 +23,7 @@ const initialState: State = {
 };
 
 type Action =
+  | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_PROFILE'; payload: Profile | null }
   | { type: 'SET_MEMBERS'; payload: FamilyMember[] | null }
   | { type: 'SET_FAMILY'; payload: Family | null }
@@ -30,12 +31,14 @@ type Action =
 
 const profileReducer = (state: State, action: Action): State => {
   switch (action.type) {
+    case 'SET_LOADING':
+      return { ...state, isLoading: action.payload };
     case 'SET_PROFILE':
-      return { ...state, profile: action.payload, isLoading: false };
+      return { ...state, profile: action.payload };
     case 'SET_MEMBERS':
-      return { ...state, members: action.payload, isLoading: false };
+      return { ...state, members: action.payload };
     case 'SET_FAMILY':
-      return { ...state, family: action.payload, isLoading: false };
+      return { ...state, family: action.payload };
     case 'CLEAR':
       return { profile: null, family: null, members: null, isLoading: false };
     default:
@@ -54,6 +57,7 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(profileReducer, initialState);
 
   const refetchProfile = async () => {
+    dispatch({ type: 'SET_LOADING', payload: true });
     const supabase = createClient();
     const profile = await getProfile();
     if (!profile) {
@@ -68,13 +72,16 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
       }
     }
     if (profile.family) {
-      const { data } = supabase.storage.from('').getPublicUrl(profile.family.image ?? '');
-      const publicUrl = data?.publicUrl;
-      const family = { ...profile.family, image: publicUrl };
-      console.log({ family });
+      let publicUrl = '';
+      if (profile.family.image) {
+        const { data } = supabase.storage.from('').getPublicUrl(profile.family.image);
+        publicUrl = data?.publicUrl;
+      }
+      const family = { ...profile.family, image: publicUrl || null };
       dispatch({ type: 'SET_FAMILY', payload: family });
     }
     dispatch({ type: 'SET_PROFILE', payload: profile });
+    dispatch({ type: 'SET_LOADING', payload: false });
   };
 
   useEffect(() => {

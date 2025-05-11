@@ -38,7 +38,6 @@ export const getFamilyMembers = async (id: number) => {
     console.log(error.message);
     return;
   }
-  console.log('members', familyMembers);
   return familyMembers;
 };
 

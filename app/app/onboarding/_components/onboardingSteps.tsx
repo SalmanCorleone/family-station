@@ -15,7 +15,6 @@ const OnboardingSteps = () => {
   const onFamilyFormSubmit = async (data: z.infer<typeof familyInfoSchema>) => {
     console.log('on main component', data);
     const file = data.image[0];
-    // setFamilyInfo({ title: data.title, image: file });
     const res = await createFamily({ title: data.title, image: file });
     if (!res) return;
     if (res.invitation_token) setInviteLink(`${origin}/app/invite/${res.invitation_token}`);
