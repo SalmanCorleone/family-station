@@ -51,6 +51,10 @@ const addFinancialRecordSchema = z.object({
   family_id: z.number(),
 });
 
+const addTaskSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(30, 'Title must be 30 characters or less'),
+});
+
 export {
   familyInfoSchema,
   ACCEPTED_IMAGE_TYPES,
@@ -58,5 +62,6 @@ export {
   inviteFormSchema,
   signUpSchema,
   loginSchema,
+  addTaskSchema,
   addFinancialRecordSchema,
 };

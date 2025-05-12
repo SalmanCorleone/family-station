@@ -199,6 +199,41 @@ export type Database = {
           },
         ];
       };
+      lists: {
+        Row: {
+          created_at: string;
+          family_id: number | null;
+          icon: string | null;
+          id: number;
+          index: number | null;
+          title: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          family_id?: number | null;
+          icon?: string | null;
+          id?: number;
+          index?: number | null;
+          title?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          family_id?: number | null;
+          icon?: string | null;
+          id?: number;
+          index?: number | null;
+          title?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'lists_family_id_fkey';
+            columns: ['family_id'];
+            isOneToOne: false;
+            referencedRelation: 'family';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       profiles: {
         Row: {
           avatar_url: string | null;
@@ -233,6 +268,44 @@ export type Database = {
             columns: ['family_id'];
             isOneToOne: false;
             referencedRelation: 'family';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      tasks: {
+        Row: {
+          created_at: string;
+          id: number;
+          index: number | null;
+          is_completed: boolean | null;
+          list_id: number | null;
+          title: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: number;
+          index?: number | null;
+          is_completed?: boolean | null;
+          list_id?: number | null;
+          title?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          index?: number | null;
+          is_completed?: boolean | null;
+          list_id?: number | null;
+          title?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'tasks_list_id_fkey';
+            columns: ['list_id'];
+            isOneToOne: false;
+            referencedRelation: 'lists';
             referencedColumns: ['id'];
           },
         ];

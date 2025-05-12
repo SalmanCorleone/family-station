@@ -131,7 +131,7 @@ const Navigation = ({ children }: INavigationProps) => {
       </div>
 
       {/* Content */}
-      <div className="bg-light flex-1 overflow-y-auto no-scroll shadow my-2 mr-2 xl:ml-0 ml-2 rounded-2xl">
+      <div className="bg-light flex-1 overflow-y-auto overflow-x-auto xl:overflow-x-hidden no-scroll shadow my-2 mr-2 xl:ml-0 ml-2 rounded-2xl">
         {children}
       </div>
 
