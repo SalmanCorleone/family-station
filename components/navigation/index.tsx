@@ -10,6 +10,8 @@ import { useProfile } from '@/utils/context/profileContext';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { createClient } from '@/utils/supabase/client';
+import { ChatMessageType } from '@/app/app/(modules)/chat/actions';
 
 interface INavigationProps {
   children: React.ReactNode;
@@ -17,7 +19,8 @@ interface INavigationProps {
 
 const Navigation = ({ children }: INavigationProps) => {
   const pathname = usePathname();
-  const [activeNavItem, setActiveNavItem] = useState<NavItemType>(navItemList[0]);
+  const [activeNavItem, setActiveNavItem] = useState<NavItemType>();
+  const [notificationCount, setNotificationCount] = useState(0);
   const { profile, family, isLoading } = useProfile();
 
   useEffect(() => {
@@ -26,6 +29,29 @@ const Navigation = ({ children }: INavigationProps) => {
     if (currentNav) setActiveNavItem(currentNav);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const supabase = createClient();
+    const channel = supabase
+      .channel('chat-history')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'chat_history',
+        },
+        (payload: { new: ChatMessageType }) => {
+          if (payload.new.family_id !== profile?.family_id) return;
+          if (pathname === '/app/chat') return;
+          setNotificationCount((c) => c + 1);
+        },
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [profile?.family_id, pathname]);
 
   return (
     <nav className="flex flex-col xl:flex-row h-screen bg-ash/10">
@@ -49,16 +75,34 @@ const Navigation = ({ children }: INavigationProps) => {
         {/* Nav items */}
         <div className="flex-1 flex flex-col justify-center">
           {navItemList.map((navItem) => (
-            <Link href={navItem.href} key={navItem.href} onClick={() => setActiveNavItem(navItem)}>
+            <Link
+              href={navItem.href}
+              key={navItem.href}
+              onClick={() => {
+                if (navItem.name === 'Chat') setNotificationCount(0);
+                setActiveNavItem(navItem);
+              }}
+            >
               <div className={cn('flex flex-col gap-2 items-center justify-start p-4 rounded-lg relative')}>
-                {activeNavItem.href === navItem.href && (
+                {activeNavItem?.href === navItem.href && (
                   <motion.div
                     layoutId="activeNav"
                     id="activeNav"
                     className="inset-0 absolute bg-lightPale shadow-sm rounded-lg"
                   />
                 )}
-                <navItem.icon size={48} className="relative z-10" />
+                <div className="z-10 relative">
+                  {navItem.name === 'Chat' && notificationCount > 0 && (
+                    <motion.div
+                      animate={{ scale: [0, 1] }}
+                      transition={{ type: 'spring', stiffness: 100, damping: 10 }}
+                      className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-orange z-20 flex items-center justify-center"
+                    >
+                      <div className="text-xs font-medium text-white">{notificationCount}</div>
+                    </motion.div>
+                  )}
+                  <navItem.icon size={48} className="relative z-10" />
+                </div>
                 <div className="text-md font-medium relative z-10">{navItem.name}</div>
               </div>
             </Link>
@@ -67,7 +111,7 @@ const Navigation = ({ children }: INavigationProps) => {
 
         {/* Account */}
         <div className="flex items-center justify-between gap-2 p-2 mb-2 rounded-2xl bg-white shadow-sm">
-          <Link href="/app/account">
+          <Link href="/app/account" onClick={() => setActiveNavItem(undefined)}>
             <div className="flex gap-2 items-center">
               <Avatar>
                 <AvatarImage src={profile?.avatar_url || undefined} />
@@ -78,7 +122,7 @@ const Navigation = ({ children }: INavigationProps) => {
               </div>
             </div>
           </Link>
-          <Link href="/app/settings">
+          <Link href="/app/settings" onClick={() => setActiveNavItem(undefined)}>
             <div className="border p-2 rounded-lg border-gray-300 hover:bg-gray-50">
               {isLoading ? <Loader className="animate-spin" /> : <Settings2 size={16} />}
             </div>
@@ -96,14 +140,25 @@ const Navigation = ({ children }: INavigationProps) => {
         {navItemList.map((navItem) => (
           <Link href={navItem.href} key={navItem.href} onClick={() => setActiveNavItem(navItem)}>
             <div className={cn('flex flex-col gap-1 items-center justify-start p-2 relative')}>
-              {activeNavItem.href === navItem.href && (
+              {activeNavItem?.href === navItem.href && (
                 <motion.div
                   layoutId="activeNavMobile"
                   id="activeNavMobile"
                   className="inset-0 absolute bg-lightPale shadow-sm rounded-lg"
                 />
               )}
-              <navItem.icon size={20} className="relative z-10" />
+              <div className="z-10 relative">
+                {navItem.name === 'Chat' && notificationCount > 0 && (
+                  <motion.div
+                    animate={{ scale: [0, 1] }}
+                    transition={{ type: 'spring', stiffness: 100, damping: 10 }}
+                    className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-orange z-20 flex items-center justify-center"
+                  >
+                    <div className="text-xs font-medium text-white">{notificationCount}</div>
+                  </motion.div>
+                )}
+                <navItem.icon size={20} className="relative z-10" />
+              </div>
               <div className="text-xs font-medium relative z-10">{navItem.name}</div>
             </div>
           </Link>

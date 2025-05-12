@@ -35,7 +35,7 @@ const ChatInterface = ({ chatHistory }: IChatInterfaceProps) => {
   useEffect(() => {
     const supabase = createClient();
     const channel = supabase
-      .channel('chat-history')
+      .channel('chat-history-notif')
       .on(
         'postgres_changes',
         {
@@ -44,7 +44,6 @@ const ChatInterface = ({ chatHistory }: IChatInterfaceProps) => {
           table: 'chat_history',
         },
         (payload: { new: ChatMessageType }) => {
-          console.log({ hey: payload?.new });
           setMessages((prev) => (payload.new.family_id === profile?.family_id ? [...prev, payload.new] : prev));
         },
       )

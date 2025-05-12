@@ -12,12 +12,10 @@ export const getProfile = async () => {
     return;
   }
   const { data, error } = await supabase.from('profiles').select('*, family(*)').eq('id', user?.id).single();
-  console.log({ profileData: data });
   if (error) {
     console.log(error.message);
     return;
   }
-  console.log('user', data);
   return data;
 };
 
