@@ -1,5 +1,6 @@
 'use server';
 
+import { getFileExtension } from '@/utils';
 import { createClient } from '@/utils/supabase/server';
 
 export const getProfile = async () => {
@@ -37,6 +38,49 @@ export const getFamilyMembers = async (id: number) => {
     return;
   }
   return familyMembers;
+};
+
+// todo: fix upload
+export const updateProfile = async (data: {
+  id: string;
+  fullName: string;
+  profilePic?: File;
+  isNewImage?: boolean;
+  profileImageName?: string;
+}) => {
+  const supabase = await createClient();
+
+  // upload to storage
+  let avatar_url = '';
+  if (data.profilePic && data.isNewImage) {
+    const { data: image, error } = await supabase.storage
+      .from('user-images')
+      .upload(data.profileImageName || `profile_${data.id}__0.${getFileExtension(data.profilePic)}`, data.profilePic, {
+        upsert: false,
+      });
+    if (error) {
+      console.log(error.message);
+      return;
+    }
+    avatar_url = image.fullPath;
+  }
+
+  const payload: Record<string, string> = {
+    full_name: data.fullName,
+  };
+  if (!!avatar_url) payload.avatar_url = avatar_url;
+
+  const { data: updatedProfile, error } = await supabase
+    .from('profiles')
+    .update(payload)
+    .eq('id', data.id)
+    .select()
+    .single();
+  if (error) {
+    console.log(error.message);
+    return;
+  }
+  return updatedProfile;
 };
 
 export type ProfileType = NonNullable<Awaited<ReturnType<typeof getProfile>>>;

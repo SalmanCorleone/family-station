@@ -111,7 +111,7 @@ const Navigation = ({ children }: INavigationProps) => {
 
         {/* Account */}
         <div className="flex items-center justify-between gap-2 p-2 mb-2 rounded-2xl bg-white shadow-sm">
-          <Link href="/app/account" onClick={() => setActiveNavItem(undefined)}>
+          <Link href="/app/settings/account" onClick={() => setActiveNavItem(undefined)}>
             <div className="flex gap-2 items-center">
               <Avatar>
                 <AvatarImage src={profile?.avatar_url || undefined} />
@@ -122,7 +122,7 @@ const Navigation = ({ children }: INavigationProps) => {
               </div>
             </div>
           </Link>
-          <Link href="/app/settings" onClick={() => setActiveNavItem(undefined)}>
+          <Link href="/app/settings/account" onClick={() => setActiveNavItem(undefined)}>
             <div className="border p-2 rounded-lg border-gray-300 hover:bg-gray-50">
               {isLoading ? <Loader className="animate-spin" /> : <Settings2 size={16} />}
             </div>

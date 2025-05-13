@@ -16,7 +16,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-const FamilySettings = () => {
+const Family = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [firstLoad, setFirstLoad] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
@@ -206,22 +206,6 @@ const FamilySettings = () => {
                             <p className="text-xs">Cancel</p>
                           </Button>
                         )}
-
-                        {/* {isImageEditMode && (
-                        <div className="relative flex items-center justify-center w-32 h-32 border rounded-full overflow-hidden">
-                          {imagePreview ? (
-                            <Image
-                              src={imagePreview}
-                              alt="Preview"
-                              className="w-full h-full object-cover"
-                              width={200}
-                              height={200}
-                            />
-                          ) : (
-                            <ImageIcon size={80} color="var(--color-gray-500)" />
-                          )}
-                        </div>
-                      )} */}
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -237,4 +221,4 @@ const FamilySettings = () => {
   );
 };
 
-export default FamilySettings;
+export default Family;

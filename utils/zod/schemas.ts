@@ -55,6 +55,21 @@ const addTaskSchema = z.object({
   title: z.string().min(1, 'Title is required').max(30, 'Title must be 30 characters or less'),
 });
 
+const accountSchema = z.object({
+  fullName: z
+    .string()
+    .min(2, { message: 'Full name must be at least 2 characters' })
+    .max(50, { message: 'Full name must be less than 50 characters' }),
+  image: z
+    .any()
+    .refine(
+      (files) => ['image/png', 'image/jpeg', 'image/jpg'].includes(files?.[0]?.type),
+      'File type must be png or jpeg',
+    )
+    .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, 'File size must be less than 1MB')
+    .optional(),
+});
+
 export {
   familyInfoSchema,
   ACCEPTED_IMAGE_TYPES,
@@ -64,4 +79,5 @@ export {
   loginSchema,
   addTaskSchema,
   addFinancialRecordSchema,
+  accountSchema,
 };

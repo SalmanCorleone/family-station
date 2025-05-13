@@ -5,8 +5,14 @@ export const formatDate = (dateStr?: string | Date, withTime?: boolean) =>
 
 export const getRandomInt = (max: number = 10000) => Math.floor(Math.random() * max);
 
-export const getUpdatedImageName = (fileName?: string | null) => {
-  if (!fileName) return;
+/**
+ *
+ * It converts:
+ * - .../family_images/my-image.jpg ---> my_image_1.jpg
+ * - .../family_images/my-image_1.jpg ---> my_image_2.jpg
+ */
+export const getUpdatedImageName = (fileName?: string | null, isInBucket?: boolean) => {
+  if (!fileName || !isInBucket) return;
   const oldName = fileName?.split('/').pop();
   if (oldName) {
     const [name, extension] = oldName.split('.');
@@ -14,4 +20,9 @@ export const getUpdatedImageName = (fileName?: string | null) => {
     return `${name}__${+version + 1}.${extension}`;
   }
   return;
+};
+
+export const getFileExtension = (file: File) => {
+  const type = file.type;
+  return type.split('/')[1];
 };

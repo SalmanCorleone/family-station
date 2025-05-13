@@ -1,10 +1,15 @@
 'use client';
 
 import { createContext, useContext, useReducer, useEffect, ReactNode, Dispatch } from 'react';
-import { FamilyMemberType, getFamilyMembers, getProfile, ProfileType } from '@/app/app/(modules)/account/actions';
 import { createClient } from '../supabase/client';
+import {
+  FamilyMemberType,
+  getFamilyMembers,
+  getProfile,
+  ProfileType,
+} from '@/app/app/(modules)/settings/account/actions';
 
-type Profile = ProfileType;
+type Profile = ProfileType & { isImageInBucket?: boolean };
 type Family = ProfileType['family'];
 type FamilyMember = FamilyMemberType;
 
@@ -79,6 +84,12 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
       }
       const family = { ...profile.family, image: publicUrl || null };
       dispatch({ type: 'SET_FAMILY', payload: family });
+    }
+    const profilePayload: Profile = { ...profile };
+    if (profile.avatar_url && profile.avatar_url.startsWith('user-images')) {
+      const { data } = supabase.storage.from('').getPublicUrl(profile.avatar_url);
+      profile.avatar_url = data?.publicUrl;
+      profilePayload.isImageInBucket = true;
     }
     dispatch({ type: 'SET_PROFILE', payload: profile });
     dispatch({ type: 'SET_LOADING', payload: false });
