@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ChatMessageType } from '../actions';
 import { formatDate } from '@/utils';
 import { useProfile } from '@/utils/context/profileContext';
+import { useMemo } from 'react';
 
 interface IChatMessageProps {
   message: ChatMessageType;
@@ -9,13 +10,17 @@ interface IChatMessageProps {
 }
 
 const ChatMessage = ({ message, isMyMessage }: IChatMessageProps) => {
-  const { profile } = useProfile();
+  const { profile, membersImageMap } = useProfile();
+  const avatarURLFromContext = useMemo(
+    () => (message.profile_id ? membersImageMap?.[message.profile_id] : undefined),
+    [message.profile_id, membersImageMap],
+  );
 
   return (
     <div key={message.id} className={`flex items-start gap-2.5 ${isMyMessage ? 'justify-end' : 'justify-start'}`}>
       {!isMyMessage && (
         <Avatar className="w-8 h-8">
-          <AvatarImage src={message.profiles?.avatar_url || undefined} alt="Avatar" />
+          <AvatarImage src={avatarURLFromContext || undefined} alt="Avatar" />
           <AvatarFallback className="bg-white">{message.profiles?.full_name?.charAt(0) ?? '😊'}</AvatarFallback>
         </Avatar>
       )}
@@ -33,7 +38,7 @@ const ChatMessage = ({ message, isMyMessage }: IChatMessageProps) => {
 
       {isMyMessage && (
         <Avatar className="w-8 h-8">
-          <AvatarImage src={profile?.avatar_url || undefined} alt="Avatar" />
+          <AvatarImage src={avatarURLFromContext || undefined} alt="Avatar" />
           <AvatarFallback className="bg-white">
             {profile?.full_name?.charAt(0) ?? profile?.email?.charAt(0)}
           </AvatarFallback>

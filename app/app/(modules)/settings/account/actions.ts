@@ -40,7 +40,6 @@ export const getFamilyMembers = async (id: number) => {
   return familyMembers;
 };
 
-// todo: fix upload
 export const updateProfile = async (data: {
   id: string;
   fullName: string;
@@ -49,8 +48,7 @@ export const updateProfile = async (data: {
   profileImageName?: string;
 }) => {
   const supabase = await createClient();
-
-  // upload to storage
+  // 1. upload to storage
   let avatar_url = '';
   if (data.profilePic && data.isNewImage) {
     const { data: image, error } = await supabase.storage
@@ -64,23 +62,17 @@ export const updateProfile = async (data: {
     }
     avatar_url = image.fullPath;
   }
-
   const payload: Record<string, string> = {
     full_name: data.fullName,
   };
   if (!!avatar_url) payload.avatar_url = avatar_url;
-
-  const { data: updatedProfile, error } = await supabase
-    .from('profiles')
-    .update(payload)
-    .eq('id', data.id)
-    .select()
-    .single();
+  // 2. update profile
+  const { error } = await supabase.from('profiles').update(payload).eq('id', data.id);
   if (error) {
     console.log(error.message);
     return;
   }
-  return updatedProfile;
+  return true;
 };
 
 export type ProfileType = NonNullable<Awaited<ReturnType<typeof getProfile>>>;

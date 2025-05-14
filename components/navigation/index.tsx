@@ -1,17 +1,17 @@
 'use client';
 
+import { ChatMessageType } from '@/app/app/(modules)/chat/actions';
 import { cn } from '@/utils/clsx';
 import { navItemList } from '@/utils/const';
-import { Loader, Settings2 } from 'lucide-react';
+import { useProfile } from '@/utils/context/profileContext';
+import { createClient } from '@/utils/supabase/client';
+import { motion } from 'framer-motion';
+import { Loader } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { useProfile } from '@/utils/context/profileContext';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { createClient } from '@/utils/supabase/client';
-import { ChatMessageType } from '@/app/app/(modules)/chat/actions';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 interface INavigationProps {
   children: React.ReactNode;

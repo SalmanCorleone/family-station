@@ -11,12 +11,13 @@ import {
 
 type Profile = ProfileType & { isImageInBucket?: boolean };
 type Family = ProfileType['family'];
-type FamilyMember = FamilyMemberType;
+type FamilyMemberImageMap = Record<string, string | undefined>;
 
 type State = {
   profile: Profile | null;
   family: Family | null;
-  members: FamilyMember[] | null;
+  members: FamilyMemberType[] | null;
+  membersImageMap: FamilyMemberImageMap | null;
   isLoading: boolean;
 };
 
@@ -24,13 +25,15 @@ const initialState: State = {
   profile: null,
   family: null,
   members: null,
+  membersImageMap: null,
   isLoading: true,
 };
 
 type Action =
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_PROFILE'; payload: Profile | null }
-  | { type: 'SET_MEMBERS'; payload: FamilyMember[] | null }
+  | { type: 'SET_MEMBERS'; payload: FamilyMemberType[] | null }
+  | { type: 'SET_MEMBERS_IMAGE_MAP'; payload: FamilyMemberImageMap | null }
   | { type: 'SET_FAMILY'; payload: Family | null }
   | { type: 'CLEAR' };
 
@@ -42,10 +45,12 @@ const profileReducer = (state: State, action: Action): State => {
       return { ...state, profile: action.payload };
     case 'SET_MEMBERS':
       return { ...state, members: action.payload };
+    case 'SET_MEMBERS_IMAGE_MAP':
+      return { ...state, membersImageMap: action.payload };
     case 'SET_FAMILY':
       return { ...state, family: action.payload };
     case 'CLEAR':
-      return { profile: null, family: null, members: null, isLoading: false };
+      return { profile: null, family: null, members: null, membersImageMap: null, isLoading: false };
     default:
       return state;
   }
@@ -70,12 +75,30 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
       dispatch({ type: 'CLEAR' });
       return;
     }
+    /**
+     * Set members and membersImageMap
+     */
     if (profile.family_id) {
       const familyMembers = await getFamilyMembers(profile.family_id);
-      if (familyMembers) {
+      if (familyMembers?.length) {
+        const imageMap = familyMembers.reduce((acc, member) => {
+          let imageURL = undefined;
+          if (member.profiles?.avatar_url) {
+            const { data } = supabase.storage.from('').getPublicUrl(member.profiles?.avatar_url);
+            imageURL = data.publicUrl;
+          }
+          if (member.profile_id) {
+            acc[member.profile_id] = imageURL;
+          }
+          return acc;
+        }, {} as FamilyMemberImageMap);
         dispatch({ type: 'SET_MEMBERS', payload: familyMembers });
+        dispatch({ type: 'SET_MEMBERS_IMAGE_MAP', payload: imageMap });
       }
     }
+    /**
+     * Set family
+     */
     if (profile.family) {
       let publicUrl = '';
       if (profile.family.image) {
@@ -85,6 +108,9 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
       const family = { ...profile.family, image: publicUrl || null };
       dispatch({ type: 'SET_FAMILY', payload: family });
     }
+    /**
+     * Set profile
+     */
     const profilePayload: Profile = { ...profile };
     if (profile.avatar_url && profile.avatar_url.startsWith('user-images')) {
       const { data } = supabase.storage.from('').getPublicUrl(profile.avatar_url);
