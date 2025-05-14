@@ -119,3 +119,22 @@ export const navItemList: NavItemType[] = [
   { name: 'Chat', href: '/app/chat', icon: (props) => <MessageSquareMore fill="var(--color-pink)" {...props} /> },
   { name: 'To-do', href: '/app/to-do', icon: (props) => <ClipboardList fill="var(--color-lightBlue)" {...props} /> },
 ];
+
+export const colors = [
+  'var(--color-orange)',
+  'var(--color-lightGreen)',
+  'var(--color-green)',
+  'var(--color-lime)',
+  'var(--color-blueGreen)',
+  'var(--color-yellow)',
+  'var(--color-lightPale)',
+  'var(--color-pale)',
+  'var(--color-orange)',
+  'var(--color-lightBlue)',
+  'var(--color-blue)',
+  'var(--color-darkBlue)',
+  'var(--color-lightPurple)',
+  'var(--color-purple)',
+  'var(--color-ash)',
+  'var(--color-darkAsh)',
+];

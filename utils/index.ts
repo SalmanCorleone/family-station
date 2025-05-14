@@ -14,12 +14,10 @@ export const getRandomInt = (max: number = 10000) => Math.floor(Math.random() * 
 export const getUpdatedImageName = (fileName?: string | null, isInBucket?: boolean) => {
   if (!fileName || !isInBucket) return;
   const oldName = fileName?.split('/').pop();
-  if (oldName) {
-    const [name, extension] = oldName.split('.');
-    const version = name.indexOf('__') > -1 ? name.split('__').pop() || 0 : 0;
-    return `${name}__${+version + 1}.${extension}`;
-  }
-  return;
+  if (!oldName) return;
+  const [name, extension] = oldName.split('.');
+  const version = name.indexOf('__') > -1 ? name.split('__').pop() || 0 : 0;
+  return `${name.indexOf('__') > -1 ? name.split('__').shift() || '' : name}__${+version + 1}.${extension}`;
 };
 
 export const getFileExtension = (file: File) => {

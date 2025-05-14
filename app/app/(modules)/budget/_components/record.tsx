@@ -4,12 +4,18 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { categoryList } from '@/utils/const';
 import { useMemo } from 'react';
 import { FinancialRecord } from '../actions';
+import { useProfile } from '@/utils/context/profileContext';
 
 interface IRecordItem {
   record: FinancialRecord;
 }
 
 const Record = ({ record }: IRecordItem) => {
+  const { membersImageMap } = useProfile();
+  const avatarURLFromContext = useMemo(
+    () => (record.profile_id ? membersImageMap?.[record.profile_id] : undefined),
+    [record.profile_id, membersImageMap],
+  );
   const category = useMemo(
     () => categoryList.find((category) => category.title === record.category) || categoryList[categoryList.length - 1],
     [record.category],
@@ -22,7 +28,7 @@ const Record = ({ record }: IRecordItem) => {
           <p className="text-2xl">{category.icon()}</p>
           <p className="text-2xl">{category.title}</p>
           <Avatar style={{ width: 24, height: 24 }}>
-            <AvatarImage src={record.profiles?.avatar_url || undefined} />
+            <AvatarImage src={avatarURLFromContext || undefined} />
             <AvatarFallback>{record.profiles?.full_name?.charAt(0) ?? '😊'}</AvatarFallback>
           </Avatar>
         </div>

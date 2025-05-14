@@ -55,7 +55,7 @@ const Navigation = ({ children }: INavigationProps) => {
 
   return (
     <nav className="flex flex-col xl:flex-row h-screen bg-ash/10">
-      <div className="hidden xl:flex flex-col bg-light px-2 m-2 shadow gap-4 rounded-2xl max-w-[14vw]">
+      <div className="hidden xl:flex flex-col bg-light px-2 m-2 shadow gap-4 rounded-2xl max-w-[14vw] min-w-[12vw]">
         {/* Header */}
 
         <Link href={'/app/settings/family'} onClick={() => setActiveNavItem(undefined)}>

@@ -9,7 +9,7 @@ import { cn } from '@/utils/clsx';
 import { useProfile } from '@/utils/context/profileContext';
 import { ACCEPTED_IMAGE_TYPES, familyInfoSchema } from '@/utils/zod/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader, Pencil, Upload, X } from 'lucide-react';
+import { Pencil, Upload, X } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -102,132 +102,128 @@ const Family = () => {
         <h2 className="text-xl font-bold">Family Settings</h2>
         <p className="text-gray-500 text-sm">Update your family space title, image here.</p>
       </div>
-      {!family ? (
-        <div className="p-4 flex items-center justify-center">
-          <Loader className="animate-spin" />
-        </div>
-      ) : (
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)}>
-            <div className="flex flex-col gap-8 rounded-lg">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Family space title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="ex: Brad's home" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
-              <FormField
-                control={form.control}
-                name="image"
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                render={({ field: { onChange, value, ...fieldProps } }) => (
-                  <FormItem>
-                    <FormLabel>Family Image</FormLabel>
-                    <FormControl>
-                      <div className={cn('flex flex-col justify-center gap-4')}>
-                        {isImageEditMode ? (
-                          imagePreview ? (
-                            <div
-                              className="relative flex items-center w-full xl:w-[40vw] h-80 rounded-lg overflow-hidden"
-                              onClick={() => {
-                                document.getElementById('image-upload')?.click();
-                              }}
-                            >
-                              <Image
-                                src={imagePreview}
-                                alt="Preview"
-                                className="w-full h-full object-cover"
-                                width={200}
-                                height={200}
-                              />
-                            </div>
-                          ) : (
-                            // Upload image box
-                            <div
-                              className={`w-full xl:w-[40vw] h-80 flex flex-col justify-center items-center border-2 rounded-md ${
-                                isDragging
-                                  ? 'border-primary border-dashed bg-primary/10'
-                                  : 'border-dashed border border-gray-400 hover:border-primary/50 hover:bg-muted/50'
-                              } transition-colors cursor-pointer`}
-                              onClick={() => {
-                                document.getElementById('image-upload')?.click();
-                              }}
-                              onDragOver={handleDragOver}
-                              onDragLeave={handleDragLeave}
-                              onDrop={handleDrop}
-                            >
-                              <Upload className="h-6 w-6 mb-2" />
-                              <span>{isDragging ? 'Drop image here' : 'Upload image'}</span>
-                              <span className="text-xs text-muted-foreground mt-1">Drag & drop or click to browse</span>
-                              <span className="text-xs text-muted-foreground">JPG, PNG up to 5MB</span>
-                            </div>
-                          )
-                        ) : (
-                          <div>
-                            <div className="flex items-center w-full xl:w-[40vw] h-80 rounded-lg overflow-hidden">
-                              <Image
-                                src={family?.image ?? '/family.jpg'}
-                                className="w-full h-full object-cover"
-                                alt="my-family"
-                                width={200}
-                                height={150}
-                              />
-                            </div>
-                            <Button variant={'ghost'} onClick={() => setIsImageEditMode(true)} className="mt-4">
-                              <Pencil size={16} />
-                              <p className="text-xs">Edit</p>
-                            </Button>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <div className="flex flex-col gap-8 rounded-lg">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Family space title</FormLabel>
+                  <FormControl>
+                    <Input placeholder="ex: Brad's home" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="image"
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              render={({ field: { onChange, value, ...fieldProps } }) => (
+                <FormItem>
+                  <FormLabel>Family Image</FormLabel>
+                  <FormControl>
+                    <div className={cn('flex flex-col justify-center gap-4')}>
+                      {isImageEditMode ? (
+                        imagePreview ? (
+                          <div
+                            className="relative flex items-center w-full xl:w-[40vw] h-80 rounded-lg overflow-hidden"
+                            onClick={() => {
+                              document.getElementById('image-upload')?.click();
+                            }}
+                          >
+                            <Image
+                              src={imagePreview}
+                              alt="Preview"
+                              className="w-full h-full object-cover"
+                              width={200}
+                              height={200}
+                            />
                           </div>
-                        )}
-                        <Input
-                          id="image-upload"
-                          type="file"
-                          accept="image/jpeg,image/jpg,image/png,image/webp"
-                          className="hidden"
-                          onChange={(e) => {
-                            onChange(e.target.files);
-                            handleImageChange(e.target.files);
-                          }}
-                          {...fieldProps}
-                        />
-
+                        ) : (
+                          // Upload image box
+                          <div
+                            className={`w-full xl:w-[40vw] h-80 flex flex-col justify-center items-center border-2 rounded-md ${
+                              isDragging
+                                ? 'border-primary border-dashed bg-primary/10'
+                                : 'border-dashed border border-gray-400 hover:border-primary/50 hover:bg-muted/50'
+                            } transition-colors cursor-pointer`}
+                            onClick={() => {
+                              document.getElementById('image-upload')?.click();
+                            }}
+                            onDragOver={handleDragOver}
+                            onDragLeave={handleDragLeave}
+                            onDrop={handleDrop}
+                          >
+                            <Upload className="h-6 w-6 mb-2" />
+                            <span>{isDragging ? 'Drop image here' : 'Upload image'}</span>
+                            <span className="text-xs text-muted-foreground mt-1">Drag & drop or click to browse</span>
+                            <span className="text-xs text-muted-foreground">JPG, PNG up to 5MB</span>
+                          </div>
+                        )
+                      ) : (
+                        // Existing image
                         <div>
-                          {isImageEditMode && (
-                            <Button
-                              variant={'ghost'}
-                              onClick={() => {
-                                setImagePreview(null);
-                                setIsImageEditMode(false);
-                              }}
-                            >
-                              <X size={16} />
-                              <p className="text-xs">Cancel</p>
-                            </Button>
-                          )}
+                          <div className="flex items-center w-full xl:w-[40vw] h-80 rounded-lg overflow-hidden">
+                            <Image
+                              src={family?.image ?? '/family.jpg'}
+                              className="w-full h-full object-cover"
+                              alt="my-family"
+                              width={200}
+                              height={150}
+                            />
+                          </div>
+                          <Button variant={'ghost'} onClick={() => setIsImageEditMode(true)} className="mt-4">
+                            <Pencil size={16} />
+                            <p className="text-xs">Edit</p>
+                          </Button>
                         </div>
+                      )}
+                      <Input
+                        id="image-upload"
+                        type="file"
+                        accept="image/jpeg,image/jpg,image/png,image/webp"
+                        className="hidden"
+                        onChange={(e) => {
+                          onChange(e.target.files);
+                          handleImageChange(e.target.files);
+                        }}
+                        {...fieldProps}
+                      />
+
+                      <div>
+                        {isImageEditMode && (
+                          <Button
+                            variant={'ghost'}
+                            onClick={() => {
+                              setImagePreview(null);
+                              setIsImageEditMode(false);
+                            }}
+                          >
+                            <X size={16} />
+                            <p className="text-xs">Cancel</p>
+                          </Button>
+                        )}
                       </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div>
-                <Button type="submit" disabled={!form.formState.isDirty || form.formState.isSubmitting}>
-                  {form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}
-                </Button>
-              </div>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div>
+              <Button type="submit" disabled={!form.formState.isDirty || form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}
+              </Button>
             </div>
-          </form>
-        </Form>
-      )}
+          </div>
+        </form>
+      </Form>
     </div>
   );
 };

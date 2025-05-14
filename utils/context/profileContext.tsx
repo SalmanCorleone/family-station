@@ -114,10 +114,10 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
     const profilePayload: Profile = { ...profile };
     if (profile.avatar_url && profile.avatar_url.startsWith('user-images')) {
       const { data } = supabase.storage.from('').getPublicUrl(profile.avatar_url);
-      profile.avatar_url = data?.publicUrl;
+      profilePayload.avatar_url = data?.publicUrl;
       profilePayload.isImageInBucket = true;
     }
-    dispatch({ type: 'SET_PROFILE', payload: profile });
+    dispatch({ type: 'SET_PROFILE', payload: profilePayload });
     dispatch({ type: 'SET_LOADING', payload: false });
   };
 
