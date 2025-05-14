@@ -97,7 +97,11 @@ const Family = () => {
   };
 
   return (
-    <div className="flex flex-col bg-white shadow-lg rounded-2xl w-full xl:w-[35vw]">
+    <div className="flex flex-col bg-white shadow-lg rounded-2x p-4 gap-4">
+      <div>
+        <h2 className="text-xl font-bold">Family Settings</h2>
+        <p className="text-gray-500 text-sm">Update your family space title, image here.</p>
+      </div>
       {!family ? (
         <div className="p-4 flex items-center justify-center">
           <Loader className="animate-spin" />
@@ -105,7 +109,7 @@ const Family = () => {
       ) : (
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
-            <div className="flex flex-col gap-8 p-4 xl:p-8 rounded-lg">
+            <div className="flex flex-col gap-8 rounded-lg">
               <FormField
                 control={form.control}
                 name="title"
@@ -128,11 +132,11 @@ const Family = () => {
                   <FormItem>
                     <FormLabel>Family Image</FormLabel>
                     <FormControl>
-                      <div className={cn('flex flex-col justify-center items-center gap-4')}>
+                      <div className={cn('flex flex-col justify-center gap-4')}>
                         {isImageEditMode ? (
                           imagePreview ? (
                             <div
-                              className="relative flex items-center justify-center w-full h-80 rounded-lg overflow-hidden"
+                              className="relative flex items-center w-full xl:w-[40vw] h-80 rounded-lg overflow-hidden"
                               onClick={() => {
                                 document.getElementById('image-upload')?.click();
                               }}
@@ -146,8 +150,9 @@ const Family = () => {
                               />
                             </div>
                           ) : (
+                            // Upload image box
                             <div
-                              className={`w-full h-80 flex flex-col items-center justify-center border-2 rounded-md ${
+                              className={`w-full xl:w-[40vw] h-80 flex flex-col justify-center items-center border-2 rounded-md ${
                                 isDragging
                                   ? 'border-primary border-dashed bg-primary/10'
                                   : 'border-dashed border border-gray-400 hover:border-primary/50 hover:bg-muted/50'
@@ -167,7 +172,7 @@ const Family = () => {
                           )
                         ) : (
                           <div>
-                            <div className="flex items-center justify-center w-full h-80 rounded-lg overflow-hidden">
+                            <div className="flex items-center w-full xl:w-[40vw] h-80 rounded-lg overflow-hidden">
                               <Image
                                 src={family?.image ?? '/family.jpg'}
                                 className="w-full h-full object-cover"
@@ -176,7 +181,7 @@ const Family = () => {
                                 height={150}
                               />
                             </div>
-                            <Button variant={'ghost'} onClick={() => setIsImageEditMode(true)}>
+                            <Button variant={'ghost'} onClick={() => setIsImageEditMode(true)} className="mt-4">
                               <Pencil size={16} />
                               <p className="text-xs">Edit</p>
                             </Button>
@@ -194,25 +199,31 @@ const Family = () => {
                           {...fieldProps}
                         />
 
-                        {isImageEditMode && (
-                          <Button
-                            variant={'ghost'}
-                            onClick={() => {
-                              setImagePreview(null);
-                              setIsImageEditMode(false);
-                            }}
-                          >
-                            <X size={16} />
-                            <p className="text-xs">Cancel</p>
-                          </Button>
-                        )}
+                        <div>
+                          {isImageEditMode && (
+                            <Button
+                              variant={'ghost'}
+                              onClick={() => {
+                                setImagePreview(null);
+                                setIsImageEditMode(false);
+                              }}
+                            >
+                              <X size={16} />
+                              <p className="text-xs">Cancel</p>
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit">Save</Button>
+              <div>
+                <Button type="submit" disabled={!form.formState.isDirty || form.formState.isSubmitting}>
+                  {form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}
+                </Button>
+              </div>
             </div>
           </form>
         </Form>

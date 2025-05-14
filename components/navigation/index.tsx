@@ -57,20 +57,23 @@ const Navigation = ({ children }: INavigationProps) => {
     <nav className="flex flex-col xl:flex-row h-screen bg-ash/10">
       <div className="hidden xl:flex flex-col bg-light px-2 m-2 shadow gap-4 rounded-2xl max-w-[14vw]">
         {/* Header */}
-        <div className="flex flex-col items-center justify-center gap-1 p-2 mt-2 rounded-2xl bg-white shadow-sm">
-          <div className="relative w-full h-20 rounded-lg overflow-hidden border border-ash/50">
-            <Image
-              // src={'/family.jpg'}
-              src={family?.image ?? '/family.jpg'}
-              alt={family?.title ?? 'my-family'}
-              fill
-              className="object-cover object-center"
-            />
+
+        <Link href={'/app/settings/family'} onClick={() => setActiveNavItem(undefined)}>
+          <div className="flex flex-col items-center justify-center gap-1 p-2 mt-2 rounded-2xl bg-white shadow-sm">
+            <div className="relative w-full h-20 rounded-lg overflow-hidden border border-ash/50">
+              <Image
+                // src={'/family.jpg'}
+                src={family?.image ?? '/family.jpg'}
+                alt={family?.title ?? 'my-family'}
+                fill
+                className="object-cover object-center"
+              />
+            </div>
+            <div>
+              <p className="text-md font-semibold">{family?.title}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-md font-semibold">{family?.title}</p>
-          </div>
-        </div>
+        </Link>
 
         {/* Nav items */}
         <div className="flex-1 flex flex-col justify-center">
@@ -113,18 +116,19 @@ const Navigation = ({ children }: INavigationProps) => {
         <div className="flex items-center justify-between gap-2 p-2 mb-2 rounded-2xl bg-white shadow-sm">
           <Link href="/app/settings/account" onClick={() => setActiveNavItem(undefined)}>
             <div className="flex gap-2 items-center">
-              <Avatar>
-                <AvatarImage src={profile?.avatar_url || undefined} />
-                <AvatarFallback>{profile?.full_name?.charAt(0) ?? profile?.email?.charAt(0)}</AvatarFallback>
-              </Avatar>
+              {isLoading ? (
+                <div className="w-10 h-10 flex items-center justify-center bg-ash/10 rounded-full">
+                  <Loader className="animate-spin" size={16} />
+                </div>
+              ) : (
+                <Avatar>
+                  <AvatarImage src={profile?.avatar_url || undefined} />
+                  <AvatarFallback>{profile?.full_name?.charAt(0) ?? profile?.email?.charAt(0)}</AvatarFallback>
+                </Avatar>
+              )}
               <div>
                 <p className="font-medium text-xs">{profile?.full_name}</p>
               </div>
-            </div>
-          </Link>
-          <Link href="/app/settings/account" onClick={() => setActiveNavItem(undefined)}>
-            <div className="border p-2 rounded-lg border-gray-300 hover:bg-gray-50">
-              {isLoading ? <Loader className="animate-spin" /> : <Settings2 size={16} />}
             </div>
           </Link>
         </div>

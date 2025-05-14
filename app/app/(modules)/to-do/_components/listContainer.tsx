@@ -33,10 +33,7 @@ const ListContainer = ({ lists }: IListContainerProps) => {
   return (
     <div className="flex gap-4 w-min">
       {lists.map((list) => (
-        <div
-          key={list.id}
-          className="flex flex-col gap-2 rounded-lg border w-[65vw] xl:w-[25vw] p-2 bg-gray-50 self-start"
-        >
+        <div key={list.id} className="flex flex-col gap-2 rounded-lg w-[65vw] xl:w-[25vw] p-2 bg-ash/10 self-start">
           <div className="flex items-center gap-4">
             <p className="text-xl font-medium">{list.icon}</p>
             <p className="text-xl font-medium">{list.title}</p>

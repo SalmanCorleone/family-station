@@ -14,6 +14,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { updateProfile } from './actions';
 import { toast } from 'sonner';
+import { Label } from '@/components/ui/label';
 
 const Account = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -110,9 +111,9 @@ const Account = () => {
                             <User className="h-10 w-10" />
                           </AvatarFallback>
                         </Avatar>
-                      ) : profileImageName ? (
+                      ) : profile?.avatar_url ? (
                         <Avatar className="h-20 w-20">
-                          <AvatarImage src={profileImageName} alt={form.watch('fullName')} />
+                          <AvatarImage src={profile?.avatar_url} alt={form.watch('fullName')} />
                           <AvatarFallback>
                             <User className="h-10 w-10" />
                           </AvatarFallback>
@@ -167,7 +168,18 @@ const Account = () => {
                 </FormItem>
               )}
             />
+
+            <div>
+              <Label>Email</Label>
+              <p className="text-sm text-muted-foreground">{profile?.email}</p>
+            </div>
+
+            <div>
+              <Label>Phone</Label>
+              <p className="text-sm text-muted-foreground">{profile?.phone || '(not set)'}</p>
+            </div>
           </div>
+
           <div className="mt-4">
             <Button type="submit" disabled={!form.formState.isDirty || form.formState.isSubmitting}>
               {form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}

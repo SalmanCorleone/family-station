@@ -6,7 +6,7 @@ import Link from 'next/link';
 const TabSelector = () => {
   return (
     <Tabs defaultValue="account" className="w-full">
-      <TabsList className="grid w-full grid-cols-3 mb-8">
+      <TabsList className="grid w-full grid-cols-3">
         <Link href={'/app/settings/account'} className="flex">
           <TabsTrigger value="account">Account</TabsTrigger>
         </Link>
