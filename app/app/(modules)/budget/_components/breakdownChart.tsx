@@ -1,30 +1,30 @@
 'use client';
 
-import { Label, Pie, PieChart } from 'recharts';
+import { Label, Legend, Pie, PieChart } from 'recharts';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { colors } from '@/utils/const';
 import { useMemo } from 'react';
 
 interface IBreakdownChartProps {
-  spendingPerCategory: Record<string, number>;
+  spendingByCategory: Record<string, number>;
 }
 
-const BreakdownChart = ({ spendingPerCategory }: IBreakdownChartProps) => {
+const BreakdownChart = ({ spendingByCategory }: IBreakdownChartProps) => {
   const totalAmount = useMemo(
-    () => Object.values(spendingPerCategory).reduce((acc, curr) => acc + curr, 0),
-    [spendingPerCategory],
+    () => Object.values(spendingByCategory).reduce((acc, curr) => acc + curr, 0),
+    [spendingByCategory],
   );
 
   const pieChartData = useMemo(
     () =>
-      Object.entries(spendingPerCategory).map(([category, amount], index) => ({
+      Object.entries(spendingByCategory).map(([category, amount], index) => ({
         category,
         amount,
         fill: colors[index % colors.length],
       })),
-    [spendingPerCategory],
+    [spendingByCategory],
   );
 
   const chartConfig = {} satisfies ChartConfig;
@@ -32,8 +32,8 @@ const BreakdownChart = ({ spendingPerCategory }: IBreakdownChartProps) => {
   return (
     <Card className="flex flex-col gap-2">
       <CardHeader className="items-center pb-0">
-        <CardTitle>This month</CardTitle>
-        <CardDescription>Spending by category</CardDescription>
+        <CardTitle>Spending by category</CardTitle>
+        {/* <CardDescription></CardDescription> */}
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
@@ -57,6 +57,7 @@ const BreakdownChart = ({ spendingPerCategory }: IBreakdownChartProps) => {
                 }}
               />
             </Pie>
+            <Legend verticalAlign="bottom" height={40} />
           </PieChart>
         </ChartContainer>
       </CardContent>

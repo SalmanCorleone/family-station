@@ -8,9 +8,10 @@ import { useProfile } from '@/utils/context/profileContext';
 
 interface IRecordItem {
   record: FinancialRecord;
+  onRecordClick: () => void;
 }
 
-const Record = ({ record }: IRecordItem) => {
+const Record = ({ record, onRecordClick }: IRecordItem) => {
   const { membersImageMap } = useProfile();
   const avatarURLFromContext = useMemo(
     () => (record.profile_id ? membersImageMap?.[record.profile_id] : undefined),
@@ -22,7 +23,10 @@ const Record = ({ record }: IRecordItem) => {
   );
 
   return (
-    <div className="w-full flex gap-4 p-4 rounded-lg bg-white justify-between shadow-xs">
+    <div
+      className="w-full flex gap-4 p-4 rounded-lg bg-white justify-between shadow-xs cursor-pointer"
+      onClick={onRecordClick}
+    >
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 items-center">
           <p className="text-2xl">{category.icon()}</p>

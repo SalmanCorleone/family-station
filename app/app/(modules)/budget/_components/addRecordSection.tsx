@@ -1,21 +1,21 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
-import { categoryList } from '@/utils/const';
 import { Button } from '@/components/ui/button';
+import { categoryList } from '@/utils/const';
+import { useProfile } from '@/utils/context/profileContext';
+import dayjs from 'dayjs';
+import { useCallback, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { Tables } from '@/utils/supabase/db';
+import { createRecord } from '../actions';
 import CategorySelector from './categorySelector';
 import DateSelector from './dateSelector';
-import dayjs from 'dayjs';
 import NoteDialog from './noteDialog';
-import { useProfile } from '@/utils/context/profileContext';
 
 interface IAddRecordSectionProps {
-  onSubmit: (record: Partial<Tables<'financial_records'>>) => Promise<boolean>;
+  refetchRecords: () => Promise<void>;
 }
 
-const AddRecordSection = ({ onSubmit }: IAddRecordSectionProps) => {
+const AddRecordSection = ({ refetchRecords }: IAddRecordSectionProps) => {
   const [activeCategory, setCategory] = useState<CategoryType>(categoryList[0]);
   const [activeDate, setActiveDate] = useState<Date>(dayjs().toDate());
   const [loading, setLoading] = useState<boolean>(false);
@@ -38,15 +38,17 @@ const AddRecordSection = ({ onSubmit }: IAddRecordSectionProps) => {
       family_id: profile?.family_id,
     };
     setLoading(true);
-    const res = await onSubmit(payload);
+    const res = await createRecord(payload);
     if (!res) {
       toast.error('Oops! Something went wrong!');
+    } else {
+      await refetchRecords();
     }
     if (inputRef.current) inputRef.current.value = '';
     inputRef.current?.focus();
     setAmount(0);
     setLoading(false);
-  }, [profile, activeCategory.title, activeDate, amount, note, onSubmit]);
+  }, [profile, activeCategory.title, activeDate, amount, note, refetchRecords]);
 
   const onKeyDown = useCallback(
     async (e: React.KeyboardEvent<HTMLInputElement>) => {
