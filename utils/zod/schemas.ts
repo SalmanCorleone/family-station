@@ -15,6 +15,18 @@ const familyInfoSchema = z.object({
     .optional(),
 });
 
+const familyImageSchema = z.object({
+  image: z
+    .any()
+    .refine(
+      (files) => ['image/png', 'image/jpeg', 'image/jpg'].includes(files?.[0]?.type),
+      'File type must be png or jpeg',
+    )
+    .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, 'File size must be less than 1MB')
+    .optional(),
+  imageName: z.string().optional(),
+});
+
 const inviteSchema = z.object({
   email: z.string().email('Invalid email'),
 });
@@ -72,6 +84,7 @@ const accountSchema = z.object({
 
 export {
   familyInfoSchema,
+  familyImageSchema,
   ACCEPTED_IMAGE_TYPES,
   MAX_FILE_SIZE,
   inviteFormSchema,

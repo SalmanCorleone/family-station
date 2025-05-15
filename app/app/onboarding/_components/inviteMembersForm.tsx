@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { motion, cubicBezier } from 'framer-motion';
 
 interface IInviteMembersFormProps {
   inviteLink: string;
@@ -53,7 +54,12 @@ const InviteMembersForm = ({ inviteLink }: IInviteMembersFormProps) => {
     }
   };
   return (
-    <div className="flex flex-col gap-6 p-4">
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ ease: cubicBezier(0.77, 0, 0.175, 1), duration: 0.3 }}
+      className="flex flex-col gap-6"
+    >
       <div className="border p-4 rounded-md">
         <h2 className="font-bold text-2xl">Invite Family Members</h2>
         <p className="mt-2 mb-4 text-sm">Send invitations to your family members to collaborate on this app.</p>
@@ -114,20 +120,9 @@ const InviteMembersForm = ({ inviteLink }: IInviteMembersFormProps) => {
               Copy
             </Button>
           </div>
-          {/* <div>
-            <Button variant="ghost" size="sm" onClick={generateNewLink} disabled={isGenerating} className="text-sm">
-              {isGenerating ? (
-                <RefreshCw className="h-3 w-3 mr-2 animate-spin" />
-              ) : (
-                <RefreshCw className="h-3 w-3 mr-2" />
-              )}
-              Reset Invite Link
-            </Button>
-            <p className="text-xs text-muted-foreground mt-1">This will invalidate all previous invite links.</p>
-          </div> */}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

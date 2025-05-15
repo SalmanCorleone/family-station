@@ -192,10 +192,21 @@ input[type='number'] {
 }
 
 input:focus {
-  outline: none;
+  outline: 0 none;
+  border: none;
 }
 
 .no-scroll {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+::placeholder {
+  color: var(--color-gray-400);
+  opacity: 1; /* Firefox */
+}
+
+::-ms-input-placeholder {
+  /* Edge 12 -18 */
+  color: var(--color-gray-400);
 }

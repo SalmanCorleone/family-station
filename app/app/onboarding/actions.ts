@@ -5,32 +5,34 @@ import { createClient } from '@/utils/supabase/server';
 
 export const createFamily = async (data: { title: string; image?: File }) => {
   const supabase = await createClient();
+
+  console.log('craeting family');
   // 1, upload image if available
-  let imageUrl = '';
-  if (data.image) {
-    const { data: image, error } = await supabase.storage
-      .from('family-images')
-      .upload(`family_${getRandomInt()}_${data.image.name}`, data.image, { upsert: false });
-    if (error) {
-      console.log('storage error', error);
-      return false;
-    }
-    imageUrl = image.fullPath;
-  }
+  // let imageUrl = '';
+  // if (data.image) {
+  //   const { data: image, error } = await supabase.storage
+  //     .from('family-images')
+  //     .upload(`family_${getRandomInt()}_${data.image.name}`, data.image, { upsert: false });
+  //   if (error) {
+  //     console.log('storage error', error);
+  //     return;
+  //   }
+  //   imageUrl = image.fullPath;
+  // }
 
   // 2, create family
   const payload = {
     title: data.title,
-    image: imageUrl,
   };
   const { data: family, error } = await supabase.from('family').insert(payload).select().single();
   if (error) {
     console.log('insert family error', error);
-    return false;
+    return;
   }
-
   return family;
 };
+
+export type FamilyType = NonNullable<Awaited<ReturnType<typeof createFamily>>>;
 
 export const updateFamily = async (data: { id: number; title: string; image?: File; imageName?: string }) => {
   const supabase = await createClient();
