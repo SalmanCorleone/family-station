@@ -9,7 +9,7 @@ export const getProfile = async () => {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    console.log('no user');
+    console.log('getProfile-----no user');
     return;
   }
   const { data, error } = await supabase.from('profiles').select('*, family(*)').eq('id', user?.id).single();

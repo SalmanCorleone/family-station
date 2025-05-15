@@ -10,8 +10,11 @@ import { loginSchema } from '@/utils/zod/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
+import { useState } from 'react';
+import { Eye } from 'lucide-react';
 
 const Login = () => {
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const form = useForm({
     resolver: zodResolver(loginSchema),
   });
@@ -54,7 +57,15 @@ const Login = () => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="Password" {...field} />
+                      <div className="relative flex items-center">
+                        <div
+                          className="absolute right-1 w-6 h-6 cursor-pointer"
+                          onClick={() => setPasswordVisible(!passwordVisible)}
+                        >
+                          <Eye stroke={passwordVisible ? 'var(--color-green)' : 'var(--color-ash)'} />
+                        </div>
+                        <Input type={passwordVisible ? 'text' : 'password'} placeholder="Password" {...field} />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -26,7 +26,7 @@ export default async function Home() {
           <div className="p-4 rounded border">Go to app</div>
         </Link>
         <CheckInvitationToken />
-        <RefetchOnMount />
+        {/* <RefetchOnMount /> */}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useReducer, useEffect, ReactNode, Dispatch } from 'react';
+import { createContext, useContext, useReducer, useEffect, ReactNode, Dispatch, useCallback } from 'react';
 import { createClient } from '../supabase/client';
 import {
   FamilyMemberType,
@@ -66,12 +66,12 @@ const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 export const ProfileProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(profileReducer, initialState);
 
-  const refetchProfile = async () => {
+  const refetchProfile = useCallback(async () => {
+    console.log('fetching');
     dispatch({ type: 'SET_LOADING', payload: true });
     const supabase = createClient();
     const profile = await getProfile();
     if (!profile) {
-      console.log('Profile not available');
       dispatch({ type: 'CLEAR' });
       return;
     }
@@ -119,7 +119,7 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
     }
     dispatch({ type: 'SET_PROFILE', payload: profilePayload });
     dispatch({ type: 'SET_LOADING', payload: false });
-  };
+  }, []);
 
   useEffect(() => {
     if (state.profile) return;

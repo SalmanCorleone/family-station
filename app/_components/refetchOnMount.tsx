@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useProfile } from '@/utils/context/profileContext';
 
 const RefetchOnMount = () => {
-  const router = useRouter();
+  const { refetchProfile } = useProfile();
 
   useEffect(() => {
-    router.refresh();
-  }, [router]);
+    refetchProfile();
+  }, [refetchProfile]);
 
   return null;
 };

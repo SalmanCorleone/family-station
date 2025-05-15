@@ -8,7 +8,7 @@ import InviteMembersForm from './inviteMembersForm';
 import { createFamily } from '../actions';
 
 const OnboardingSteps = () => {
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1);
   const [inviteLink, setInviteLink] = useState('');
   const origin = window.location.origin;
 

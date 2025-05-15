@@ -53,19 +53,8 @@ export const signup = async (data: z.infer<typeof signUpSchema>) => {
   }
   revalidatePath('/', 'layout');
   redirect(`/signup/email-sent?email=${data.email}`);
-  return { success: true, message: 'Success' };
+  // return { success: true, message: 'Success' };
 };
-
-//todo: remove cuz unused, replaced by /auth/logout/route.ts
-export async function signout() {
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signOut();
-  if (error) {
-    console.log(error);
-    // redirect('/error');
-  }
-  redirect('/login');
-}
 
 export async function signInWithGoogle(origin: string) {
   // console.log({ origin });

@@ -8,8 +8,11 @@ import SignInWithGoogle from '../../login/_components/signInWithGoogle';
 import { signup } from '../../actions';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { useState } from 'react';
+import { Eye } from 'lucide-react';
 
 const SignupForm = () => {
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const form = useForm({
     resolver: zodResolver(signUpSchema),
   });
@@ -58,7 +61,15 @@ const SignupForm = () => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="Password" {...field} />
+                  <div className="relative flex items-center">
+                    <div
+                      className="absolute right-1 w-6 h-6 cursor-pointer"
+                      onClick={() => setPasswordVisible(!passwordVisible)}
+                    >
+                      <Eye stroke={passwordVisible ? 'var(--color-green)' : 'var(--color-ash)'} />
+                    </div>
+                    <Input type={passwordVisible ? 'text' : 'password'} placeholder="Password" {...field} />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
