@@ -20,24 +20,10 @@ const EditRecordDialog = forwardRef(
     const [open, setOpen] = useState(false);
     const [localRecord, setLocalRecord] = useState<FinancialRecord>({} as FinancialRecord);
     const [loading, setLoading] = useState<boolean>(false);
-    // const [activeCategory, setCategory] = useState<CategoryType>(
-    //   categoryList.find((c) => c.title === record?.category) || categoryList[categoryList.length - 1],
-    // );
-    // const [activeDate, setActiveDate] = useState<Date>(dayjs(record?.created_at).toDate());
-    // const [amount, setAmount] = useState<number>(record?.amount || 0);
-    // const [note, setNote] = useState<string>(record?.note || '');
 
     useEffect(() => {
       if (!record) return;
       setLocalRecord({
-        // amount: record.amount,
-        // category: record.category,
-        // created_at: record.created_at,
-        // note: record.note,
-        // profile_id: record.profile_id,
-        // family_id: record.family_id,
-        // id: record.id,
-        // profiles: record.profiles,
         ...record,
       });
     }, [record]);
@@ -133,7 +119,6 @@ const EditRecordDialog = forwardRef(
                   type="number"
                   defaultValue={localRecord?.amount || 0}
                   onChange={(e) => setLocalRecord((prev) => ({ ...prev, amount: +e.currentTarget.value }))}
-                  // onChange={(e) => setAmount(+e.currentTarget.value)}
                   className="text-end p-0 border-0 m-0 text-3xl xl:text-5xl lg:w-72 w-32 pr-2"
                   placeholder="Amount"
                 />
