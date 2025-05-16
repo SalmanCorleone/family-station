@@ -10,6 +10,7 @@ import { createRecord } from '../actions';
 import CategorySelector from './categorySelector';
 import DateSelector from './dateSelector';
 import NoteDialog from './noteDialog';
+import { Card } from '@/components/ui/card';
 
 interface IAddRecordSectionProps {
   refetchRecords: () => Promise<void>;
@@ -61,43 +62,42 @@ const AddRecordSection = ({ refetchRecords }: IAddRecordSectionProps) => {
   );
 
   return (
-    <div className="flex flex-col gap-4 p-4 rounded-lg bg-white shadow-lg w-full xl:min-w-[35vw]">
-      <div className="flex flex-col gap-4">
-        <div className="flex justify-between gap-6">
-          {/* Left side */}
-          <div className="flex flex-col gap-4 items-start">
-            <DateSelector
-              activeDate={activeDate}
-              setActiveDate={(date) => {
-                if (date) setActiveDate(date);
-              }}
-            />
-            <NoteDialog {...{ note, setNote }} />
-          </div>
-
-          {/* Right side */}
-          <div className="flex flex-col items-end gap-2 text-end">
-            <CategorySelector activeCategory={activeCategory} setCategory={setCategory} />
-
-            <input
-              ref={inputRef}
-              autoFocus
-              type="number"
-              onChange={(e) => setAmount(+e.currentTarget.value)}
-              className="text-end p-0 border-0 m-0 text-3xl xl:text-5xl lg:w-72 w-32 pr-2"
-              placeholder="Amount"
-              onKeyDown={onKeyDown}
-            />
-          </div>
+    // <div className="flex flex-col gap-4 p-4 rounded-lg bg-white shadow-lg w-full xl:min-w-[35vw] border">
+    <Card className="p-4 flex flex-col gap-4">
+      <div className="flex justify-between gap-6">
+        {/* Left side */}
+        <div className="flex flex-col gap-4 items-start">
+          <DateSelector
+            activeDate={activeDate}
+            setActiveDate={(date) => {
+              if (date) setActiveDate(date);
+            }}
+          />
+          <NoteDialog {...{ note, setNote }} />
         </div>
-        {/* Action button */}
-        <div>
-          <Button className="w-full" onClick={submitRecord} loading={loading}>
-            + Add Record
-          </Button>
+
+        {/* Right side */}
+        <div className="flex flex-col items-end gap-2 text-end">
+          <CategorySelector activeCategory={activeCategory} setCategory={setCategory} />
+
+          <input
+            ref={inputRef}
+            autoFocus
+            type="number"
+            onChange={(e) => setAmount(+e.currentTarget.value)}
+            className="text-end p-0 border-0 m-0 text-3xl xl:text-5xl lg:w-72 w-32 pr-2"
+            placeholder="Amount"
+            onKeyDown={onKeyDown}
+          />
         </div>
       </div>
-    </div>
+      {/* Action button */}
+      <div>
+        <Button className="w-full" onClick={submitRecord} loading={loading}>
+          + Add Record
+        </Button>
+      </div>
+    </Card>
   );
 };
 

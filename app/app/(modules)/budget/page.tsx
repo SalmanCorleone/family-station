@@ -7,9 +7,13 @@ import useFinancialRecords from './useFinancialRecords';
 import MonthSelector from './_components/monthSelector';
 import { useRef } from 'react';
 import EditRecordDialog from './_components/editRecordDialog';
+import Empty from '@/components/empty';
+import { Card } from '@/components/ui/card';
+import { Loader } from 'lucide-react';
 
 const Budget = () => {
   const {
+    loading,
     activeMonthIndex,
     setActiveMonthIndex,
     groupedByDate,
@@ -18,7 +22,7 @@ const Budget = () => {
     activeRecord,
     setActiveRecord,
   } = useFinancialRecords();
-  const ref = useRef<HTMLButtonElement>(null);
+  const editRecordDialogRef = useRef<HTMLButtonElement>(null);
 
   return (
     <div className="">
@@ -27,12 +31,17 @@ const Budget = () => {
       </div>
       <MonthSelector {...{ activeMonthIndex, setActiveMonthIndex }} />
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 p-4 lg:p-12 gap-4">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 p-4">
         <div className="flex flex-col gap-4 col-span-1">
           <AddRecordSection {...{ refetchRecords }} />
 
           <div className="flex flex-col gap-4">
-            {!!groupedByDate &&
+            {loading ? (
+              <div className="flex flex-col mt-8 items-center justify-center">
+                <Loader className="animate-spin" />
+              </div>
+            ) : (
+              !!groupedByDate &&
               Object.keys(groupedByDate).map((dateString) => (
                 <div key={dateString}>
                   <p className="text-muted-foreground pb-1 text-sm">{dateString}</p>
@@ -43,22 +52,34 @@ const Budget = () => {
                         record={record}
                         onRecordClick={() => {
                           setActiveRecord(record);
-                          ref.current?.click();
+                          editRecordDialogRef.current?.click();
                         }}
                       />
                     ))}
                   </div>
                 </div>
-              ))}
+              ))
+            )}
           </div>
         </div>
 
-        <div className="col-span-1 flex flex-col gap-4">
-          {!!spendingByCategory && <BreakdownChart spendingByCategory={spendingByCategory} />}
-        </div>
+        {Object.values(spendingByCategory || {})?.length ? (
+          <div className="col-span-1 flex flex-col">
+            {!!spendingByCategory && <BreakdownChart spendingByCategory={spendingByCategory} />}
+          </div>
+        ) : (
+          <Card className="col-span-1">
+            <Empty text="No records yet. Add some!" />
+          </Card>
+        )}
       </div>
 
-      <EditRecordDialog ref={ref} record={activeRecord} />
+      <EditRecordDialog
+        ref={editRecordDialogRef}
+        record={activeRecord}
+        setRecord={setActiveRecord}
+        onSubmit={refetchRecords}
+      />
     </div>
   );
 };

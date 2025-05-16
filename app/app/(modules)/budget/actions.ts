@@ -47,4 +47,22 @@ export const createRecord = async (payload: AddFinancialRecordPayloadType): Prom
   return true;
 };
 
+export const updateRecord = async (
+  id: FinancialRecord['id'],
+  payload: AddFinancialRecordPayloadType,
+): Promise<boolean> => {
+  const validatedPayload = addFinancialRecordSchema.safeParse(payload);
+  if (validatedPayload.error) {
+    console.log(validatedPayload.error.flatten());
+    return false;
+  }
+  const supabase = await createClient();
+  const { error } = await supabase.from('financial_records').update(validatedPayload.data).eq('id', id);
+  if (error) {
+    console.log(error.message);
+    return false;
+  }
+  return true;
+};
+
 export type FinancialRecord = NonNullable<Awaited<ReturnType<typeof getRecords>>>[0];
