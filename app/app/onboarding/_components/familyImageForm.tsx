@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { ACCEPTED_IMAGE_TYPES, familyImageSchema, familyInfoSchema } from '@/utils/zod/schemas';
+import { ACCEPTED_IMAGE_TYPES, familyImageSchema } from '@/utils/zod/schemas';
 import { cn } from '@/utils/clsx';
 import { cubicBezier, motion } from 'framer-motion';
 
@@ -19,9 +19,9 @@ interface IFamilyImageFormProps {
 const FamilyImageForm = ({ onSubmit }: IFamilyImageFormProps) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const form = useForm<z.infer<typeof familyInfoSchema>>({
-    resolver: zodResolver(familyInfoSchema),
-    defaultValues: { title: '', image: '' },
+  const form = useForm<z.infer<typeof familyImageSchema>>({
+    resolver: zodResolver(familyImageSchema),
+    defaultValues: { image: undefined },
   });
 
   const handleImageChange = (fileList: FileList | null) => {
@@ -42,7 +42,7 @@ const FamilyImageForm = ({ onSubmit }: IFamilyImageFormProps) => {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = (values: z.infer<typeof familyInfoSchema>) => {
+  const handleSubmit = (values: z.infer<typeof familyImageSchema>) => {
     // Do something with the form values.
     // console.log(values);
     onSubmit(values);

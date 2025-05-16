@@ -17,7 +17,7 @@ interface IInviteMembersFormProps {
 
 type FormValues = z.infer<typeof inviteFormSchema>;
 
-const InviteMembersForm = ({ inviteLink }: IInviteMembersFormProps) => {
+const InviteMembersForm = ({ inviteLink, onSubmit }: IInviteMembersFormProps) => {
   const [copied, setCopied] = useState(false);
 
   // Initialize the form with react-hook-form and zod resolver
@@ -33,9 +33,10 @@ const InviteMembersForm = ({ inviteLink }: IInviteMembersFormProps) => {
     control: form.control,
   });
 
-  const onSubmit = (data: FormValues) => {
-    // Here you would send the invitations to your API
+  const handleSubmit = (data: FormValues) => {
+    // Here I would send the invitations to your API
     console.log('Sending invitations to:', data.invitees);
+    toast.success('Invitations sent successfully!');
 
     // Reset form after successful submission
     form.reset({
@@ -58,13 +59,27 @@ const InviteMembersForm = ({ inviteLink }: IInviteMembersFormProps) => {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ ease: cubicBezier(0.77, 0, 0.175, 1), duration: 0.3 }}
-      className="flex flex-col gap-6"
+      className="flex flex-col gap-4 pb-8"
     >
-      <div className="border p-4 rounded-md">
+      <div className="bg-white shadow rounded-md p-4">
+        <h2 className="font-bold text-2xl">Invite Link</h2>
+        <p className="mt-2 mb-4 text-sm">Share this link to allow others to join your team.</p>
+        <div className="space-y-4">
+          <div className="flex gap-2">
+            <Input value={inviteLink} readOnly className="font-mono text-sm" />
+            <Button variant="outline" onClick={copyToClipboard} className="shrink-0">
+              {copied ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
+              Copy
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white shadow p-4 rounded-md">
         <h2 className="font-bold text-2xl">Invite Family Members</h2>
         <p className="mt-2 mb-4 text-sm">Send invitations to your family members to collaborate on this app.</p>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
             <div className="space-y-4">
               {fields.map((field, index) => (
                 <div key={field.id} className="flex items-start gap-3">
@@ -109,19 +124,7 @@ const InviteMembersForm = ({ inviteLink }: IInviteMembersFormProps) => {
         </Form>
       </div>
 
-      <div className="border rounded-md p-4">
-        <h2>Invite Link</h2>
-        <p>Share this link to allow others to join your team.</p>
-        <div className="space-y-4">
-          <div className="flex gap-2">
-            <Input value={inviteLink} readOnly className="font-mono text-sm" />
-            <Button variant="outline" onClick={copyToClipboard} className="shrink-0">
-              {copied ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
-              Copy
-            </Button>
-          </div>
-        </div>
-      </div>
+      <Button onClick={onSubmit}>Let&apos;s go!</Button>
     </motion.div>
   );
 };

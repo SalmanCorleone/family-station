@@ -1,19 +1,22 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import FamilyInfoForm from './familyInfoForm';
-import { z } from 'zod';
+import { Button } from '@/components/ui/button';
+import { getFileExtension } from '@/utils';
 import { familyImageSchema, familyInfoSchema } from '@/utils/zod/schemas';
-import InviteMembersForm from './inviteMembersForm';
+import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
+import { z } from 'zod';
 import { createFamily, FamilyType, updateFamily } from '../actions';
 import FamilyImageForm from './familyImageForm';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import FamilyInfoForm from './familyInfoForm';
+import InviteMembersForm from './inviteMembersForm';
 import StepProgress from './stepProgress';
-import { Button } from '@/components/ui/button';
+import { useProfile } from '@/utils/context/profileContext';
 
 const OnboardingSteps = () => {
   const [step, setStep] = useState(1);
+  const { family: familyFromContext } = useProfile();
   const [family, setFamily] = useState<FamilyType | undefined>();
   const router = useRouter();
   const origin = window.location.origin;
@@ -21,11 +24,18 @@ const OnboardingSteps = () => {
     () => (family ? `${origin}/app/invite/${family.invitation_token ?? ''}` : ''),
     [family, origin],
   );
-  console.log({ inviteLink });
+
+  /**
+   * Manually visiting onboarding, who has family
+   */
+  useEffect(() => {
+    if (familyFromContext) {
+      setFamily(familyFromContext);
+      setStep(3);
+    }
+  }, [familyFromContext]);
 
   const onFamilyFormSubmit = async (data: z.infer<typeof familyInfoSchema>) => {
-    // todo: debug this
-    console.log('reached');
     const res = await createFamily({ title: data.title });
     if (!res) return;
     setFamily(res);
@@ -33,22 +43,30 @@ const OnboardingSteps = () => {
   };
 
   const onImageSubmit = async (data: z.infer<typeof familyImageSchema>) => {
-    console.log('on image submit', data);
+    if (!family?.id) {
+      console.log('No family id ---- onImageSubmit');
+      return;
+    }
+    if (!data?.image?.[0]) {
+      setStep(3);
+      return;
+    }
     const file = data.image[0];
     const res = await updateFamily({
       id: 1,
       title: family?.title || 'My Family',
       image: file,
-      imageName: data.imageName,
+      imageName: `family_${family.id}__0.${getFileExtension(file)}`,
     });
     if (!res) {
       toast.error('Failed to upload image. Try again from settings later');
+      setStep(3);
     }
     setStep(3);
   };
 
   const onContinueFromInvite = () => {
-    router.replace('/app/dashboard');
+    router.replace('/app');
   };
 
   return (

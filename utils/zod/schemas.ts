@@ -24,7 +24,7 @@ const familyImageSchema = z.object({
     )
     .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, 'File size must be less than 1MB')
     .optional(),
-  imageName: z.string().optional(),
+  // imageName: z.string().optional(),
 });
 
 const inviteSchema = z.object({

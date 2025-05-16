@@ -1,6 +1,6 @@
 'use server';
 
-import { getRandomInt } from '@/utils';
+import { getFileExtension } from '@/utils';
 import { createClient } from '@/utils/supabase/server';
 
 export const createFamily = async (data: { title: string; image?: File }) => {
@@ -41,7 +41,7 @@ export const updateFamily = async (data: { id: number; title: string; image?: Fi
   if (data.image) {
     const { data: image, error } = await supabase.storage
       .from('family-images')
-      .upload(data.imageName || `family_${getRandomInt()}_${data.image.name}`, data.image, { upsert: true });
+      .upload(data.imageName || `family_${data.id}__0.${getFileExtension(data.image)}`, data.image, { upsert: true });
 
     if (error) {
       console.log('storage error', error);
