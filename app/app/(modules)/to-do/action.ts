@@ -62,3 +62,4 @@ export const updateMultipleTasks = async (tasks: TaskPayloadType[]) => {
 
 export type ListType = NonNullable<Awaited<ReturnType<typeof getLists>>>[0];
 export type TaskPayloadType = Pick<OmitId<Tables<'tasks'>>, 'title' | 'list_id' | 'index'>;
+export type TaskType = ListType['tasks'][0];

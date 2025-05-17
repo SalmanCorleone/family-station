@@ -1,27 +1,48 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { cn } from '@/utils/clsx';
 import { useProfile } from '@/utils/context/profileContext';
 import useAutoSave from '@/utils/hooks/useAutoSave';
 import { Tables } from '@/utils/supabase/db';
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import { Loader, Save } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
+
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+
 import { toast } from 'sonner';
-import { addTask, getLists, ListType, TaskPayloadType } from '../action';
+import { addTask, getLists, ListType, TaskPayloadType, TaskType } from '../action';
 import AddTaskForm from './addTaskForm';
 import EditTaskDialog from './editTaskDialog';
+import List from './list';
 import TaskItem from './taskItem';
 
 const ListContainer = () => {
   const [lists, setLists] = useState<ListType[] | undefined>();
+  const [draggingTask, setDraggingTask] = useState<TaskType>();
   const [loading, setLoading] = useState(false);
   const [activeTask, setActiveTask] = useState<Tables<'tasks'>>();
-  // const [countdown, setCountdown] = useState(0);
   const ref = useRef<HTMLButtonElement>(null);
   const { family } = useProfile();
-  // const timeOutRef = useRef<NodeJS.Timeout | null>(null);
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: 150,
+        tolerance: 5,
+      },
+    }),
+  );
+
+  console.log({ loading });
 
   const saveData = () =>
     new Promise<void>((resolve) => {
@@ -30,26 +51,6 @@ const ListContainer = () => {
       }, 2000);
     });
   const { countdown, saving, trigger } = useAutoSave(saveData, 5);
-
-  // useInterval(
-  //   () => {
-  //     setCountdown((t) => t - 1);
-  //   },
-  //   countdown > 0 ? 1000 : null,
-  // );
-
-  // const queueServerCall = useCallback(() => {
-  //   if (timeOutRef.current) clearTimeout(timeOutRef.current);
-  //   setCountdown(5);
-  //   timeOutRef.current = setTimeout(() => {
-  //     // make api call
-  //     setLoading(true);
-  //     setTimeout(() => {
-  //       setLoading(false);
-  //       setCountdown(0);
-  //     }, 2000);
-  //   }, autoSaveInterval * 1000);
-  // }, []);
 
   const fetchLists = useCallback(async () => {
     if (!family?.id) return;
@@ -102,41 +103,68 @@ const ListContainer = () => {
     }
   };
 
-  const onDragEnd = (result: DropResult) => {
-    const { source, destination } = result;
-    if (!destination) return;
-    /**
-     * Moving between lists
-     */
-    if (source.droppableId !== destination.droppableId) {
-      if (!lists?.length) return;
-      const sourceList = lists.find((list) => list.id.toString() === source.droppableId);
-      const destList = lists.find((list) => list.id.toString() === destination.droppableId);
-      if (!sourceList || !destList) return;
-      const [movedTask] = sourceList.tasks.splice(source.index, 1);
-      if (movedTask) {
-        destList.tasks.splice(destination.index, 0, movedTask);
-      }
-      const restOfLists = lists.filter((list) => list.id !== sourceList.id && list.id !== destList.id);
-      setLists([...restOfLists, destList, sourceList].sort((a, b) => (a.index || 0) - (b.index || 0)));
-    } else {
-      /**
-       * Re-ordering within the same list
-       */
-      if (!lists?.length) return;
-      const sourceList = lists.find((list) => list.id.toString() === source.droppableId);
-      if (!sourceList) return;
-      const [movedTask] = sourceList.tasks.splice(source.index, 1);
-      if (movedTask) {
-        sourceList.tasks.splice(destination.index, 0, movedTask);
-      }
-      const restOfLists = lists.filter((item) => item.id !== sourceList.id);
-      setLists([...restOfLists, sourceList].sort((a, b) => (a.index || 0) - (b.index || 0)));
+  const findTaskById = (id: string): { task: TaskType; listId: number } | null => {
+    if (!lists) return null;
+    for (const list of lists) {
+      const task = list.tasks.find((t) => t.id.toString() === id);
+      if (task) return { task, listId: list.id };
     }
+    return null;
+  };
+
+  const onDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    setDraggingTask(undefined);
+    if (!over || active.id === over.id || !lists) return;
+
+    const fromData = findTaskById(active.id as string);
+    const toData = findTaskById(over.id as string);
+    if (!fromData || !toData) return;
+
+    const updatedLists = [...lists];
+    const fromList = updatedLists.find((l) => l.id === fromData.listId);
+    const toList = updatedLists.find((l) => l.id === toData.listId);
+
+    if (!fromList || !toList) return;
+
+    const fromIndex = fromList.tasks.findIndex((t) => t.id.toString() === active.id.toString());
+    const toIndex = toList.tasks.findIndex((t) => t.id.toString() === over.id.toString());
+
+    console.log([fromIndex, toIndex]);
+    const [movedTask] = fromList.tasks.splice(fromIndex, 1);
+    console.log([fromList.id, fromIndex], [toList.id, toIndex], { movedTask });
+    toList.tasks.splice(toIndex, 0, movedTask);
+
+    setLists(updatedLists);
+  };
+
+  const renderTasks = (tasks: TaskType[]) =>
+    tasks.map((task) => (
+      <TaskItem
+        key={task.id}
+        task={task}
+        onClick={() => onTaskClick(task)}
+        markAsCompleted={() => markTaskAsCompleted(task)}
+      />
+    ));
+
+  const renderAddTaskForm = (list: ListType) => (
+    <AddTaskForm onSubmit={(data) => onAddTask({ ...data, list_id: list.id, index: 0 })} />
+  );
+
+  const handleDragStart = (event: DragStartEvent) => {
+    const task = findTaskById(event.active.id as string);
+    if (!task) return;
+    setDraggingTask(task.task);
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DndContext
+      onDragEnd={onDragEnd}
+      sensors={sensors}
+      onDragStart={handleDragStart}
+      collisionDetection={closestCenter}
+    >
       <div className="border p-4 rounded-lg mb-4 bg-ash/10">
         {saving ? (
           <div className="flex items-center justify-center">
@@ -161,43 +189,22 @@ const ListContainer = () => {
       </div>
       <div className="flex gap-4 w-min">
         {lists?.map((list) => (
-          <Droppable key={list.id} droppableId={list.id.toString()} direction="vertical">
-            {(provided) => (
-              <div
-                className={cn('flex flex-col gap-2 rounded-lg w-[65vw] xl:w-[25vw] p-2 bg-ash/10 self-start')}
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-              >
-                <div className="flex items-center gap-4">
-                  <p className="text-xl font-medium">{list.icon}</p>
-                  <p className="text-xl font-medium">{list.title}</p>
-                </div>
-                <div className="flex flex-col gap-2 mt-2">
-                  {list.tasks.map((task, idx) => (
-                    <Draggable key={task.id} draggableId={task.id.toString()} index={idx}>
-                      {(provided) => (
-                        <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                          <TaskItem
-                            task={task}
-                            onClick={() => onTaskClick(task)}
-                            markAsCompleted={() => markTaskAsCompleted(task)}
-                          />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  <AddTaskForm
-                    onSubmit={(data) => onAddTask({ ...data, list_id: list.id, index: list.tasks.length })}
-                  />
-                </div>
-              </div>
-            )}
-          </Droppable>
+          <SortableContext
+            key={list.id}
+            // items={list.tasks.map((_, index) => `${list.id}:${index}`)}
+            items={list.tasks.map((task) => `${task.id}`)}
+            strategy={verticalListSortingStrategy}
+          >
+            <List key={list.id} {...{ renderAddTaskForm, renderTasks, list }} />
+          </SortableContext>
         ))}
+        <DragOverlay>
+          {draggingTask ? <div className="bg-white p-4 rounded shadow text-2xl">{draggingTask.title}</div> : null}
+        </DragOverlay>
 
         <EditTaskDialog ref={ref} task={activeTask} onSubmit={fetchLists} />
       </div>
-    </DragDropContext>
+    </DndContext>
   );
 };
 

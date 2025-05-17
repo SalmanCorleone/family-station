@@ -1,17 +1,22 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/utils/clsx';
 import { useProfile } from '@/utils/context/profileContext';
-import { Tables } from '@/utils/supabase/db';
+import { useSortable } from '@dnd-kit/sortable';
 import { Check, Zap } from 'lucide-react';
 import { useMemo } from 'react';
+import { TaskType } from '../action';
 
 interface ITaskItemProps {
-  task: Tables<'tasks'>;
+  task: TaskType;
   onClick: () => void;
   markAsCompleted: () => void;
 }
 
 const TaskItem = ({ task, onClick, markAsCompleted }: ITaskItemProps) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: task.id.toString(),
+  });
+
   const { membersImageMap, members } = useProfile();
   const assignedTo = useMemo(
     () => members?.find((member) => member.profile_id === task.assigned_to),
@@ -20,8 +25,14 @@ const TaskItem = ({ task, onClick, markAsCompleted }: ITaskItemProps) => {
 
   return (
     <div
-      className="flex items-center gap-2 p-4 rounded-lg bg-white hover:bg-muted cursor-pointer shadow-sm"
+      ref={setNodeRef}
+      className={cn('flex items-center gap-2 p-4 rounded-lg bg-white hover:bg-muted cursor-pointer shadow-sm', {
+        'opacity-50': isDragging,
+      })}
       onClick={onClick}
+      style={{ transform: transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined, transition }}
+      {...attributes}
+      {...listeners}
     >
       <div
         onClick={(e) => {
