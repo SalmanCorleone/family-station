@@ -116,7 +116,7 @@ export const crossCheckInvitationToken = async (token: string) => {
     .from('family_members')
     .upsert({
       family_id: family.id,
-      status: 'accepted',
+      status: 'active',
       profile_id: user.user.id,
       role: 'member',
       is_owner: false,

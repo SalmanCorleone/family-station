@@ -138,3 +138,5 @@ export const colors = [
   'var(--color-ash)',
   'var(--color-darkAsh)',
 ];
+
+export const autoSaveInterval = 5; // seconds

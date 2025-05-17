@@ -35,5 +35,30 @@ export const addTask = async (task: TaskPayloadType) => {
   return true;
 };
 
+export const updateTask = async (task: Partial<Tables<'tasks'>>) => {
+  const supabase = await createClient();
+  if (!task.id) {
+    console.log('task id is required');
+    return false;
+  }
+  console.log({ task });
+  const { error } = await supabase.from('tasks').update(task).eq('id', task.id);
+  if (error) {
+    console.log('error', error);
+    return false;
+  }
+  return true;
+};
+
+export const updateMultipleTasks = async (tasks: TaskPayloadType[]) => {
+  const supabase = await createClient();
+  const { error } = await supabase.from('tasks').upsert(tasks);
+  if (error) {
+    console.log('error', error);
+    return false;
+  }
+  return true;
+};
+
 export type ListType = NonNullable<Awaited<ReturnType<typeof getLists>>>[0];
 export type TaskPayloadType = Pick<OmitId<Tables<'tasks'>>, 'title' | 'list_id' | 'index'>;

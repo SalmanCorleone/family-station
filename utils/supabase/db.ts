@@ -274,33 +274,59 @@ export type Database = {
       };
       tasks: {
         Row: {
+          assigned_to: string | null;
           created_at: string;
+          created_by: string | null;
+          deadline: string | null;
           id: number;
           index: number | null;
           is_completed: boolean | null;
+          is_urgent: boolean | null;
           list_id: number | null;
           title: string | null;
           updated_at: string | null;
         };
         Insert: {
+          assigned_to?: string | null;
           created_at?: string;
+          created_by?: string | null;
+          deadline?: string | null;
           id?: number;
           index?: number | null;
           is_completed?: boolean | null;
+          is_urgent?: boolean | null;
           list_id?: number | null;
           title?: string | null;
           updated_at?: string | null;
         };
         Update: {
+          assigned_to?: string | null;
           created_at?: string;
+          created_by?: string | null;
+          deadline?: string | null;
           id?: number;
           index?: number | null;
           is_completed?: boolean | null;
+          is_urgent?: boolean | null;
           list_id?: number | null;
           title?: string | null;
           updated_at?: string | null;
         };
         Relationships: [
+          {
+            foreignKeyName: 'tasks_assigned_to_fkey';
+            columns: ['assigned_to'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'tasks_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
           {
             foreignKeyName: 'tasks_list_id_fkey';
             columns: ['list_id'];
