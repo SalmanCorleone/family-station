@@ -55,7 +55,7 @@ const loginSchema = z.object({
 });
 
 const addFinancialRecordSchema = z.object({
-  amount: z.number().min(1, 'Amount must be greater than 0'),
+  amount: z.number().min(1, 'Amount must be greater than 0').max(1000000, 'Amount must be less than 1 million'),
   category: z.string().min(1, 'Category is required'),
   note: z.string().optional(),
   created_at: z.string().optional(),

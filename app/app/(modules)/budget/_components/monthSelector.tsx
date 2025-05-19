@@ -10,12 +10,13 @@ interface IMonthSelectorProps {
 const MonthSelector = ({ activeMonthIndex, setActiveMonthIndex }: IMonthSelectorProps) => {
   return (
     <div className="flex items-center justify-center mt-4">
-      <div className="flex items-center bg-ash/10 gap-4">
+      <div className="flex items-center bg-ash/10 gap-4 w-[80vw] xl:w-auto justify-between">
         <Button
           variant="outline"
           size="icon"
           onClick={() => setActiveMonthIndex(activeMonthIndex - 1)}
           aria-label="Previous month"
+          className="border-0 shadow"
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
@@ -34,6 +35,7 @@ const MonthSelector = ({ activeMonthIndex, setActiveMonthIndex }: IMonthSelector
           disabled={activeMonthIndex >= 0}
           onClick={() => setActiveMonthIndex(activeMonthIndex + 1)}
           aria-label="Next month"
+          className="border-0 shadow"
         >
           <ChevronRight className="h-4 w-4" />
         </Button>

@@ -10,6 +10,11 @@ import EditRecordDialog from './_components/editRecordDialog';
 import Empty from '@/components/empty';
 import { Card } from '@/components/ui/card';
 import { Loader } from 'lucide-react';
+import PageHeader from '@/components/pageHeader';
+import TabSelector from './_components/tabSelector';
+import { cn } from '@/utils/clsx';
+import TimelineChart from './_components/timelineChart';
+import { motion } from 'framer-motion';
 
 const Budget = () => {
   const {
@@ -21,27 +26,35 @@ const Budget = () => {
     refetchRecords,
     activeRecord,
     setActiveRecord,
+    activeTab,
+    setActiveTab,
   } = useFinancialRecords();
   const editRecordDialogRef = useRef<HTMLButtonElement>(null);
 
   return (
     <div className="">
-      <div className="p-4 border-b border-ash/10">
-        <h1 className="text-xl font-semibold">Budget</h1>
+      <PageHeader title="Budget" />
+      <div className="flex flex-col gap-4">
+        <MonthSelector {...{ activeMonthIndex, setActiveMonthIndex }} />
+        <TabSelector {...{ activeTab, setActiveTab }} />
       </div>
-      <MonthSelector {...{ activeMonthIndex, setActiveMonthIndex }} />
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 p-4">
-        <div className="flex flex-col gap-4 col-span-1">
+        <div className={cn('flex flex-col gap-4 col-span-1', { 'hidden xl:block': activeTab === 'Stats' })}>
           <AddRecordSection {...{ refetchRecords }} />
 
           <div className="flex flex-col gap-4">
-            {loading ? (
-              <div className="flex flex-col mt-8 items-center justify-center">
+            {true && (
+              <motion.div
+                className="flex flex-col items-center justify-center"
+                initial={{ height: '0%' }}
+                animate={{ height: loading ? '100%' : '0%' }}
+                transition={{ duration: 0.5, ease: 'easeInOut' }}
+              >
                 <Loader className="animate-spin" />
-              </div>
-            ) : (
-              !!groupedByDate &&
+              </motion.div>
+            )}
+            {!!groupedByDate &&
               Object.keys(groupedByDate).map((dateString) => (
                 <div key={dateString}>
                   <p className="text-muted-foreground pb-1 text-sm">{dateString}</p>
@@ -58,14 +71,14 @@ const Budget = () => {
                     ))}
                   </div>
                 </div>
-              ))
-            )}
+              ))}
           </div>
         </div>
 
         {Object.values(spendingByCategory || {})?.length ? (
-          <div className="col-span-1 flex flex-col">
+          <div className={cn('col-span-1 flex flex-col gap-4', { 'hidden xl:flex': activeTab === 'Records' })}>
             {!!spendingByCategory && <BreakdownChart spendingByCategory={spendingByCategory} />}
+            {!!groupedByDate && <TimelineChart {...{ groupedByDate, activeMonthIndex }} />}
           </div>
         ) : (
           <Card className="col-span-1">

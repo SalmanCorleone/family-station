@@ -8,6 +8,7 @@ const useFinancialRecords = () => {
   const [activeMonthIndex, setActiveMonthIndex] = useState(0);
   const [activeRecord, setActiveRecord] = useState<FinancialRecord | undefined>();
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<'Records' | 'Stats'>('Records');
   const { family } = useProfile();
 
   const refetchRecords = useCallback(async () => {
@@ -55,6 +56,8 @@ const useFinancialRecords = () => {
     refetchRecords,
     activeRecord,
     setActiveRecord,
+    activeTab,
+    setActiveTab,
   };
 };
 

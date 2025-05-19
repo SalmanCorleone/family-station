@@ -1,8 +1,10 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { categoryList } from '@/utils/const';
 import { useProfile } from '@/utils/context/profileContext';
+import { addFinancialRecordSchema } from '@/utils/zod/schemas';
 import dayjs from 'dayjs';
 import { useCallback, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -10,7 +12,6 @@ import { createRecord } from '../actions';
 import CategorySelector from './categorySelector';
 import DateSelector from './dateSelector';
 import NoteDialog from './noteDialog';
-import { Card } from '@/components/ui/card';
 
 interface IAddRecordSectionProps {
   refetchRecords: () => Promise<void>;
@@ -38,6 +39,11 @@ const AddRecordSection = ({ refetchRecords }: IAddRecordSectionProps) => {
       profile_id: profile?.id,
       family_id: profile?.family_id,
     };
+    const validatedPayload = addFinancialRecordSchema.safeParse(payload);
+    if (validatedPayload.error) {
+      console.log(validatedPayload.error.flatten());
+      return false;
+    }
     setLoading(true);
     const res = await createRecord(payload);
     if (!res) {
