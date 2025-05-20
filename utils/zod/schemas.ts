@@ -80,6 +80,12 @@ const accountSchema = z.object({
     )
     .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, 'File size must be less than 1MB')
     .optional(),
+  phone: z.string().optional(),
+  socials: z.object({
+    twitter: z.string().optional(),
+    instagram: z.string().optional(),
+    facebook: z.string().optional(),
+  }),
 });
 
 export {

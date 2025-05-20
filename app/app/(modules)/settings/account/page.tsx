@@ -26,6 +26,7 @@ const Account = () => {
     defaultValues: {
       fullName: profile?.full_name ?? '',
       image: undefined,
+      phone: profile?.phone ?? '',
     },
   });
   const profileImageName = useMemo(
@@ -36,7 +37,7 @@ const Account = () => {
   useEffect(() => {
     if (isLoading) return;
     if (firstLoad) {
-      form.reset({ fullName: profile?.full_name ?? '' });
+      form.reset({ fullName: profile?.full_name ?? '', phone: profile?.phone ?? '' });
       setFirstLoad(false);
     }
   }, [profile, firstLoad, form, isLoading]);
@@ -174,10 +175,61 @@ const Account = () => {
               <p className="text-sm text-muted-foreground">{profile?.email}</p>
             </div>
 
-            <div>
-              <Label>Phone</Label>
-              <p className="text-sm text-muted-foreground">{profile?.phone || '(not set)'}</p>
-            </div>
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="socials.facebook"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Facebook</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="socials.instagram"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Instagram</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="socials.twitter"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Twitter</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
 
           <div className="mt-4">

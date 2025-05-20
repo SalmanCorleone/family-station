@@ -169,7 +169,7 @@ const Family = () => {
                       ) : (
                         // Existing image
                         <div>
-                          <div className="flex items-center w-full xl:w-[40vw] h-80 rounded-lg overflow-hidden">
+                          <div className="flex items-center w-full xl:w-80 h-80 rounded-lg overflow-hidden">
                             <Image
                               src={family?.image ?? '/family.png'}
                               className="w-full h-full object-cover"
