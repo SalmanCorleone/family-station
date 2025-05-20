@@ -1,6 +1,5 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { useProfile } from '@/utils/context/profileContext';
 import useAutoSave from '@/utils/hooks/useAutoSave';
 import { Tables } from '@/utils/supabase/db';
@@ -14,11 +13,14 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { Loader, Save } from 'lucide-react';
+// import { Loader, Save } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
+import PageHeader from '@/components/pageHeader';
+import SimpleLoader from '@/components/simpleLoader';
+import { Loader } from 'lucide-react';
 import { toast } from 'sonner';
 import { addTask, getLists, ListType, TaskPayloadType, TaskType } from '../action';
 import AddTaskForm from './addTaskForm';
@@ -41,8 +43,6 @@ const ListContainer = () => {
       },
     }),
   );
-
-  console.log({ loading });
 
   const saveData = () =>
     new Promise<void>((resolve) => {
@@ -158,6 +158,29 @@ const ListContainer = () => {
     setDraggingTask(task.task);
   };
 
+  const renderHeaderLeft = () => {
+    return saving ? (
+      <div className="flex items-center justify-center translate-y-0.5">
+        <Loader className="animate-spin" size={12} />
+      </div>
+    ) : countdown > 0 && countdown < 4 ? (
+      <div className="flex items-center gap-2 translate-y-0.5">
+        <p className="text-xs font-medium text-gray-400">Auto-saving in {countdown} seconds</p>
+        {/* <Button variant={'ghost'} onClick={trigger}>
+          <Save size={16} />
+          <p className="text-xs">Save</p>
+        </Button> */}
+      </div>
+    ) : null;
+  };
+
+  if (loading)
+    return (
+      <div className="p-4">
+        <SimpleLoader />
+      </div>
+    );
+
   return (
     <DndContext
       onDragEnd={onDragEnd}
@@ -165,7 +188,9 @@ const ListContainer = () => {
       onDragStart={handleDragStart}
       collisionDetection={closestCenter}
     >
-      <div className="border p-4 rounded-lg mb-4 bg-ash/10">
+      <PageHeader title="To-do" renderLeft={renderHeaderLeft} />
+      {/* Debug: Auto save test */}
+      {/* <div className="border p-4 rounded-lg mb-4 bg-ash/10">
         {saving ? (
           <div className="flex items-center justify-center">
             <Loader className="animate-spin" size={16} />
@@ -186,8 +211,8 @@ const ListContainer = () => {
             </Button>
           </div>
         )}
-      </div>
-      <div className="flex gap-4 w-min">
+      </div> */}
+      <div className="flex gap-4 w-min p-4">
         {lists?.map((list) => (
           <SortableContext
             key={list.id}

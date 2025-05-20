@@ -26,13 +26,13 @@ const Family = () => {
 
   const form = useForm<z.infer<typeof familyInfoSchema>>({
     resolver: zodResolver(familyInfoSchema),
-    defaultValues: { title: family?.title ?? '', image: family?.image ?? '' },
+    defaultValues: { title: family?.title ?? '', image: family?.image ?? undefined },
   });
 
   useEffect(() => {
     if (isLoading) return;
     if (firstLoad) {
-      form.reset({ title: family?.title ?? '', image: family?.image ?? '' });
+      form.reset({ title: family?.title ?? '', image: family?.image ?? undefined });
       setFirstLoad(false);
     }
   }, [family, firstLoad, form, isLoading]);
@@ -42,7 +42,7 @@ const Family = () => {
     const res = await updateFamily({
       id: family?.id,
       title: values.title,
-      image: values.image[0],
+      image: values.image?.length ? values.image[0] : undefined,
       imageName,
     });
     if (res) {
@@ -106,6 +106,7 @@ const Family = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <div className="flex flex-col gap-8 rounded-lg">
+            {/* Title */}
             <FormField
               control={form.control}
               name="title"
@@ -119,12 +120,11 @@ const Family = () => {
                 </FormItem>
               )}
             />
-
+            {/* Image */}
             <FormField
               control={form.control}
               name="image"
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              render={({ field: { onChange, value, ...fieldProps } }) => (
+              render={({ field: { onChange, ...fieldProps } }) => (
                 <FormItem>
                   <FormLabel>Family Image</FormLabel>
                   <FormControl>
@@ -147,23 +147,38 @@ const Family = () => {
                           </div>
                         ) : (
                           // Upload image box
-                          <div
-                            className={`w-full xl:w-[40vw] h-80 flex flex-col justify-center items-center border-2 rounded-md ${
-                              isDragging
-                                ? 'border-primary border-dashed bg-primary/10'
-                                : 'border-dashed border border-gray-400 hover:border-primary/50 hover:bg-muted/50'
-                            } transition-colors cursor-pointer`}
-                            onClick={() => {
-                              document.getElementById('image-upload')?.click();
-                            }}
-                            onDragOver={handleDragOver}
-                            onDragLeave={handleDragLeave}
-                            onDrop={handleDrop}
-                          >
-                            <Upload className="h-6 w-6 mb-2" />
-                            <span>{isDragging ? 'Drop image here' : 'Upload image'}</span>
-                            <span className="text-xs text-muted-foreground mt-1">Drag & drop or click to browse</span>
-                            <span className="text-xs text-muted-foreground">JPG, PNG up to 5MB</span>
+                          <div className="flex flex-col gap-4">
+                            <div
+                              className={`w-full xl:w-[40vw] h-80 flex flex-col justify-center items-center border-2 rounded-md ${
+                                isDragging
+                                  ? 'border-primary border-dashed bg-primary/10'
+                                  : 'border-dashed border border-gray-400 hover:border-primary/50 hover:bg-muted/50'
+                              } transition-colors cursor-pointer`}
+                              onClick={() => {
+                                document.getElementById('image-upload')?.click();
+                              }}
+                              onDragOver={handleDragOver}
+                              onDragLeave={handleDragLeave}
+                              onDrop={handleDrop}
+                            >
+                              <Upload className="h-6 w-6 mb-2" />
+                              <span>{isDragging ? 'Drop image here' : 'Upload image'}</span>
+                              <span className="text-xs text-muted-foreground mt-1">Drag & drop or click to browse</span>
+                              <span className="text-xs text-muted-foreground">JPG, PNG up to 5MB</span>
+                            </div>
+
+                            <div>
+                              <Button
+                                variant={'outline'}
+                                onClick={() => {
+                                  setImagePreview(null);
+                                  setIsImageEditMode(false);
+                                }}
+                              >
+                                <X size={16} />
+                                <p className="text-xs">Cancel</p>
+                              </Button>
+                            </div>
                           </div>
                         )
                       ) : (
@@ -178,7 +193,7 @@ const Family = () => {
                               height={150}
                             />
                           </div>
-                          <Button variant={'ghost'} onClick={() => setIsImageEditMode(true)} className="mt-4">
+                          <Button variant={'outline'} onClick={() => setIsImageEditMode(true)} className="mt-4">
                             <Pencil size={16} />
                             <p className="text-xs">Edit</p>
                           </Button>
@@ -195,21 +210,6 @@ const Family = () => {
                         }}
                         {...fieldProps}
                       />
-
-                      <div>
-                        {isImageEditMode && (
-                          <Button
-                            variant={'ghost'}
-                            onClick={() => {
-                              setImagePreview(null);
-                              setIsImageEditMode(false);
-                            }}
-                          >
-                            <X size={16} />
-                            <p className="text-xs">Cancel</p>
-                          </Button>
-                        )}
-                      </div>
                     </div>
                   </FormControl>
                   <FormMessage />

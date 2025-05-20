@@ -2,6 +2,7 @@
 
 import type React from 'react';
 
+import PageHeader from '@/components/pageHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useProfile } from '@/utils/context/profileContext';
@@ -10,7 +11,6 @@ import { Send } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { ChatMessagePayloadType, ChatMessageType, postChatMessage } from '../actions';
-import ChatHeader from './chatHeader';
 import ChatMessage from './chatMessage';
 import EmptyChat from './emptyChat';
 
@@ -78,7 +78,7 @@ const ChatInterface = ({ chatHistory }: IChatInterfaceProps) => {
 
   return (
     <div className="flex flex-col h-full">
-      <ChatHeader />
+      <PageHeader title="Chat" />
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4 no-scroll">
         {!messages?.length ? (

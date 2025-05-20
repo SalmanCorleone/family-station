@@ -10,7 +10,7 @@ interface IMonthSelectorProps {
 const MonthSelector = ({ activeMonthIndex, setActiveMonthIndex }: IMonthSelectorProps) => {
   return (
     <div className="flex items-center justify-center mt-4">
-      <div className="flex items-center bg-ash/10 gap-4 w-[80vw] xl:w-auto justify-between">
+      <div className="flex items-center bg-ash/10 gap-4 w-[80vw] xl:w-auto justify-between rounded-lg">
         <Button
           variant="outline"
           size="icon"
