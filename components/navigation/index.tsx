@@ -112,8 +112,8 @@ const Navigation = ({ children }: INavigationProps) => {
         </div>
 
         {/* Account */}
-        <div className="flex items-center justify-between gap-2 p-2 mb-2 rounded-2xl bg-white shadow-sm">
-          <Link href="/app/settings/account" onClick={() => setActiveNavItem(undefined)}>
+        <Link href="/app/settings/account" onClick={() => setActiveNavItem(undefined)}>
+          <div className="flex items-center justify-between gap-2 p-2 mb-2 rounded-2xl bg-white shadow-sm">
             <div className="flex gap-2 items-center">
               {isLoading ? (
                 <div className="w-10 h-10 flex items-center justify-center bg-ash/10 rounded-full">
@@ -129,8 +129,8 @@ const Navigation = ({ children }: INavigationProps) => {
                 <p className="font-medium text-xs">{profile?.full_name}</p>
               </div>
             </div>
-          </Link>
-        </div>
+          </div>
+        </Link>
       </div>
 
       {/* Content */}

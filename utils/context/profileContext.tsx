@@ -124,7 +124,7 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (state.profile) return;
     refetchProfile();
-  }, [state.profile]);
+  }, [refetchProfile, state.profile]);
 
   return <ProfileContext.Provider value={{ ...state, dispatch, refetchProfile }}>{children}</ProfileContext.Provider>;
 };
