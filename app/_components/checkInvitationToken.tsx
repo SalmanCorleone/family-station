@@ -19,7 +19,7 @@ const CheckInvitationToken = () => {
     (async () => {
       if (isLoading) return;
       if (!profile) {
-        toast.error('Failed to load profile! Please log in again.');
+        console.log('Failed to load profile! Please log in again.');
         return;
       }
       const token = storage.get<string>(storage.STORAGE_KEYS.INVITATION_TOKEN);

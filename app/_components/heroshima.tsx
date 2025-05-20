@@ -25,7 +25,6 @@ const Hero = () => {
             <p className="text-xl xl:text-4xl">Chat</p>
             <ClipboardList fill="var(--color-lightBlue)" className="h-8 w-8 xl:h-10 xl:w-10 translate-y-0.5" />
             <p className="text-xl xl:text-4xl">To-do</p>
-            {/* <p className="text-2xl xl:text-4xl">| Simple, Fast</p> */}
           </div>
           <div className="flex gap-4 justify-start mt-4">
             {!isLoading && profile?.family_id ? (
@@ -43,10 +42,14 @@ const Hero = () => {
               </Link>
             ) : (
               <>
-                <Button className="text-xl xl:text-2xl px-6 py-3 h-auto">Get Started</Button>
-                <Button variant={'outline'} className="text-xl xl:text-2xl px-6 py-3 h-auto">
-                  Try Demo
-                </Button>
+                <Link href={'/signup'}>
+                  <Button className="text-xl xl:text-2xl px-6 py-3 h-auto">Get Started</Button>
+                </Link>
+                <Link href={'/demo'}>
+                  <Button variant={'outline'} className="text-xl xl:text-2xl px-6 py-3 h-auto">
+                    Try Demo
+                  </Button>
+                </Link>
               </>
             )}
           </div>
