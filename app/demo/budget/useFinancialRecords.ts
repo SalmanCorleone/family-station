@@ -1,31 +1,28 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FinancialRecord, getRecords } from './actions';
+import { AddFinancialRecordPayloadType, FinancialRecord } from '@/app/app/(modules)/budget/actions';
 import { formatDate } from '@/utils';
-import { useProfile } from '@/utils/context/profileContext';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { DEMO_DATA } from '../demoData';
+import dayjs from 'dayjs';
+
+const records = DEMO_DATA.FINANCIAL_RECORDS;
 
 const useFinancialRecords = () => {
-  const [financialRecords, setFinancialRecords] = useState<FinancialRecord[] | null>();
+  const [financialRecords, setFinancialRecords] = useState<FinancialRecord[]>(records);
   const [activeMonthIndex, setActiveMonthIndex] = useState(0);
   const [activeRecord, setActiveRecord] = useState<FinancialRecord | undefined>();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'Records' | 'Stats'>('Records');
-  const { family } = useProfile();
 
   const refetchRecords = useCallback(async () => {
-    if (!family) return;
     setLoading(true);
-    const records = await getRecords(family?.id, activeMonthIndex);
-    if (!records) {
+    setTimeout(() => {
       setLoading(false);
-      return;
-    }
-    setLoading(false);
-    setFinancialRecords(records);
-  }, [family, activeMonthIndex, setFinancialRecords]);
+    }, 2000);
+  }, []);
 
   useEffect(() => {
-    refetchRecords();
-  }, [refetchRecords]);
+    setFinancialRecords(activeMonthIndex === 0 ? records : []);
+  }, [activeMonthIndex]);
 
   const { groupedByDate, spendingByCategory } = useMemo(() => {
     if (!financialRecords?.length) return { groupedByDate: null, spendingByCategory: null };
@@ -46,8 +43,29 @@ const useFinancialRecords = () => {
     return { groupedByDate, spendingByCategory };
   }, [financialRecords]);
 
+  const addRecord = useCallback((payload: AddFinancialRecordPayloadType) => {
+    setFinancialRecords((financialRecords) => {
+      const newRecord: FinancialRecord = {
+        ...payload,
+        id: financialRecords.length + 1,
+        created_at: dayjs().toISOString(),
+      };
+      return [...financialRecords, newRecord];
+    });
+  }, []);
+
+  const updateRecord = useCallback((id: FinancialRecord['id'], payload: AddFinancialRecordPayloadType) => {
+    setFinancialRecords((financialRecords) => {
+      const index = financialRecords.findIndex((record) => record.id === id);
+      if (index === -1) return financialRecords;
+      const updatedRecord = { ...financialRecords[index], ...payload };
+      return [...financialRecords.slice(0, index), updatedRecord, ...financialRecords.slice(index + 1)];
+    });
+  }, []);
+
   return {
     financialRecords,
+    setFinancialRecords,
     groupedByDate,
     spendingByCategory,
     activeMonthIndex,
@@ -58,6 +76,8 @@ const useFinancialRecords = () => {
     setActiveRecord,
     activeTab,
     setActiveTab,
+    addRecord,
+    updateRecord,
   };
 };
 

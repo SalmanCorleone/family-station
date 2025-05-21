@@ -1,20 +1,20 @@
 'use client';
 
 import AddRecordSection from './_components/addRecordSection';
-import BreakdownChart from './_components/breakdownChart';
 import Record from './_components/record';
 import useFinancialRecords from './useFinancialRecords';
-import MonthSelector from './_components/monthSelector';
 import { useRef } from 'react';
 import EditRecordDialog from './_components/editRecordDialog';
 import Empty from '@/components/empty';
 import { Card } from '@/components/ui/card';
 import { Loader } from 'lucide-react';
 import PageHeader from '@/components/pageHeader';
-import TabSelector from './_components/tabSelector';
 import { cn } from '@/utils/clsx';
-import TimelineChart from './_components/timelineChart';
 import { motion } from 'framer-motion';
+import BreakdownChart from '@/app/app/(modules)/budget/_components/breakdownChart';
+import TimelineChart from '@/app/app/(modules)/budget/_components/timelineChart';
+import MonthSelector from '@/app/app/(modules)/budget/_components/monthSelector';
+import TabSelector from '@/app/app/(modules)/budget/_components/tabSelector';
 
 const Budget = () => {
   const {
@@ -23,11 +23,12 @@ const Budget = () => {
     setActiveMonthIndex,
     groupedByDate,
     spendingByCategory,
-    refetchRecords,
+    updateRecord,
     activeRecord,
     setActiveRecord,
     activeTab,
     setActiveTab,
+    addRecord,
   } = useFinancialRecords();
   const editRecordDialogRef = useRef<HTMLButtonElement>(null);
 
@@ -41,19 +42,17 @@ const Budget = () => {
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 p-4">
         <div className={cn('flex flex-col gap-4 col-span-1', { 'hidden xl:block': activeTab === 'Stats' })}>
-          <AddRecordSection {...{ refetchRecords }} />
+          <AddRecordSection {...{ addRecord }} />
 
           <div className="flex flex-col gap-4">
-            {true && (
-              <motion.div
-                className="flex flex-col items-center justify-center"
-                initial={{ height: '0%' }}
-                animate={{ height: loading ? '100%' : '0%' }}
-                transition={{ duration: 0.5, ease: 'easeInOut' }}
-              >
-                <Loader className="animate-spin" />
-              </motion.div>
-            )}
+            <motion.div
+              className="flex flex-col items-center justify-center"
+              initial={{ height: '0%' }}
+              animate={{ height: loading ? '100%' : '0%' }}
+              transition={{ duration: 0.5, ease: 'easeInOut' }}
+            >
+              <Loader className="animate-spin" />
+            </motion.div>
             {!!groupedByDate &&
               Object.keys(groupedByDate).map((dateString) => (
                 <div key={dateString}>
@@ -91,7 +90,7 @@ const Budget = () => {
         ref={editRecordDialogRef}
         record={activeRecord}
         setRecord={setActiveRecord}
-        onSubmit={refetchRecords}
+        updateRecord={updateRecord}
       />
     </div>
   );

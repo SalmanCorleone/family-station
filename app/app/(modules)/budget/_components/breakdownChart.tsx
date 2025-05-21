@@ -1,6 +1,6 @@
 'use client';
 
-import { Label, Legend, Pie, PieChart } from 'recharts';
+import { Label, Pie, PieChart } from 'recharts';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
@@ -57,7 +57,8 @@ const BreakdownChart = ({ spendingByCategory }: IBreakdownChartProps) => {
                 }}
               />
             </Pie>
-            <Legend verticalAlign="bottom" height={40} />
+            {/* Todo: make custom legend */}
+            {/* <Legend content={<CustomLegend />} /> */}
           </PieChart>
         </ChartContainer>
       </CardContent>

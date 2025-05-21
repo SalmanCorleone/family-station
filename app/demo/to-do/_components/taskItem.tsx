@@ -1,10 +1,10 @@
+import { TaskType } from '@/app/app/(modules)/to-do/action';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/utils/clsx';
-import { useProfile } from '@/utils/context/profileContext';
 import { useSortable } from '@dnd-kit/sortable';
 import { Check, Zap } from 'lucide-react';
 import { useMemo } from 'react';
-import { TaskType } from '../action';
+import { DEMO_DATA } from '../../demoData';
 
 interface ITaskItemProps {
   task: TaskType;
@@ -12,15 +12,16 @@ interface ITaskItemProps {
   markAsCompleted: () => void;
 }
 
+const { MEMBERS: members, MEMBERS_IMAGE_MAP: membersImageMap } = DEMO_DATA;
+
 const TaskItem = ({ task, onClick, markAsCompleted }: ITaskItemProps) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: task.id.toString(),
   });
 
-  const { membersImageMap, members } = useProfile();
   const assignedTo = useMemo(
     () => members?.find((member) => member.profile_id === task.assigned_to),
-    [members, task.assigned_to],
+    [task.assigned_to],
   );
 
   return (
@@ -52,7 +53,9 @@ const TaskItem = ({ task, onClick, markAsCompleted }: ITaskItemProps) => {
         {!!task.assigned_to && (
           <div className="">
             <Avatar style={{ width: 24, height: 24 }}>
-              <AvatarImage src={task.assigned_to ? membersImageMap?.[task.assigned_to] : undefined} />
+              <AvatarImage
+                src={task.assigned_to ? (membersImageMap as Record<string, string>)?.[task.assigned_to] : undefined}
+              />
               <AvatarFallback>{assignedTo?.profiles?.full_name?.charAt(0)}</AvatarFallback>
             </Avatar>
           </div>

@@ -44,16 +44,14 @@ const Budget = () => {
           <AddRecordSection {...{ refetchRecords }} />
 
           <div className="flex flex-col gap-4">
-            {true && (
-              <motion.div
-                className="flex flex-col items-center justify-center"
-                initial={{ height: '0%' }}
-                animate={{ height: loading ? '100%' : '0%' }}
-                transition={{ duration: 0.5, ease: 'easeInOut' }}
-              >
-                <Loader className="animate-spin" />
-              </motion.div>
-            )}
+            <motion.div
+              className="flex flex-col items-center justify-center"
+              initial={{ height: '0%' }}
+              animate={{ height: loading ? '100%' : '0%' }}
+              transition={{ duration: 0.5, ease: 'easeInOut' }}
+            >
+              <Loader className="animate-spin" />
+            </motion.div>
             {!!groupedByDate &&
               Object.keys(groupedByDate).map((dateString) => (
                 <div key={dateString}>

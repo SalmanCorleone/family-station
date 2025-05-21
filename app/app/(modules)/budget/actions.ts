@@ -66,3 +66,4 @@ export const updateRecord = async (
 };
 
 export type FinancialRecord = NonNullable<Awaited<ReturnType<typeof getRecords>>>[0];
+export type AddFinancialRecordPayloadType = OmitId<FinancialRecord>;

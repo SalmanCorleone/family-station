@@ -3,27 +3,28 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { categoryList } from '@/utils/const';
-import { useProfile } from '@/utils/context/profileContext';
 import { addFinancialRecordSchema } from '@/utils/zod/schemas';
 import dayjs from 'dayjs';
 import { useCallback, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { createRecord } from '../actions';
-import CategorySelector from './categorySelector';
-import DateSelector from './dateSelector';
-import NoteDialog from './noteDialog';
+import { AddFinancialRecordPayloadType } from '@/app/app/(modules)/budget/actions';
+import { DEMO_DATA } from '../../demoData';
+import CategorySelector from '@/app/app/(modules)/budget/_components/categorySelector';
+import NoteDialog from '@/app/app/(modules)/budget/_components/noteDialog';
+import DateSelector from '@/app/app/(modules)/budget/_components/dateSelector';
+
+const profile = DEMO_DATA.PROFILE;
 
 interface IAddRecordSectionProps {
-  refetchRecords: () => Promise<void>;
+  addRecord: (payload: AddFinancialRecordPayloadType) => void;
 }
 
-const AddRecordSection = ({ refetchRecords }: IAddRecordSectionProps) => {
+const AddRecordSection = ({ addRecord }: IAddRecordSectionProps) => {
   const [activeCategory, setCategory] = useState<CategoryType>(categoryList[0]);
   const [activeDate, setActiveDate] = useState<Date>(dayjs().toDate());
   const [loading, setLoading] = useState<boolean>(false);
   const [amount, setAmount] = useState<number>(0);
   const [note, setNote] = useState<string>('');
-  const { profile } = useProfile();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const submitRecord = useCallback(async () => {
@@ -38,6 +39,7 @@ const AddRecordSection = ({ refetchRecords }: IAddRecordSectionProps) => {
       created_at: activeDate.toISOString(),
       profile_id: profile?.id,
       family_id: profile?.family_id,
+      profiles: profile,
     };
     const validatedPayload = addFinancialRecordSchema.safeParse(payload);
     if (validatedPayload.error) {
@@ -45,17 +47,14 @@ const AddRecordSection = ({ refetchRecords }: IAddRecordSectionProps) => {
       return false;
     }
     setLoading(true);
-    const res = await createRecord(payload);
-    if (!res) {
-      toast.error('Oops! Something went wrong!');
-    } else {
-      await refetchRecords();
-    }
-    if (inputRef.current) inputRef.current.value = '';
-    inputRef.current?.focus();
-    setAmount(0);
-    setLoading(false);
-  }, [profile, activeCategory.title, activeDate, amount, note, refetchRecords]);
+    addRecord(payload);
+    setTimeout(() => {
+      setLoading(false);
+      if (inputRef.current) inputRef.current.value = '';
+      inputRef.current?.focus();
+      setAmount(0);
+    }, 2000);
+  }, [activeCategory.title, activeDate, amount, note, addRecord]);
 
   const onKeyDown = useCallback(
     async (e: React.KeyboardEvent<HTMLInputElement>) => {

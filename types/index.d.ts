@@ -13,5 +13,3 @@ type NavItemType = {
 };
 
 type OmitId<T> = Omit<T, 'id'>;
-
-type AddFinancialRecordPayloadType = OmitId<Tables<'financial_records'>>;

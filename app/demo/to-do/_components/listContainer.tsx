@@ -1,6 +1,5 @@
 'use client';
 
-import { useProfile } from '@/utils/context/profileContext';
 import useAutoSave from '@/utils/hooks/useAutoSave';
 import { Tables } from '@/utils/supabase/db';
 import {
@@ -13,28 +12,26 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-// import { Loader, Save } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
-
+import { useCallback, useRef, useState } from 'react';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-
+import { ListType, TaskType } from '@/app/app/(modules)/to-do/action';
 import PageHeader from '@/components/pageHeader';
-import SimpleLoader from '@/components/simpleLoader';
+import { getRandomInt } from '@/utils';
+import dayjs from 'dayjs';
 import { Loader } from 'lucide-react';
-import { toast } from 'sonner';
-import { addTask, getLists, ListType, TaskPayloadType, TaskType } from '../action';
-import AddTaskForm from './addTaskForm';
+import { DEMO_DATA } from '../../demoData';
 import EditTaskDialog from './editTaskDialog';
 import List from './list';
 import TaskItem from './taskItem';
+import AddTaskForm from '@/app/app/(modules)/to-do/_components/addTaskForm';
+
+const profile = DEMO_DATA.PROFILE;
 
 const ListContainer = () => {
-  const [lists, setLists] = useState<ListType[] | undefined>();
+  const [lists, setLists] = useState<ListType[]>(DEMO_DATA.LISTS);
   const [draggingTask, setDraggingTask] = useState<TaskType>();
-  const [loading, setLoading] = useState(false);
   const [activeTask, setActiveTask] = useState<Tables<'tasks'>>();
   const ref = useRef<HTMLButtonElement>(null);
-  const { family } = useProfile();
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -51,23 +48,6 @@ const ListContainer = () => {
       }, 2000);
     });
   const { countdown, saving, trigger } = useAutoSave(saveData, 5);
-
-  const fetchLists = useCallback(async () => {
-    if (!family?.id) return;
-    setLoading(true);
-    const res = await getLists(family?.id);
-    if (!res) {
-      toast.error('Oops! Something went wrong!');
-      setLoading(false);
-      return;
-    }
-    setLists(res);
-    setLoading(false);
-  }, [family?.id]);
-
-  useEffect(() => {
-    fetchLists();
-  }, [fetchLists]);
 
   const onTaskClick = (task: Tables<'tasks'>) => {
     setActiveTask(task);
@@ -93,20 +73,23 @@ const ListContainer = () => {
     [lists, trigger],
   );
 
-  const onAddTask = async (payload: TaskPayloadType) => {
-    const res = await addTask(payload);
-    if (!res) {
-      toast.error('Oops! Something went wrong!');
-    } else {
-      await fetchLists();
-      toast.success('Task added successfully!');
-    }
+  const onAddTask = async (payload: TaskType) => {
+    const targetList = lists.find((list) => list.id === payload.list_id);
+    if (!targetList) return;
+    const updatedList = {
+      ...targetList,
+      tasks: [...targetList.tasks, { ...payload }],
+    };
+    setLists(
+      [...lists.filter((list) => list.id !== payload.list_id), updatedList].sort(
+        (a, b) => (a.index || 0) - (b.index || 0),
+      ),
+    );
   };
 
   const findTaskById = (id: string): { task: TaskType; listId: number } | null => {
-    if (!lists) return null;
     for (const list of lists) {
-      const task = list.tasks.find((t) => t.id.toString() === id);
+      const task = list.tasks.find((t: TaskType) => t.id.toString() === id);
       if (task) return { task, listId: list.id };
     }
     return null;
@@ -127,10 +110,9 @@ const ListContainer = () => {
 
     if (!fromList || !toList) return;
 
-    const fromIndex = fromList.tasks.findIndex((t) => t.id.toString() === active.id.toString());
-    const toIndex = toList.tasks.findIndex((t) => t.id.toString() === over.id.toString());
+    const fromIndex = fromList.tasks.findIndex((t: TaskType) => t.id.toString() === active.id.toString());
+    const toIndex = toList.tasks.findIndex((t: TaskType) => t.id.toString() === over.id.toString());
 
-    console.log([fromIndex, toIndex]);
     const [movedTask] = fromList.tasks.splice(fromIndex, 1);
     console.log([fromList.id, fromIndex], [toList.id, toIndex], { movedTask });
     toList.tasks.splice(toIndex, 0, movedTask);
@@ -149,7 +131,23 @@ const ListContainer = () => {
     ));
 
   const renderAddTaskForm = (list: ListType) => (
-    <AddTaskForm onSubmit={(data) => onAddTask({ ...data, list_id: list.id, index: 0 })} />
+    <AddTaskForm
+      onSubmit={(data) =>
+        onAddTask({
+          ...data,
+          list_id: list.id,
+          index: list.tasks.length,
+          assigned_to: null,
+          created_at: dayjs().toISOString(),
+          created_by: profile.id,
+          deadline: null,
+          id: getRandomInt(),
+          is_completed: false,
+          is_urgent: false,
+          updated_at: dayjs().toISOString(),
+        })
+      }
+    />
   );
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -174,12 +172,22 @@ const ListContainer = () => {
     ) : null;
   };
 
-  if (loading)
-    return (
-      <div className="p-4">
-        <SimpleLoader />
-      </div>
-    );
+  const onEditTask = useCallback(
+    async (task: TaskType) => {
+      const targetList = lists.find((list) => list.id === task.list_id);
+      if (!targetList) return;
+      const updatedList = {
+        ...targetList,
+        tasks: targetList.tasks.map((t: TaskType) => (t.id === task.id ? { ...t, ...task } : t)),
+      };
+      setLists(
+        [...lists.filter((list) => list.id !== task.list_id), updatedList].sort(
+          (a, b) => (a.index || 0) - (b.index || 0),
+        ),
+      );
+    },
+    [lists],
+  );
 
   return (
     <DndContext
@@ -189,35 +197,12 @@ const ListContainer = () => {
       collisionDetection={closestCenter}
     >
       <PageHeader title="To-do" renderLeft={renderHeaderLeft} />
-      {/* Debug: Auto save test */}
-      {/* <div className="border p-4 rounded-lg mb-4 bg-ash/10">
-        {saving ? (
-          <div className="flex items-center justify-center">
-            <Loader className="animate-spin" size={16} />
-          </div>
-        ) : countdown > 0 && countdown < 4 ? (
-          <div className="flex items-center gap-2">
-            <p className="text-xl font-medium">Auto-saving in {countdown} seconds</p>
-            <Button variant={'ghost'} onClick={trigger}>
-              <Save size={16} />
-              <p className="text-xs">Save</p>
-            </Button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <Button variant={'ghost'} onClick={trigger}>
-              <Save size={16} />
-              <p className="text-xs">Save</p>
-            </Button>
-          </div>
-        )}
-      </div> */}
       <div className="flex gap-4 w-min p-4">
         {lists?.map((list) => (
           <SortableContext
             key={list.id}
             // items={list.tasks.map((_, index) => `${list.id}:${index}`)}
-            items={list.tasks.map((task) => `${task.id}`)}
+            items={list.tasks.map((task: TaskType) => `${task.id}`)}
             strategy={verticalListSortingStrategy}
           >
             <List key={list.id} {...{ renderAddTaskForm, renderTasks, list }} />
@@ -227,7 +212,7 @@ const ListContainer = () => {
           {draggingTask ? <div className="bg-white p-4 rounded shadow text-2xl">{draggingTask.title}</div> : null}
         </DragOverlay>
 
-        <EditTaskDialog ref={ref} task={activeTask} onSubmit={fetchLists} />
+        <EditTaskDialog ref={ref} task={activeTask} onSubmit={onEditTask} />
       </div>
     </DndContext>
   );

@@ -1,12 +1,12 @@
 import { TrendingUp } from 'lucide-react';
-import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { formatDate } from '@/utils';
+import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import { FinancialRecord } from '../actions';
-import dayjs from 'dayjs';
-import { formatDate } from '@/utils';
 
 const chartConfig = { amount: { label: 'Amount' } } satisfies ChartConfig;
 
@@ -60,7 +60,7 @@ const TimelineChart = ({ groupedByDate, activeMonthIndex }: ITimelineChartProps)
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
             <Bar dataKey="amount" fill="var(--color-blue)" radius={8}>
-              <LabelList position="top" offset={12} className="fill-foreground" fontSize={12} fontWeight={600} />
+              {/* <LabelList position="top" offset={12} className="fill-foreground" fontSize={12} fontWeight={600} /> */}
             </Bar>
           </BarChart>
         </ChartContainer>

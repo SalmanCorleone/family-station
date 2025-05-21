@@ -1,6 +1,5 @@
+import { ListType, TaskType } from '@/app/app/(modules)/to-do/action';
 import { cn } from '@/utils/clsx';
-// import { useDroppable } from '@dnd-kit/core';
-import { ListType, TaskType } from '../action';
 
 interface IListProps {
   list: ListType;
@@ -9,19 +8,9 @@ interface IListProps {
 }
 
 const List = ({ list, renderTasks, renderAddTaskForm }: IListProps) => {
-  // const { setNodeRef, isOver } = useDroppable({
-  //   id: list.id.toString(),
-  //   data: list,
-  // });
-
   return (
-    <div
-      // ref={setNodeRef}
-      className={cn('flex flex-col gap-2 rounded-lg w-[65vw] xl:w-[25vw] p-2 bg-ash/10 self-start', {
-        // 'border-2 border-green': isOver,
-      })}
-    >
-      <div className="flex items-center gap-4">
+    <div className={cn('flex flex-col gap-2 rounded-lg w-[65vw] xl:w-[25vw] p-2 bg-ash/10 self-start', {})}>
+      <div className="flex items-center gap-4 px-2">
         <p className="text-xl font-medium">{list.icon}</p>
         <p className="text-xl font-medium">{list.title}</p>
       </div>

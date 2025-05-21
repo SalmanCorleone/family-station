@@ -4,23 +4,24 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from '@/components/ui/input';
 import { formatDate } from '@/utils';
 import { cn } from '@/utils/clsx';
-import { useProfile } from '@/utils/context/profileContext';
 import { Tables } from '@/utils/supabase/db';
 import { User } from 'lucide-react';
 import { forwardRef, Ref, useCallback, useEffect, useState } from 'react';
-import { updateTask } from '../action';
 import { toast } from 'sonner';
+import { TaskType } from '@/app/app/(modules)/to-do/action';
+import { DEMO_DATA } from '../../demoData';
 
 interface IEditTaskDialogProps {
-  task?: Tables<'tasks'>;
-  onSubmit: () => void;
+  task?: TaskType;
+  onSubmit: (task: TaskType) => void;
 }
+
+const { MEMBERS: members, MEMBERS_IMAGE_MAP: membersImageMap } = DEMO_DATA;
 
 const EditTaskDialog = forwardRef(({ task, onSubmit }: IEditTaskDialogProps, ref: Ref<HTMLButtonElement>) => {
   const [open, setOpen] = useState(false);
-  const { membersImageMap, members } = useProfile();
-  const activeMembers = members?.filter((member) => member.status === 'active');
-  const createdBy = members?.find((member) => member.profile_id === task?.created_by);
+  const activeMembers = members.filter((member) => member.status === 'active');
+  const createdBy = members.find((member) => member.profile_id === task?.created_by);
   const [localTask, setLocalTask] = useState<Tables<'tasks'>>({} as Tables<'tasks'>);
   const [saving, setSaving] = useState(false);
 
@@ -34,18 +35,12 @@ const EditTaskDialog = forwardRef(({ task, onSubmit }: IEditTaskDialogProps, ref
   const saveChanges = useCallback(async () => {
     if (!localTask.id) return;
     setSaving(true);
-    try {
-      const res = await updateTask(localTask);
-      if (!res) {
-        toast.error('Oops! Something went wrong!');
-      } else {
-        onSubmit();
-        toast.success('Task updated successfully!');
-      }
-    } finally {
+    onSubmit(localTask);
+    setTimeout(() => {
+      toast.success('Task updated successfully!');
       setSaving(false);
       setOpen(false);
-    }
+    }, 2000);
   }, [localTask, onSubmit]);
 
   const onkeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -117,8 +112,12 @@ const EditTaskDialog = forwardRef(({ task, onSubmit }: IEditTaskDialogProps, ref
                     })}
                   >
                     <Avatar style={{ width: 32, height: 32 }}>
-                      <AvatarImage src={member.profile_id ? membersImageMap?.[member.profile_id] : undefined} />
-                      <AvatarFallback>{member.profiles?.full_name?.[0]}</AvatarFallback>
+                      <AvatarImage
+                        src={(membersImageMap as Record<string, string>)?.[member.profile_id] || undefined}
+                      />
+                      <AvatarFallback>
+                        <User className="h-5 w-5" />
+                      </AvatarFallback>
                     </Avatar>
                   </div>
                 ))}

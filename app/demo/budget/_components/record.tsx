@@ -3,8 +3,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { categoryList } from '@/utils/const';
 import { useMemo } from 'react';
-import { FinancialRecord } from '../actions';
-import { useProfile } from '@/utils/context/profileContext';
+import { FinancialRecord } from '@/app/app/(modules)/budget/actions';
+import { DEMO_DATA } from '../../demoData';
+
+const membersImageMap: Record<string, string | undefined> = DEMO_DATA.MEMBERS_IMAGE_MAP;
 
 interface IRecordItem {
   record: FinancialRecord;
@@ -12,10 +14,9 @@ interface IRecordItem {
 }
 
 const Record = ({ record, onRecordClick }: IRecordItem) => {
-  const { membersImageMap } = useProfile();
   const avatarURLFromContext = useMemo(
     () => (record.profile_id ? membersImageMap?.[record.profile_id] : undefined),
-    [record.profile_id, membersImageMap],
+    [record.profile_id],
   );
   const category = useMemo(
     () => categoryList.find((category) => category.title === record.category) || categoryList[categoryList.length - 1],
@@ -29,8 +30,8 @@ const Record = ({ record, onRecordClick }: IRecordItem) => {
     >
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 items-center">
-          <p className="text-2xl">{category.icon()}</p>
-          <p className="text-2xl">{category.title}</p>
+          <p className="text-lg xl:text-2xl">{category.icon()}</p>
+          <p className="text-lg xl:text-2xl">{category.title}</p>
           <Avatar style={{ width: 24, height: 24 }}>
             <AvatarImage src={avatarURLFromContext || undefined} />
             <AvatarFallback>{record.profiles?.full_name?.charAt(0) ?? '😊'}</AvatarFallback>
@@ -41,7 +42,7 @@ const Record = ({ record, onRecordClick }: IRecordItem) => {
         </div>
       </div>
       <div className="flex flex-col justify-center pl-4 text-end">
-        <p className="text-3xl font-medium">${record.amount}</p>
+        <p className="text-xl xl:text-3xl font-medium">${record.amount}</p>
       </div>
     </div>
   );

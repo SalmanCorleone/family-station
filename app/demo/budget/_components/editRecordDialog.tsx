@@ -3,20 +3,19 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { categoryList } from '@/utils/const';
 import dayjs from 'dayjs';
 import { forwardRef, Ref, useCallback, useEffect, useState } from 'react';
-import { FinancialRecord, updateRecord } from '../actions';
-import CategorySelector from './categorySelector';
-import DateSelector from './dateSelector';
-import NoteDialog from './noteDialog';
-import { toast } from 'sonner';
+import { AddFinancialRecordPayloadType, FinancialRecord } from '@/app/app/(modules)/budget/actions';
+import NoteDialog from '@/app/app/(modules)/budget/_components/noteDialog';
+import CategorySelector from '@/app/app/(modules)/budget/_components/categorySelector';
+import DateSelector from '@/app/app/(modules)/budget/_components/dateSelector';
 
 interface IEditRecordDialogProps {
   record?: FinancialRecord;
   setRecord: (record?: FinancialRecord) => void;
-  onSubmit: () => void;
+  updateRecord: (id: FinancialRecord['id'], payload: AddFinancialRecordPayloadType) => void;
 }
 
 const EditRecordDialog = forwardRef(
-  ({ record, setRecord, onSubmit }: IEditRecordDialogProps, ref: Ref<HTMLButtonElement>) => {
+  ({ record, setRecord, updateRecord }: IEditRecordDialogProps, ref: Ref<HTMLButtonElement>) => {
     const [open, setOpen] = useState(false);
     const [localRecord, setLocalRecord] = useState<FinancialRecord>({} as FinancialRecord);
     const [loading, setLoading] = useState<boolean>(false);
@@ -37,10 +36,11 @@ const EditRecordDialog = forwardRef(
       }
     };
 
-    const handleUpdate = useCallback(async () => {
+    const handleUpdate = useCallback(() => {
       if (!record) return;
       setLoading(true);
       const payload: AddFinancialRecordPayloadType = {
+        ...localRecord,
         amount: localRecord?.amount,
         category: localRecord?.category,
         note: localRecord?.note,
@@ -48,24 +48,12 @@ const EditRecordDialog = forwardRef(
         profile_id: localRecord?.profile_id,
         family_id: localRecord?.family_id,
       };
-      const res = await updateRecord(record.id, payload);
-      if (!res) {
-        toast.error('Oops! Something went wrong!');
-      } else {
-        onSubmit();
-      }
-      setLoading(false);
-      setOpen(false);
-    }, [
-      record,
-      localRecord?.amount,
-      localRecord?.category,
-      localRecord?.note,
-      localRecord?.created_at,
-      localRecord?.profile_id,
-      localRecord?.family_id,
-      onSubmit,
-    ]);
+      updateRecord(record.id, payload);
+      setTimeout(() => {
+        setLoading(false);
+        setOpen(false);
+      }, 2000);
+    }, [record, localRecord, updateRecord]);
 
     /**
      * Enter key listener, Saves changes on enter
