@@ -1,6 +1,5 @@
 'use client';
 
-import { ChatMessageType } from '@/app/app/(modules)/chat/actions';
 import { cn } from '@/utils/clsx';
 import { navItemList } from '@/utils/const';
 import { useProfile } from '@/utils/context/profileContext';
