@@ -16,14 +16,24 @@ import { useProfile } from '@/utils/context/profileContext';
 
 const OnboardingSteps = () => {
   const [step, setStep] = useState(1);
+  const [hasWindow, setHasWindow] = useState(false);
+
   const { family: familyFromContext } = useProfile();
   const [family, setFamily] = useState<FamilyType | undefined>();
   const router = useRouter();
-  const origin = window.location.origin;
+  const origin = hasWindow ? window.location.origin : '';
   const inviteLink = useMemo(
     () => (family ? `${origin}/app/invite/${family.invitation_token ?? ''}` : ''),
     [family, origin],
   );
+
+  /**
+   * Check if window is available
+   */
+  useEffect(() => {
+    // Now safe to access `window`
+    setHasWindow(true);
+  }, []);
 
   /**
    * Manually visiting onboarding, who has family
