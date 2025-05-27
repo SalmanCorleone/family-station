@@ -3,11 +3,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { categoryList } from '@/utils/const';
 import { useMemo } from 'react';
-import { FinancialRecord } from '../actions';
 import { useProfile } from '@/utils/context/profileContext';
 
 interface IRecordItem {
-  record: FinancialRecord;
+  record: FinancialRecordType;
   onRecordClick: () => void;
 }
 

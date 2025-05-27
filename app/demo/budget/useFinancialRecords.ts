@@ -1,4 +1,3 @@
-import { AddFinancialRecordPayloadType, FinancialRecord } from '@/app/app/(modules)/budget/actions';
 import { formatDate } from '@/utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { DEMO_DATA } from '../demoData';
@@ -7,9 +6,9 @@ import dayjs from 'dayjs';
 const records = DEMO_DATA.FINANCIAL_RECORDS;
 
 const useFinancialRecords = () => {
-  const [financialRecords, setFinancialRecords] = useState<FinancialRecord[]>(records);
+  const [financialRecords, setFinancialRecords] = useState<FinancialRecordType[]>(records);
   const [activeMonthIndex, setActiveMonthIndex] = useState(0);
-  const [activeRecord, setActiveRecord] = useState<FinancialRecord | undefined>();
+  const [activeRecord, setActiveRecord] = useState<FinancialRecordType | undefined>();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'Records' | 'Stats'>('Records');
 
@@ -26,7 +25,7 @@ const useFinancialRecords = () => {
 
   const { groupedByDate, spendingByCategory } = useMemo(() => {
     if (!financialRecords?.length) return { groupedByDate: null, spendingByCategory: null };
-    const groupedByDate = {} as Record<string, FinancialRecord[]>;
+    const groupedByDate = {} as Record<string, FinancialRecordType[]>;
     const spendingByCategory = {} as Record<string, number>;
 
     for (const item of financialRecords) {
@@ -45,16 +44,17 @@ const useFinancialRecords = () => {
 
   const addRecord = useCallback((payload: AddFinancialRecordPayloadType) => {
     setFinancialRecords((financialRecords) => {
-      const newRecord: FinancialRecord = {
+      const newRecord: FinancialRecordType = {
         ...payload,
         id: financialRecords.length + 1,
         created_at: dayjs().toISOString(),
+        profiles: DEMO_DATA.PROFILE,
       };
       return [...financialRecords, newRecord];
     });
   }, []);
 
-  const updateRecord = useCallback((id: FinancialRecord['id'], payload: AddFinancialRecordPayloadType) => {
+  const updateRecord = useCallback((id: FinancialRecordType['id'], payload: AddFinancialRecordPayloadType) => {
     setFinancialRecords((financialRecords) => {
       const index = financialRecords.findIndex((record) => record.id === id);
       if (index === -1) return financialRecords;

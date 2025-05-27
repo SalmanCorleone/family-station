@@ -3,13 +3,12 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { categoryList } from '@/utils/const';
 import { useMemo } from 'react';
-import { FinancialRecord } from '@/app/app/(modules)/budget/actions';
 import { DEMO_DATA } from '../../demoData';
 
 const membersImageMap: Record<string, string | undefined> = DEMO_DATA.MEMBERS_IMAGE_MAP;
 
 interface IRecordItem {
-  record: FinancialRecord;
+  record: FinancialRecordType;
   onRecordClick: () => void;
 }
 

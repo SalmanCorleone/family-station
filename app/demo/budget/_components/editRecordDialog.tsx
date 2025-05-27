@@ -3,21 +3,20 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { categoryList } from '@/utils/const';
 import dayjs from 'dayjs';
 import { forwardRef, Ref, useCallback, useEffect, useState } from 'react';
-import { AddFinancialRecordPayloadType, FinancialRecord } from '@/app/app/(modules)/budget/actions';
 import NoteDialog from '@/app/app/(modules)/budget/_components/noteDialog';
 import CategorySelector from '@/app/app/(modules)/budget/_components/categorySelector';
 import DateSelector from '@/app/app/(modules)/budget/_components/dateSelector';
 
 interface IEditRecordDialogProps {
-  record?: FinancialRecord;
-  setRecord: (record?: FinancialRecord) => void;
-  updateRecord: (id: FinancialRecord['id'], payload: AddFinancialRecordPayloadType) => void;
+  record?: FinancialRecordType;
+  setRecord: (record?: FinancialRecordType) => void;
+  updateRecord: (id: FinancialRecordType['id'], payload: AddFinancialRecordPayloadType) => void;
 }
 
 const EditRecordDialog = forwardRef(
   ({ record, setRecord, updateRecord }: IEditRecordDialogProps, ref: Ref<HTMLButtonElement>) => {
     const [open, setOpen] = useState(false);
-    const [localRecord, setLocalRecord] = useState<FinancialRecord>({} as FinancialRecord);
+    const [localRecord, setLocalRecord] = useState<FinancialRecordType>({} as FinancialRecordType);
     const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
@@ -32,7 +31,7 @@ const EditRecordDialog = forwardRef(
       if (!isOpen) {
         setRecord(undefined);
         setOpen(false);
-        setLocalRecord({} as FinancialRecord);
+        setLocalRecord({} as FinancialRecordType);
       }
     };
 

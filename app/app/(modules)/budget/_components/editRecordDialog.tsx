@@ -3,22 +3,22 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { categoryList } from '@/utils/const';
 import dayjs from 'dayjs';
 import { forwardRef, Ref, useCallback, useEffect, useState } from 'react';
-import { FinancialRecord, updateRecord } from '../actions';
+import { updateRecord } from '../actions';
 import CategorySelector from './categorySelector';
 import DateSelector from './dateSelector';
 import NoteDialog from './noteDialog';
 import { toast } from 'sonner';
 
 interface IEditRecordDialogProps {
-  record?: FinancialRecord;
-  setRecord: (record?: FinancialRecord) => void;
+  record?: FinancialRecordType;
+  setRecord: (record?: FinancialRecordType) => void;
   onSubmit: () => void;
 }
 
 const EditRecordDialog = forwardRef(
   ({ record, setRecord, onSubmit }: IEditRecordDialogProps, ref: Ref<HTMLButtonElement>) => {
     const [open, setOpen] = useState(false);
-    const [localRecord, setLocalRecord] = useState<FinancialRecord>({} as FinancialRecord);
+    const [localRecord, setLocalRecord] = useState<FinancialRecordType>({} as FinancialRecordType);
     const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
@@ -33,7 +33,7 @@ const EditRecordDialog = forwardRef(
       if (!isOpen) {
         setRecord(undefined);
         setOpen(false);
-        setLocalRecord({} as FinancialRecord);
+        setLocalRecord({} as FinancialRecordType);
       }
     };
 

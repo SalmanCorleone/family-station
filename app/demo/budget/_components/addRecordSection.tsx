@@ -7,7 +7,6 @@ import { addFinancialRecordSchema } from '@/utils/zod/schemas';
 import dayjs from 'dayjs';
 import { useCallback, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { AddFinancialRecordPayloadType } from '@/app/app/(modules)/budget/actions';
 import { DEMO_DATA } from '../../demoData';
 import CategorySelector from '@/app/app/(modules)/budget/_components/categorySelector';
 import NoteDialog from '@/app/app/(modules)/budget/_components/noteDialog';
@@ -39,7 +38,6 @@ const AddRecordSection = ({ addRecord }: IAddRecordSectionProps) => {
       created_at: activeDate.toISOString(),
       profile_id: profile?.id,
       family_id: profile?.family_id,
-      profiles: profile,
     };
     const validatedPayload = addFinancialRecordSchema.safeParse(payload);
     if (validatedPayload.error) {

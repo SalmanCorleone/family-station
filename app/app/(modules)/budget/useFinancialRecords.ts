@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FinancialRecord, getRecords } from './actions';
+import { getRecords } from './actions';
 import { formatDate } from '@/utils';
 import { useProfile } from '@/utils/context/profileContext';
 
 const useFinancialRecords = () => {
-  const [financialRecords, setFinancialRecords] = useState<FinancialRecord[] | null>();
+  const [financialRecords, setFinancialRecords] = useState<FinancialRecordType[] | null>();
   const [activeMonthIndex, setActiveMonthIndex] = useState(0);
-  const [activeRecord, setActiveRecord] = useState<FinancialRecord | undefined>();
+  const [activeRecord, setActiveRecord] = useState<FinancialRecordType | undefined>();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'Records' | 'Stats'>('Records');
   const { family } = useProfile();
@@ -29,7 +29,7 @@ const useFinancialRecords = () => {
 
   const { groupedByDate, spendingByCategory } = useMemo(() => {
     if (!financialRecords?.length) return { groupedByDate: null, spendingByCategory: null };
-    const groupedByDate = {} as Record<string, FinancialRecord[]>;
+    const groupedByDate = {} as Record<string, FinancialRecordType[]>;
     const spendingByCategory = {} as Record<string, number>;
 
     for (const item of financialRecords) {

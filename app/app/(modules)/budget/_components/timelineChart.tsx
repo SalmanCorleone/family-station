@@ -6,12 +6,11 @@ import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '
 import { formatDate } from '@/utils';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
-import { FinancialRecord } from '../actions';
 
 const chartConfig = { amount: { label: 'Amount' } } satisfies ChartConfig;
 
 interface ITimelineChartProps {
-  groupedByDate: Record<string, FinancialRecord[]>;
+  groupedByDate: Record<string, FinancialRecordType[]>;
   activeMonthIndex: number;
 }
 

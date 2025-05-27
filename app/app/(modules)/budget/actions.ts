@@ -48,7 +48,7 @@ export const createRecord = async (payload: AddFinancialRecordPayloadType): Prom
 };
 
 export const updateRecord = async (
-  id: FinancialRecord['id'],
+  id: FinancialRecordType['id'],
   payload: AddFinancialRecordPayloadType,
 ): Promise<boolean> => {
   const validatedPayload = addFinancialRecordSchema.safeParse(payload);
@@ -64,6 +64,3 @@ export const updateRecord = async (
   }
   return true;
 };
-
-export type FinancialRecord = NonNullable<Awaited<ReturnType<typeof getRecords>>>[0];
-export type AddFinancialRecordPayloadType = OmitId<FinancialRecord>;

@@ -13,3 +13,8 @@ type NavItemType = {
 };
 
 type OmitId<T> = Omit<T, 'id'>;
+
+type FinancialRecordType = NonNullable<
+  Awaited<ReturnType<typeof import('../app/app/(modules)/budget/actions').getRecords>>
+>[0];
+type AddFinancialRecordPayloadType = Omit<OmitId<FinancialRecordType>, 'profiles'>;
