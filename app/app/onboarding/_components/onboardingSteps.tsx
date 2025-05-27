@@ -13,12 +13,12 @@ import FamilyInfoForm from './familyInfoForm';
 import InviteMembersForm from './inviteMembersForm';
 import StepProgress from './stepProgress';
 import { useProfile } from '@/utils/context/profileContext';
+import useCheckWindow from '@/utils/hooks/useCheckWindow';
 
 const OnboardingSteps = () => {
   const [step, setStep] = useState(1);
-  const [hasWindow, setHasWindow] = useState(false);
-
   const { family: familyFromContext } = useProfile();
+  const hasWindow = useCheckWindow();
   const [family, setFamily] = useState<FamilyType | undefined>();
   const router = useRouter();
   const origin = hasWindow ? window.location.origin : '';
@@ -26,14 +26,6 @@ const OnboardingSteps = () => {
     () => (family ? `${origin}/app/invite/${family.invitation_token ?? ''}` : ''),
     [family, origin],
   );
-
-  /**
-   * Check if window is available
-   */
-  useEffect(() => {
-    // Now safe to access `window`
-    setHasWindow(true);
-  }, []);
 
   /**
    * Manually visiting onboarding, who has family

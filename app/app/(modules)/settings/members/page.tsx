@@ -7,14 +7,16 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/utils/clsx';
 import { useProfile } from '@/utils/context/profileContext';
+import useCheckWindow from '@/utils/hooks/useCheckWindow';
 import { Check, Copy, Pencil, User, UserPlus2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 const Members = () => {
   const [copied, setCopied] = useState(false);
+  const hasWindow = useCheckWindow();
   const { members, membersImageMap, family, isLoading } = useProfile();
-  const origin = window.location.origin;
+  const origin = hasWindow ? window.location.origin : '';
   const inviteLink = useMemo(
     () => (family ? `${origin}/app/invite/${family.invitation_token ?? ''}` : ''),
     [family, origin],
