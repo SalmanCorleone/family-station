@@ -1,12 +1,11 @@
 import { createClient } from '@/utils/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest, context: { params: { token: string } }) {
-  let params = context.params;
+export async function GET(request: NextRequest, context: { params: Promise<{ token: string }> }) {
   const host = request.headers.get('host');
   const protocol = request.headers.get('x-forwarded-proto') || 'http';
   const baseUrl = `${protocol}://${host}`;
-  params = await params;
+  const params = await context.params;
   const invitationToken = params.token;
 
   if (!invitationToken) {
