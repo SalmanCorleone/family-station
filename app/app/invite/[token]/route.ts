@@ -1,7 +1,8 @@
 import { createClient } from '@/utils/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest, { params }: { params: { token: string } }) {
+export async function GET(request: NextRequest, context: { params: { token: string } }) {
+  let params = context.params;
   const host = request.headers.get('host');
   const protocol = request.headers.get('x-forwarded-proto') || 'http';
   const baseUrl = `${protocol}://${host}`;
