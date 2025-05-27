@@ -18,3 +18,11 @@ type FinancialRecordType = NonNullable<
   Awaited<ReturnType<typeof import('../app/app/(modules)/budget/actions').getRecords>>
 >[0];
 type AddFinancialRecordPayloadType = Omit<OmitId<FinancialRecordType>, 'profiles'>;
+
+type ChatMessageType = NonNullable<
+  Awaited<ReturnType<typeof import('../app/app/(modules)/chat/actions').getChatHistory>>
+>[0];
+type ChatMessagePayloadType = Omit<
+  ChatMessageType,
+  'profiles' | 'created_at' | 'updated_at' | 'id' | 'status' | 'is_deleted'
+>;

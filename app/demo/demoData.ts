@@ -518,4 +518,5 @@ export const DEMO_DATA = {
       ],
     },
   ],
+  CHAT_HISTORY: [],
 };

@@ -1,8 +1,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChatMessageType } from '../actions';
 import { formatDate } from '@/utils';
-import { useProfile } from '@/utils/context/profileContext';
 import { useMemo } from 'react';
+import { DEMO_DATA } from '../../demoData';
+
+const profile = DEMO_DATA.PROFILE;
+const membersImageMap = DEMO_DATA.MEMBERS_IMAGE_MAP;
 
 interface IChatMessageProps {
   message: ChatMessageType;
@@ -10,10 +12,9 @@ interface IChatMessageProps {
 }
 
 const ChatMessage = ({ message, isMyMessage }: IChatMessageProps) => {
-  const { profile, membersImageMap } = useProfile();
   const avatarURLFromContext = useMemo(
-    () => (message.profile_id ? membersImageMap?.[message.profile_id] : undefined),
-    [message.profile_id, membersImageMap],
+    () => (message.profile_id ? (membersImageMap as Record<string, string>)?.[message.profile_id] : undefined),
+    [message.profile_id],
   );
 
   return (

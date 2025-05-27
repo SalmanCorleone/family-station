@@ -10,7 +10,7 @@ import { createClient } from '@/utils/supabase/client';
 import { Send } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { ChatMessagePayloadType, ChatMessageType, postChatMessage } from '../actions';
+import { postChatMessage } from '../actions';
 import ChatMessage from './chatMessage';
 import EmptyChat from './emptyChat';
 

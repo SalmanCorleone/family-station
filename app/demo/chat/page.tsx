@@ -1,8 +1,8 @@
+import { DEMO_DATA } from '../demoData';
 import ChatInterface from './_components/chatInterface';
-import { getChatHistory } from './actions';
 
 const Chat = async () => {
-  const chatHistory = await getChatHistory();
+  const chatHistory = DEMO_DATA.CHAT_HISTORY;
 
   return (
     <div className="h-full overflow-y-auto">

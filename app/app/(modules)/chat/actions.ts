@@ -42,9 +42,3 @@ export const postChatMessage = async (payload: ChatMessagePayloadType) => {
   console.log('message posted');
   return { success: true };
 };
-
-export type ChatMessageType = NonNullable<Awaited<ReturnType<typeof getChatHistory>>>[0];
-export type ChatMessagePayloadType = Omit<
-  ChatMessageType,
-  'profiles' | 'created_at' | 'updated_at' | 'id' | 'status' | 'is_deleted'
->;

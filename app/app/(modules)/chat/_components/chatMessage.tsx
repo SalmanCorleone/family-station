@@ -1,5 +1,4 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChatMessageType } from '../actions';
 import { formatDate } from '@/utils';
 import { useProfile } from '@/utils/context/profileContext';
 import { useMemo } from 'react';

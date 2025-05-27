@@ -5,15 +5,16 @@ import type React from 'react';
 import PageHeader from '@/components/pageHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useProfile } from '@/utils/context/profileContext';
-import { createClient } from '@/utils/supabase/client';
 import { Send } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { toast } from 'sonner';
-import { ChatMessagePayloadType, ChatMessageType, postChatMessage } from '../actions';
 import ChatMessage from './chatMessage';
 import EmptyChat from './emptyChat';
+import dayjs from 'dayjs';
+import { DEMO_DATA } from '../../demoData';
 
+const profile = DEMO_DATA.PROFILE;
+const members = DEMO_DATA.MEMBERS;
+const membersImageMap = DEMO_DATA.MEMBERS_IMAGE_MAP;
 interface IChatInterfaceProps {
   chatHistory: ChatMessageType[];
 }
@@ -22,7 +23,6 @@ const ChatInterface = ({ chatHistory }: IChatInterfaceProps) => {
   const [messages, setMessages] = useState<ChatMessageType[]>(chatHistory);
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { profile } = useProfile();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -32,48 +32,43 @@ const ChatInterface = ({ chatHistory }: IChatInterfaceProps) => {
     scrollToBottom();
   }, [messages]);
 
-  useEffect(() => {
-    const supabase = createClient();
-    const channel = supabase
-      .channel('chat-history-notif')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'chat_history',
-        },
-        (payload: { new: ChatMessageType }) => {
-          setMessages((prev) => (payload.new.family_id === profile?.family_id ? [...prev, payload.new] : prev));
-        },
-      )
-      .subscribe();
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [profile?.family_id]);
-
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim()) {
-      console.log('trim blokced me');
+      console.log('It was a empty string');
       return;
     }
     if (!profile?.id) {
       console.log('no profile id');
       return;
     }
-    const payload: ChatMessagePayloadType = {
+    const payload: ChatMessageType = {
       text: newMessage,
       profile_id: profile?.id,
       family_id: profile?.family_id,
+      created_at: dayjs().toISOString(),
+      updated_at: null,
+      id: messages.length + 1,
+      is_deleted: false,
+      status: null,
+      profiles: profile,
     };
-    const res = await postChatMessage(payload);
-    if (!res) {
-      toast.error('Oops! Something went wrong!');
-      return;
-    }
+    setMessages((prev) => [...prev, payload]);
     setNewMessage('');
+    setTimeout(() => {
+      const usersWhoCanReply = Object.keys(membersImageMap).filter((key) => key !== profile?.id);
+      const randomIndex = Math.floor(Math.random() * 10) % usersWhoCanReply.length;
+      const userId = usersWhoCanReply[randomIndex];
+      const replyPayload: ChatMessageType = {
+        ...payload,
+        text: 'This is a typical reply',
+        profile_id: userId,
+        family_id: profile?.family_id,
+        id: messages.length + 1,
+        profiles: members.find((member) => member.profile_id === userId)?.profiles || members[1].profiles,
+      };
+      setMessages((prev) => [...prev, replyPayload]);
+    }, 1500);
   };
 
   return (
