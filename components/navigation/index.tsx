@@ -143,11 +143,7 @@ const Navigation = ({ children }: INavigationProps) => {
           <Link href={navItem.href} key={navItem.href} onClick={() => setActiveNavItem(navItem)}>
             <div className={cn('flex flex-col gap-1 items-center justify-start p-2 relative')}>
               {activeNavItem?.href === navItem.href && (
-                <motion.div
-                  layoutId="activeNavMobile"
-                  id="activeNavMobile"
-                  className="inset-0 absolute bg-lightPale shadow-sm rounded-lg"
-                />
+                <motion.div layoutId="activeNavMobile" id="activeNavMobile" className="inset-0 absolute bg-lightPale" />
               )}
               <div className="z-10 relative">
                 {navItem.name === 'Chat' && notificationCount > 0 && (

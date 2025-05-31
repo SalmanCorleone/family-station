@@ -5,22 +5,6 @@ import { createClient } from '@/utils/supabase/server';
 
 export const createFamily = async (data: { title: string; image?: File }) => {
   const supabase = await createClient();
-
-  console.log('craeting family');
-  // 1, upload image if available
-  // let imageUrl = '';
-  // if (data.image) {
-  //   const { data: image, error } = await supabase.storage
-  //     .from('family-images')
-  //     .upload(`family_${getRandomInt()}_${data.image.name}`, data.image, { upsert: false });
-  //   if (error) {
-  //     console.log('storage error', error);
-  //     return;
-  //   }
-  //   imageUrl = image.fullPath;
-  // }
-
-  // 2, create family
   const payload = {
     title: data.title,
   };
@@ -36,7 +20,9 @@ export type FamilyType = NonNullable<Awaited<ReturnType<typeof createFamily>>>;
 
 export const updateFamily = async (data: { id: number; title: string; image?: File; imageName?: string }) => {
   const supabase = await createClient();
-  // 1, upload image if available
+  /**
+   *  1, upload image if available
+   */
   let imageUrl = '';
   if (data.image) {
     const { data: image, error } = await supabase.storage
@@ -49,7 +35,9 @@ export const updateFamily = async (data: { id: number; title: string; image?: Fi
     }
     imageUrl = image.fullPath;
   }
-  // 2, update family
+  /**
+   * 2, update family
+   */
   const payload = {
     title: data.title,
     image: imageUrl,
@@ -62,6 +50,21 @@ export const updateFamily = async (data: { id: number; title: string; image?: Fi
     .single();
   if (error) {
     console.log('update family error', error);
+    return false;
+  }
+  return updatedFamily;
+};
+
+export const updateFamilySettings = async ({ id, settings }: { id: number; settings: FamilySettingsType }) => {
+  const supabase = await createClient();
+  const { data: updatedFamily, error } = await supabase
+    .from('family')
+    .update({ settings })
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) {
+    console.log('update family settings error', error);
     return false;
   }
   return updatedFamily;

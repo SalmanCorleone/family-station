@@ -1,8 +1,10 @@
 'use client';
 
 import { getFamilyMembers, getProfile } from '@/app/app/(modules)/settings/account/actions';
+import { updateFamilySettings } from '@/app/app/onboarding/actions';
 import { createContext, Dispatch, ReactNode, useCallback, useContext, useEffect, useReducer } from 'react';
 import { createClient } from '../supabase/client';
+import { toast } from 'sonner';
 
 type Profile = ProfileType & { isImageInBucket?: boolean };
 type Family = ProfileType['family'];
@@ -54,6 +56,7 @@ const profileReducer = (state: State, action: Action): State => {
 type ProfileContextType = State & {
   dispatch: Dispatch<Action>;
   refetchProfile: () => Promise<void>;
+  updateFamilySettingsInContext: (settings: FamilySettingsType) => Promise<void>;
 };
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
@@ -121,7 +124,32 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
     refetchProfile();
   }, [refetchProfile, state.profile]);
 
-  return <ProfileContext.Provider value={{ ...state, dispatch, refetchProfile }}>{children}</ProfileContext.Provider>;
+  const updateFamilySettingsInContext = useCallback(
+    async (settings: FamilySettingsType) => {
+      if (!state.family) return;
+      try {
+        dispatch({ type: 'SET_LOADING', payload: true });
+        const payload = { id: state.family?.id, settings };
+        const updatedFamily = await updateFamilySettings(payload);
+        if (!updatedFamily) {
+          console.log('Failed to update data!');
+          return;
+        }
+        dispatch({ type: 'SET_FAMILY', payload: { ...state.family, settings: updatedFamily.settings } });
+        toast.success('Successfully updated data!');
+      } finally {
+        dispatch({ type: 'SET_LOADING', payload: false });
+        return;
+      }
+    },
+    [state.family],
+  );
+
+  return (
+    <ProfileContext.Provider value={{ ...state, dispatch, refetchProfile, updateFamilySettingsInContext }}>
+      {children}
+    </ProfileContext.Provider>
+  );
 };
 
 export const useProfile = () => {

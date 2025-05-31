@@ -1,6 +1,6 @@
 export const DEMO_DATA = {
   PROFILE: {
-    avatar_url: '/hal.jpg',
+    avatar_url: '/hal.png',
     email: 'hal@example.com',
     family_id: 1,
     full_name: 'Hal',
@@ -24,7 +24,7 @@ export const DEMO_DATA = {
     title: 'Malcolm family',
   },
   MEMBERS_IMAGE_MAP: {
-    'user-hal-001': '/hal.jpg',
+    'user-hal-001': '/hal.png',
     'user-louis-002': '/lois.jpg',
   },
   MEMBERS: [
@@ -36,7 +36,7 @@ export const DEMO_DATA = {
       is_owner: true,
       profile_id: 'user-hal-001',
       profiles: {
-        avatar_url: '/hal.jpg',
+        avatar_url: '/hal.png',
         email: 'hal@example.com',
         family_id: 1,
         full_name: 'Hal',
@@ -100,7 +100,7 @@ export const DEMO_DATA = {
       profiles: {
         id: 'user-hal-001',
         full_name: 'Hal',
-        avatar_url: '/hal.jpg',
+        avatar_url: '/hal.png',
       },
     },
     {
@@ -114,7 +114,7 @@ export const DEMO_DATA = {
       profiles: {
         id: 'user-hal-001',
         full_name: 'Hal',
-        avatar_url: '/hal.jpg',
+        avatar_url: '/hal.png',
       },
     },
     {
@@ -156,7 +156,7 @@ export const DEMO_DATA = {
       profiles: {
         id: 'user-hal-001',
         full_name: 'Hal',
-        avatar_url: '/hal.jpg',
+        avatar_url: '/hal.png',
       },
     },
     {
@@ -226,7 +226,7 @@ export const DEMO_DATA = {
       profiles: {
         id: 'user-hal-001',
         full_name: 'Hal',
-        avatar_url: '/hal.jpg',
+        avatar_url: '/hal.png',
       },
     },
     {
@@ -254,7 +254,7 @@ export const DEMO_DATA = {
       profiles: {
         id: 'user-hal-001',
         full_name: 'Hal',
-        avatar_url: '/hal.jpg',
+        avatar_url: '/hal.png',
       },
     },
     {
@@ -282,7 +282,7 @@ export const DEMO_DATA = {
       profiles: {
         id: 'user-hal-001',
         full_name: 'Hal',
-        avatar_url: '/hal.jpg',
+        avatar_url: '/hal.png',
       },
     },
     {
@@ -296,7 +296,7 @@ export const DEMO_DATA = {
       profiles: {
         id: 'user-hal-001',
         full_name: 'Hal',
-        avatar_url: '/hal.jpg',
+        avatar_url: '/hal.png',
       },
     },
     {
@@ -310,7 +310,7 @@ export const DEMO_DATA = {
       profiles: {
         id: 'user-hal-001',
         full_name: 'Hal',
-        avatar_url: '/hal.jpg',
+        avatar_url: '/hal.png',
       },
     },
     {

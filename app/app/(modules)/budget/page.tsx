@@ -15,6 +15,7 @@ import TabSelector from './_components/tabSelector';
 import { cn } from '@/utils/clsx';
 import TimelineChart from './_components/timelineChart';
 import { motion } from 'framer-motion';
+import BudgetProgress from './_components/budgetProgress';
 
 const Budget = () => {
   const {
@@ -28,6 +29,10 @@ const Budget = () => {
     setActiveRecord,
     activeTab,
     setActiveTab,
+    totalSpent,
+    budgetThisMonth,
+    updateFamilySettingsInContext,
+    isLoading,
   } = useFinancialRecords();
   const editRecordDialogRef = useRef<HTMLButtonElement>(null);
 
@@ -75,7 +80,12 @@ const Budget = () => {
 
         {Object.values(spendingByCategory || {})?.length ? (
           <div className={cn('col-span-1 flex flex-col gap-4', { 'hidden xl:flex': activeTab === 'Records' })}>
-            {!!spendingByCategory && <BreakdownChart spendingByCategory={spendingByCategory} />}
+            <BudgetProgress
+              {...{ activeMonthIndex, totalSpent, budget: budgetThisMonth, updateFamilySettingsInContext, isLoading }}
+            />
+            {!!spendingByCategory && (
+              <BreakdownChart spendingByCategory={spendingByCategory} {...{ activeMonthIndex }} />
+            )}
             {!!groupedByDate && <TimelineChart {...{ groupedByDate, activeMonthIndex }} />}
           </div>
         ) : (

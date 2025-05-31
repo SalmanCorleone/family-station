@@ -1,4 +1,4 @@
-import { TrendingUp } from 'lucide-react';
+import { ChartNoAxesColumn, TrendingUp } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -43,8 +43,13 @@ const TimelineChart = ({ groupedByDate, activeMonthIndex }: ITimelineChartProps)
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Spending by day</CardTitle>
-        <CardDescription>{dayjs().add(activeMonthIndex, 'month').format('MMMM YYYY')}</CardDescription>
+        <div className="flex items-center gap-2">
+          <ChartNoAxesColumn className="h-8 w-8" stroke="var(--color-blue)" />
+          <div>
+            <CardTitle>Spending by day</CardTitle>
+            <CardDescription>{dayjs().add(activeMonthIndex, 'month').format('MMMM YYYY')}</CardDescription>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>

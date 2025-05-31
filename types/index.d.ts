@@ -30,6 +30,12 @@ type ChatMessagePayloadType = Omit<
 type ProfileType = NonNullable<
   Awaited<ReturnType<typeof import('../app/app/(modules)/settings/account/actions').getProfile>>
 >;
+
 type FamilyMemberType = NonNullable<
   Awaited<ReturnType<typeof import('../app/app/(modules)/settings/account/actions').getFamilyMembers>>
 >[0];
+
+type FamilySettingsType = {
+  budget: Record<string, number>;
+}
+

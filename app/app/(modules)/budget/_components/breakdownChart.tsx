@@ -2,16 +2,19 @@
 
 import { Label, Pie, PieChart } from 'recharts';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { colors } from '@/utils/const';
+import dayjs from 'dayjs';
+import { ChartPie } from 'lucide-react';
 import { useMemo } from 'react';
 
 interface IBreakdownChartProps {
   spendingByCategory: Record<string, number>;
+  activeMonthIndex: number;
 }
 
-const BreakdownChart = ({ spendingByCategory }: IBreakdownChartProps) => {
+const BreakdownChart = ({ spendingByCategory, activeMonthIndex }: IBreakdownChartProps) => {
   const totalAmount = useMemo(
     () => Object.values(spendingByCategory).reduce((acc, curr) => acc + curr, 0),
     [spendingByCategory],
@@ -32,8 +35,13 @@ const BreakdownChart = ({ spendingByCategory }: IBreakdownChartProps) => {
   return (
     <Card className="flex flex-col gap-2">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Spending by category</CardTitle>
-        {/* <CardDescription></CardDescription> */}
+        <div className="flex items-center gap-2">
+          <ChartPie className="h-8 w-8" stroke="var(--color-green)" />
+          <div>
+            <CardTitle>Spending by category</CardTitle>
+            <CardDescription>{dayjs().add(activeMonthIndex, 'month').format('MMMM YYYY')}</CardDescription>
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">

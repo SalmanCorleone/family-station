@@ -83,7 +83,7 @@ export type Database = {
           image: string | null;
           invitation_token: string | null;
           owner: string | null;
-          setings: Json | null;
+          settings: Json | null;
           title: string | null;
         };
         Insert: {
@@ -92,7 +92,7 @@ export type Database = {
           image?: string | null;
           invitation_token?: string | null;
           owner?: string | null;
-          setings?: Json | null;
+          settings?: Json | null;
           title?: string | null;
         };
         Update: {
@@ -101,7 +101,7 @@ export type Database = {
           image?: string | null;
           invitation_token?: string | null;
           owner?: string | null;
-          setings?: Json | null;
+          settings?: Json | null;
           title?: string | null;
         };
         Relationships: [];

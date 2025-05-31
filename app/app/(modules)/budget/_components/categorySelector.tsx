@@ -8,14 +8,17 @@ interface ICategorySelector {
   setCategory: (category: CategoryType) => void;
 }
 
-const categoriesGroupedByType = categoryList.reduce((acc, curr) => {
-  const { type } = curr;
-  if (!acc[type]) {
-    acc[type] = [];
-  }
-  acc[type].push(curr);
-  return acc;
-}, {} as { [key in CATEGORY_TYPE]: CategoryType[] });
+const categoriesGroupedByType = categoryList.reduce(
+  (acc, curr) => {
+    const { type } = curr;
+    if (!acc[type]) {
+      acc[type] = [];
+    }
+    acc[type].push(curr);
+    return acc;
+  },
+  {} as { [key in CATEGORY_TYPE]: CategoryType[] },
+);
 
 const CategorySelector = ({ activeCategory, setCategory }: ICategorySelector) => {
   return (
