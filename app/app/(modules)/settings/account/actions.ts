@@ -74,6 +74,3 @@ export const updateProfile = async (data: {
   }
   return true;
 };
-
-export type ProfileType = NonNullable<Awaited<ReturnType<typeof getProfile>>>;
-export type FamilyMemberType = NonNullable<Awaited<ReturnType<typeof getFamilyMembers>>>[0];

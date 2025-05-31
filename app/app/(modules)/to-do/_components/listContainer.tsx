@@ -34,7 +34,7 @@ const ListContainer = () => {
   const [loading, setLoading] = useState(false);
   const [activeTask, setActiveTask] = useState<Tables<'tasks'>>();
   const ref = useRef<HTMLButtonElement>(null);
-  const { family } = useProfile();
+  const { family, members, membersImageMap } = useProfile();
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -139,12 +139,16 @@ const ListContainer = () => {
   };
 
   const renderTasks = (tasks: TaskType[]) =>
-    tasks.map((task) => (
+    tasks.map((task, idx) => (
       <TaskItem
         key={task.id}
+        index={idx}
         task={task}
+        {...{ members, membersImageMap }}
         onClick={() => onTaskClick(task)}
-        markAsCompleted={() => markTaskAsCompleted(task)}
+        markAsCompleted={() => {
+          markTaskAsCompleted(task);
+        }}
       />
     ));
 

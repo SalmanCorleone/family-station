@@ -17,6 +17,7 @@ import {
   TreePalm,
   TvMinimalPlay,
 } from 'lucide-react';
+import { cubicBezier } from 'framer-motion';
 
 const borderColor = 'var(--color-gray-700)';
 
@@ -140,3 +141,6 @@ export const colors = [
 ];
 
 export const autoSaveInterval = 5; // seconds
+
+export const EASE_SMOOTH = cubicBezier(0.77, 0, 0.175, 1);
+export const TASK_ITEM_HEIGHT = 56;

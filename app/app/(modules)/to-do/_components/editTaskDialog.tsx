@@ -6,7 +6,7 @@ import { formatDate } from '@/utils';
 import { cn } from '@/utils/clsx';
 import { useProfile } from '@/utils/context/profileContext';
 import { Tables } from '@/utils/supabase/db';
-import { User } from 'lucide-react';
+import { User, Zap } from 'lucide-react';
 import { forwardRef, Ref, useCallback, useEffect, useState } from 'react';
 import { updateTask } from '../action';
 import { toast } from 'sonner';
@@ -74,7 +74,8 @@ const EditTaskDialog = forwardRef(({ task, onSubmit }: IEditTaskDialogProps, ref
                   onClick={() => setLocalTask((prev) => ({ ...prev, is_urgent: !prev.is_urgent }))}
                   className={cn({ 'bg-orange text-white hover:bg-orange/80': localTask?.is_urgent })}
                 >
-                  {'Urgent'}
+                  {localTask?.is_urgent && <Zap fill="var(--color-orange)" />}{' '}
+                  {localTask?.is_urgent ? 'Urgent' : 'Mark as urgent'}
                 </Button>
               </div>
               <div className="flex gap-2">

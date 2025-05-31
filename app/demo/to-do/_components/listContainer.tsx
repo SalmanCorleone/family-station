@@ -16,16 +16,18 @@ import { useCallback, useRef, useState } from 'react';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { ListType, TaskType } from '@/app/app/(modules)/to-do/action';
 import PageHeader from '@/components/pageHeader';
-import { getRandomInt } from '@/utils';
+import { delay, getRandomInt } from '@/utils';
 import dayjs from 'dayjs';
 import { Loader } from 'lucide-react';
 import { DEMO_DATA } from '../../demoData';
 import EditTaskDialog from './editTaskDialog';
-import List from './list';
-import TaskItem from './taskItem';
 import AddTaskForm from '@/app/app/(modules)/to-do/_components/addTaskForm';
+import List from '@/app/app/(modules)/to-do/_components/list';
+import TaskItem from '@/app/app/(modules)/to-do/_components/taskItem';
 
 const profile = DEMO_DATA.PROFILE;
+const members = DEMO_DATA.MEMBERS;
+const membersImageMap = DEMO_DATA.MEMBERS_IMAGE_MAP;
 
 const ListContainer = () => {
   const [lists, setLists] = useState<ListType[]>(DEMO_DATA.LISTS);
@@ -63,9 +65,17 @@ const ListContainer = () => {
         ...listToUpdate,
         tasks: listToUpdate.tasks.map((t) => (t.id === task.id ? { ...t, is_completed: !t.is_completed } : t)),
       };
-      trigger();
+      // trigger();
       setLists(
         [...lists.filter((list) => list.id !== task.list_id), updatedList].sort(
+          (a, b) => (a.index || 0) - (b.index || 0),
+        ),
+      );
+      trigger();
+      await delay(300);
+      const filteredList = { ...listToUpdate, tasks: listToUpdate.tasks.filter((t) => t.id !== task.id) };
+      setLists(
+        [...lists.filter((list) => list.id !== task.list_id), filteredList].sort(
           (a, b) => (a.index || 0) - (b.index || 0),
         ),
       );
@@ -121,12 +131,16 @@ const ListContainer = () => {
   };
 
   const renderTasks = (tasks: TaskType[]) =>
-    tasks.map((task) => (
+    tasks.map((task, idx) => (
       <TaskItem
+        index={idx}
         key={task.id}
         task={task}
         onClick={() => onTaskClick(task)}
-        markAsCompleted={() => markTaskAsCompleted(task)}
+        markAsCompleted={() => {
+          markTaskAsCompleted(task);
+        }}
+        {...{ members, membersImageMap }}
       />
     ));
 

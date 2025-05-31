@@ -24,3 +24,5 @@ export const getFileExtension = (file: File) => {
   const type = file.type;
   return type.split('/')[1];
 };
+
+export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

@@ -26,3 +26,10 @@ type ChatMessagePayloadType = Omit<
   ChatMessageType,
   'profiles' | 'created_at' | 'updated_at' | 'id' | 'status' | 'is_deleted'
 >;
+
+type ProfileType = NonNullable<
+  Awaited<ReturnType<typeof import('../app/app/(modules)/settings/account/actions').getProfile>>
+>;
+type FamilyMemberType = NonNullable<
+  Awaited<ReturnType<typeof import('../app/app/(modules)/settings/account/actions').getFamilyMembers>>
+>[0];
