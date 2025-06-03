@@ -18,7 +18,7 @@ const List = ({ list, renderTasks, renderAddTaskForm }: IListProps) => {
       ref={listRef}
       layout
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-1">
         <p className="text-xl font-medium">{list.icon}</p>
         <p className="text-xl font-medium">{list.title}</p>
       </div>

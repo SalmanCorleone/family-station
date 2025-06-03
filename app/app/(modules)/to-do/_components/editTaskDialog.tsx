@@ -1,15 +1,15 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { formatDate } from '@/utils';
 import { cn } from '@/utils/clsx';
 import { useProfile } from '@/utils/context/profileContext';
 import { Tables } from '@/utils/supabase/db';
-import { User, Zap } from 'lucide-react';
+import { Trash2, User, Zap } from 'lucide-react';
 import { forwardRef, Ref, useCallback, useEffect, useState } from 'react';
-import { updateTask } from '../action';
 import { toast } from 'sonner';
+import { updateTask } from '../action';
 
 interface IEditTaskDialogProps {
   task?: Tables<'tasks'>;
@@ -61,12 +61,9 @@ const EditTaskDialog = forwardRef(({ task, onSubmit }: IEditTaskDialogProps, ref
         <Button className="hidden" variant={'secondary'} ref={ref} />
       </DialogTrigger>
       <DialogContent className="bg-white max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Edit Task</DialogTitle>
-        </DialogHeader>
         {task && (
           <div className="flex flex-col gap-4">
-            <div className="flex justify-between gap-2">
+            <div className="flex justify-start gap-2">
               <div className="flex gap-2">
                 <Button
                   size={'sm'}
@@ -74,12 +71,13 @@ const EditTaskDialog = forwardRef(({ task, onSubmit }: IEditTaskDialogProps, ref
                   onClick={() => setLocalTask((prev) => ({ ...prev, is_urgent: !prev.is_urgent }))}
                   className={cn({ 'bg-orange text-white hover:bg-orange/80': localTask?.is_urgent })}
                 >
-                  {localTask?.is_urgent && <Zap fill="var(--color-orange)" />}{' '}
+                  <Zap fill={localTask?.is_urgent ? 'white' : 'var(--color-orange)'} />{' '}
                   {localTask?.is_urgent ? 'Urgent' : 'Mark as urgent'}
                 </Button>
               </div>
               <div className="flex gap-2">
                 <Button size={'sm'} variant={'secondary'} className="text-orange">
+                  <Trash2 />
                   Delete
                 </Button>
               </div>

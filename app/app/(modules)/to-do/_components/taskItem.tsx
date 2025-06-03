@@ -37,6 +37,7 @@ const TaskItem = ({ task, onClick, markAsCompleted, members, membersImageMap }: 
         {...attributes}
         {...listeners}
         layout
+        layoutId="task_item"
       >
         <div
           onClick={(e) => {

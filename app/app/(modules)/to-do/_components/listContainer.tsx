@@ -141,7 +141,7 @@ const ListContainer = () => {
   const renderTasks = (tasks: TaskType[]) =>
     tasks.map((task, idx) => (
       <TaskItem
-        key={task.id}
+        key={'task_' + task.id}
         index={idx}
         task={task}
         {...{ members, membersImageMap }}
@@ -219,12 +219,12 @@ const ListContainer = () => {
       <div className="flex gap-4 w-min p-4">
         {lists?.map((list) => (
           <SortableContext
-            key={list.id}
+            key={'list_' + list.id}
             // items={list.tasks.map((_, index) => `${list.id}:${index}`)}
             items={list.tasks.map((task) => `${task.id}`)}
             strategy={verticalListSortingStrategy}
           >
-            <List key={list.id} {...{ renderAddTaskForm, renderTasks, list }} />
+            <List {...{ renderAddTaskForm, renderTasks, list }} />
           </SortableContext>
         ))}
         <DragOverlay>

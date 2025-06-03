@@ -59,7 +59,7 @@ const Navigation = ({ children }: INavigationProps) => {
 
         <Link href={'/app/settings/family'} onClick={() => setActiveNavItem(undefined)}>
           <div className="flex flex-col items-center justify-center gap-1 p-2 mt-2 rounded-2xl bg-white shadow-sm">
-            <div className="relative w-full h-20 rounded-lg overflow-hidden border border-ash/50">
+            <div className="relative w-full h-20 rounded-lg overflow-hidden">
               <Image
                 src={family?.image ?? '/family.png'}
                 alt={family?.title ?? 'my-family'}

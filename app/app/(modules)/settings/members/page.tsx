@@ -46,9 +46,9 @@ const Members = () => {
           {members?.map((member) => (
             <div
               key={member.id}
-              className="col-span-1 flex flex-col items-center justify-center gap-1 p-4 rounded-lg border border-gray-200 relative"
+              className="col-span-1 flex flex-col items-center justify-center gap-1 p-4 rounded-lg shadow relative"
             >
-              <div className="absolute top-2 right-2 rounded-md flex items-center justify-center w-8 h-8 border border-gray-200 hover:bg-muted cursor-pointer">
+              <div className="absolute top-2 right-2 rounded-md flex items-center justify-center w-8 h-8 shadow hover:bg-muted cursor-pointer text-ash/50">
                 <Pencil className="h-5 w-5" />
               </div>
               <Avatar className="h-20 w-20">
@@ -81,7 +81,7 @@ const Members = () => {
             </div>
           ))}
           {/* Invite member */}
-          <div className="col-span-1 flex flex-col items-center justify-center gap-1 p-4 rounded-lg border border-gray-200">
+          <div className="col-span-1 flex flex-col items-center justify-center gap-1 p-4 rounded-lg shadow">
             <Avatar className="h-20 w-20">
               <AvatarFallback>
                 <UserPlus2 />
