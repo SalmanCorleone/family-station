@@ -30,6 +30,8 @@ const Budget = () => {
     setActiveTab,
     addRecord,
   } = useFinancialRecords();
+
+  console.log({ groupedByDate });
   const editRecordDialogRef = useRef<HTMLButtonElement>(null);
 
   return (
@@ -76,7 +78,9 @@ const Budget = () => {
 
         {Object.values(spendingByCategory || {})?.length ? (
           <div className={cn('col-span-1 flex flex-col gap-4', { 'hidden xl:flex': activeTab === 'Records' })}>
-            {!!spendingByCategory && <BreakdownChart spendingByCategory={spendingByCategory} />}
+            {!!spendingByCategory && (
+              <BreakdownChart activeMonthIndex={activeMonthIndex} spendingByCategory={spendingByCategory} />
+            )}
             {!!groupedByDate && <TimelineChart {...{ groupedByDate, activeMonthIndex }} />}
           </div>
         ) : (

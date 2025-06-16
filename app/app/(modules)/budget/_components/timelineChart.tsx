@@ -15,6 +15,7 @@ interface ITimelineChartProps {
 }
 
 const TimelineChart = ({ groupedByDate, activeMonthIndex }: ITimelineChartProps) => {
+  console.log({ groupedByDate, activeMonthIndex });
   const chartData = useMemo(() => {
     // make array of dates in given month
     const firstDayOfGivenMonth = dayjs().add(activeMonthIndex, 'month').startOf('month');
@@ -26,6 +27,8 @@ const TimelineChart = ({ groupedByDate, activeMonthIndex }: ITimelineChartProps)
     }
     return data;
   }, [groupedByDate, activeMonthIndex]);
+
+  console.log({ chartData });
 
   const mostSpentData = useMemo(() => {
     const max = { date: '', amount: 0 };

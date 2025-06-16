@@ -26,7 +26,11 @@ const Navigation = ({ children }: INavigationProps) => {
 
   useEffect(() => {
     if (!pathname) return;
-    const currentNav = navItemList.find((navItem) => pathname === navItem.href);
+    const currentNav = navItemList.find((navItem) => {
+      const href = navItem.href.replace('/app', '/demo');
+      console.log({ pathname, href });
+      return pathname === href;
+    });
     if (currentNav) setActiveNavItem(currentNav);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -36,7 +40,7 @@ const Navigation = ({ children }: INavigationProps) => {
       <div className="hidden xl:flex flex-col bg-light px-2 m-2 shadow gap-4 rounded-2xl max-w-[14vw] min-w-[12vw]">
         {/* Header */}
 
-        <Link href={'/demo/settings/family'} onClick={() => setActiveNavItem(undefined)}>
+        {/* <Link href={'/demo/settings/family'} onClick={() => setActiveNavItem(undefined)}>
           <div className="flex flex-col items-center justify-center gap-1 p-2 mt-2 rounded-2xl bg-white shadow-sm">
             <div className="relative w-full h-20 rounded-lg overflow-hidden border border-ash/50">
               <Image
@@ -50,7 +54,7 @@ const Navigation = ({ children }: INavigationProps) => {
               <p className="text-md font-semibold">{family?.title}</p>
             </div>
           </div>
-        </Link>
+        </Link> */}
 
         {/* Nav items */}
         <div className="flex-1 flex flex-col justify-center">
@@ -90,7 +94,7 @@ const Navigation = ({ children }: INavigationProps) => {
         </div>
 
         {/* Account */}
-        <Link href="/demo/settings/account" onClick={() => setActiveNavItem(undefined)}>
+        {/* <Link href="/demo/settings/account" onClick={() => setActiveNavItem(undefined)}>
           <div className="flex items-center justify-between gap-2 p-2 mb-2 rounded-2xl bg-white shadow-sm">
             <div className="flex gap-2 items-center">
               {isLoading ? (
@@ -108,7 +112,7 @@ const Navigation = ({ children }: INavigationProps) => {
               </div>
             </div>
           </div>
-        </Link>
+        </Link> */}
       </div>
 
       {/* Content */}
