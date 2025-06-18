@@ -37,5 +37,8 @@ type FamilyMemberType = NonNullable<
 
 type FamilySettingsType = {
   budget: Record<string, number>;
-}
+};
 
+type DashboardDataType = NonNullable<
+  Awaited<ReturnType<typeof import('../app/app/(modules)/actions').getDashboardData>>
+>;

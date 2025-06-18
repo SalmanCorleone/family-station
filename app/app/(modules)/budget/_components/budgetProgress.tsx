@@ -120,7 +120,7 @@ const BudgetProgress = ({
         ) : (
           <div className="flex flex-col gap-4 items-center border rounded-2xl py-4 border-ash/10">
             <div className="text-muted-foreground text-sm">Track your spending by setting up a budget</div>
-            <Button>
+            <Button onClick={() => setOpen(true)}>
               <Plus /> Create budget
             </Button>
           </div>

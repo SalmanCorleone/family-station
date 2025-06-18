@@ -6,7 +6,6 @@ import { useProfile } from '@/utils/context/profileContext';
 import { createClient } from '@/utils/supabase/client';
 import { motion } from 'framer-motion';
 import { Loader } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -20,7 +19,7 @@ const Navigation = ({ children }: INavigationProps) => {
   const pathname = usePathname();
   const [activeNavItem, setActiveNavItem] = useState<NavItemType>();
   const [notificationCount, setNotificationCount] = useState(0);
-  const { profile, family, isLoading } = useProfile();
+  const { profile, isLoading } = useProfile();
 
   useEffect(() => {
     if (!pathname) return;
@@ -57,7 +56,7 @@ const Navigation = ({ children }: INavigationProps) => {
       <div className="hidden xl:flex flex-col bg-light px-2 m-2 shadow gap-4 rounded-2xl max-w-[14vw] min-w-[12vw]">
         {/* Header */}
 
-        <Link href={'/app/settings/family'} onClick={() => setActiveNavItem(undefined)}>
+        {/* <Link href={'/app/settings/family'} onClick={() => setActiveNavItem(undefined)}>
           <div className="flex flex-col items-center justify-center gap-1 p-2 mt-2 rounded-2xl bg-white shadow-sm">
             <div className="relative w-full h-20 rounded-lg overflow-hidden">
               <Image
@@ -71,7 +70,7 @@ const Navigation = ({ children }: INavigationProps) => {
               <p className="text-md font-semibold">{family?.title}</p>
             </div>
           </div>
-        </Link>
+        </Link> */}
 
         {/* Nav items */}
         <div className="flex-1 flex flex-col justify-center">
@@ -112,7 +111,7 @@ const Navigation = ({ children }: INavigationProps) => {
 
         {/* Account */}
         <Link href="/app/settings/account" onClick={() => setActiveNavItem(undefined)}>
-          <div className="flex items-center justify-between gap-2 p-2 mb-2 rounded-2xl bg-white shadow-sm">
+          <div className="flex items-center justify-between gap-2 px-2 pt-3 mb-2 border-t border-ash/50">
             <div className="flex gap-2 items-center">
               {isLoading ? (
                 <div className="w-10 h-10 flex items-center justify-center bg-ash/10 rounded-full">

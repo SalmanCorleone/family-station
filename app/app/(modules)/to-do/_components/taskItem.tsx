@@ -53,7 +53,7 @@ const TaskItem = ({ task, onClick, markAsCompleted, members, membersImageMap }: 
         <div className="flex-1">
           <p>{task.title}</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           {!!task.assigned_to && (
             <div className="">
               <Avatar style={{ width: 24, height: 24 }}>
@@ -64,7 +64,7 @@ const TaskItem = ({ task, onClick, markAsCompleted, members, membersImageMap }: 
           )}
           {!!task.is_urgent && (
             <div className="">
-              <Zap fill="var(--color-orange)" />
+              <Zap fill="var(--color-orange)" className="h-4 w-4" />
             </div>
           )}
         </div>
