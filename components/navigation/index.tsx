@@ -111,7 +111,7 @@ const Navigation = ({ children }: INavigationProps) => {
 
         {/* Account */}
         <Link href="/app/settings/account" onClick={() => setActiveNavItem(undefined)}>
-          <div className="flex items-center justify-between gap-2 px-2 pt-3 mb-2 border-t border-ash/50">
+          <div className="flex items-center justify-between gap-2 px-2 pt-3 mb-2 border-t border-ash/10">
             <div className="flex gap-2 items-center">
               {isLoading ? (
                 <div className="w-10 h-10 flex items-center justify-center bg-ash/10 rounded-full">
