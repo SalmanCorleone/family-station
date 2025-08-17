@@ -28,7 +28,6 @@ import TaskDropZone from './taskDropZone';
 
 const ListContainer = () => {
   const [lists, setLists] = useState<ListType[] | undefined>();
-  const [draggingTask, setDraggingTask] = useState<TaskType>();
   const [loading, setLoading] = useState(false);
   const [activeTask, setActiveTask] = useState<Tables<'tasks'>>();
   const ref = useRef<HTMLButtonElement>(null);
@@ -112,7 +111,6 @@ const ListContainer = () => {
 
   const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    setDraggingTask(undefined);
     if (!over || !active || !active.data?.current || !over?.data?.current) return;
     if (active.data.current.taskId === over.data.current.taskId) return;
 
@@ -166,7 +164,6 @@ const ListContainer = () => {
   const handleDragStart = (event: DragStartEvent) => {
     const task = findTaskById(event.active.id as string);
     if (!task) return;
-    setDraggingTask(task.task);
   };
 
   const renderHeaderLeft = () => {

@@ -3,7 +3,6 @@ import { cn } from '@/utils/clsx';
 import { Check, Zap } from 'lucide-react';
 import { useMemo } from 'react';
 import { TaskType } from '../action';
-import { AnimatePresence, motion } from 'framer-motion';
 import { useDraggable } from '@dnd-kit/core';
 
 interface ITaskItemProps {

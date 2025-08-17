@@ -9,7 +9,7 @@ interface TaskDropZoneProps {
 }
 
 const TaskDropZone = ({ index, listId, taskId }: TaskDropZoneProps) => {
-  const { active, isOver, node, setNodeRef, over } = useDroppable({
+  const { isOver, setNodeRef } = useDroppable({
     id: `task-drop-zone-${listId}-${taskId}-${index}`,
     data: { taskId, listId, index },
   });
@@ -17,8 +17,7 @@ const TaskDropZone = ({ index, listId, taskId }: TaskDropZoneProps) => {
   return (
     <motion.div
       initial={{ height: 0, opacity: 0 }}
-      animate={{ height: isOver ? 24 : 0, opacity: isOver ? 1 : 0 }}
-      // transition={{ duration: 100 }}
+      animate={{ height: isOver ? 24 : 0, opacity: isOver ? 1 : 0, transition: { duration: 0.2 } }}
       ref={setNodeRef}
       className="rounded bg-green-50 border"
     ></motion.div>
