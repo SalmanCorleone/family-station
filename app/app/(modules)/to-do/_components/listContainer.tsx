@@ -7,7 +7,6 @@ import {
   closestCenter,
   DndContext,
   DragEndEvent,
-  DragOverlay,
   DragStartEvent,
   PointerSensor,
   useSensor,
@@ -15,8 +14,6 @@ import {
 } from '@dnd-kit/core';
 // import { Loader, Save } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
 import PageHeader from '@/components/pageHeader';
 import SimpleLoader from '@/components/simpleLoader';
@@ -27,6 +24,7 @@ import AddTaskForm from './addTaskForm';
 import EditTaskDialog from './editTaskDialog';
 import List from './list';
 import TaskItem from './taskItem';
+import TaskDropZone from './taskDropZone';
 
 const ListContainer = () => {
   const [lists, setLists] = useState<ListType[] | undefined>();
@@ -115,46 +113,55 @@ const ListContainer = () => {
   const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     setDraggingTask(undefined);
-    if (!over || active.id === over.id || !lists) return;
+    if (!over || !active || !active.data?.current || !over?.data?.current) return;
+    if (active.data.current.taskId === over.data.current.taskId) return;
 
-    const fromData = findTaskById(active.id as string);
-    const toData = findTaskById(over.id as string);
-    if (!fromData || !toData) return;
+    const sourceTaskId = active.data.current.taskId;
+    const sourceListId = active.data.current.listId;
+    const targetListId = over.data.current.listId;
+    const targetIndex = Math.max(over.data.current.index, 0);
+    const isSameList = sourceListId === targetListId;
 
-    const updatedLists = [...lists];
-    const fromList = updatedLists.find((l) => l.id === fromData.listId);
-    const toList = updatedLists.find((l) => l.id === toData.listId);
+    let commonListTasks = lists?.find((list) => list.id === sourceListId)?.tasks;
+    let sourceListTasks = lists?.find((list) => list.id === sourceListId)?.tasks;
+    const targetListTasks = lists?.find((list) => list.id === targetListId)?.tasks;
+    if (!sourceListTasks || !targetListTasks || !commonListTasks) return;
 
-    if (!fromList || !toList) return;
+    if (isSameList) {
+      const taskToMove = commonListTasks.find((task) => task.id === sourceTaskId);
+      if (!taskToMove) return;
+      commonListTasks = commonListTasks.filter((task) => task.id !== sourceTaskId);
+      commonListTasks.splice(targetIndex, 0, taskToMove);
+    } else {
+      const taskToMove = sourceListTasks.find((task) => task.id === sourceTaskId);
+      if (!taskToMove) return;
+      sourceListTasks = sourceListTasks.filter((task) => task.id !== sourceTaskId);
+      targetListTasks.splice(targetIndex, 0, taskToMove);
+    }
 
-    const fromIndex = fromList.tasks.findIndex((t) => t.id.toString() === active.id.toString());
-    const toIndex = toList.tasks.findIndex((t) => t.id.toString() === over.id.toString());
-
-    console.log([fromIndex, toIndex]);
-    const [movedTask] = fromList.tasks.splice(fromIndex, 1);
-    console.log([fromList.id, fromIndex], [toList.id, toIndex], { movedTask });
-    toList.tasks.splice(toIndex, 0, movedTask);
-
-    setLists(updatedLists);
+    setLists((prevList) => {
+      if (!prevList) return [];
+      const res = prevList?.reduce((acc, list) => {
+        if (isSameList) {
+          if (list.id === sourceListId) {
+            return [...acc, { ...list, tasks: commonListTasks }];
+          } else {
+            return [...acc, list];
+          }
+        } else {
+          if (list.id === sourceListId) {
+            return [...acc, { ...list, tasks: sourceListTasks }];
+          } else if (list.id === targetListId) {
+            return [...acc, { ...list, tasks: targetListTasks }];
+          } else {
+            return [...acc, list];
+          }
+        }
+      }, [] as ListType[]);
+      console.log({ res });
+      return res;
+    });
   };
-
-  const renderTasks = (tasks: TaskType[]) =>
-    tasks.map((task, idx) => (
-      <TaskItem
-        key={'task_' + task.id}
-        index={idx}
-        task={task}
-        {...{ members, membersImageMap }}
-        onClick={() => onTaskClick(task)}
-        markAsCompleted={() => {
-          markTaskAsCompleted(task);
-        }}
-      />
-    ));
-
-  const renderAddTaskForm = (list: ListType) => (
-    <AddTaskForm onSubmit={(data) => onAddTask({ ...data, list_id: list.id, index: 0 })} />
-  );
 
   const handleDragStart = (event: DragStartEvent) => {
     const task = findTaskById(event.active.id as string);
@@ -218,18 +225,39 @@ const ListContainer = () => {
       </div> */}
       <div className="flex gap-4 w-min p-4">
         {lists?.map((list) => (
-          <SortableContext
-            key={'list_' + list.id}
-            // items={list.tasks.map((_, index) => `${list.id}:${index}`)}
-            items={list.tasks.map((task) => `${task.id}`)}
-            strategy={verticalListSortingStrategy}
-          >
-            <List {...{ renderAddTaskForm, renderTasks, list }} />
-          </SortableContext>
+          <List
+            key={list.id}
+            {...{ list }}
+            renderTasks={(tasks: TaskType[]) =>
+              tasks.map((task, idx) => (
+                <>
+                  {idx === 0 && (
+                    <TaskDropZone
+                      key={`task-drop-zone-${list.id}-${task.id}-${-1}`}
+                      listId={list.id}
+                      taskId={task.id}
+                      index={-1}
+                    />
+                  )}
+                  <TaskItem
+                    key={'task_' + task.id}
+                    index={idx}
+                    task={task}
+                    {...{ members, membersImageMap }}
+                    onClick={() => onTaskClick(task)}
+                    markAsCompleted={() => {
+                      markTaskAsCompleted(task);
+                    }}
+                  />
+                  <TaskDropZone key={'drop_zone_' + task.id} listId={list.id} taskId={task.id} index={idx} />
+                </>
+              ))
+            }
+            renderAddTaskForm={(list: ListType) => (
+              <AddTaskForm onSubmit={(data) => onAddTask({ ...data, list_id: list.id, index: 0 })} />
+            )}
+          />
         ))}
-        <DragOverlay>
-          {draggingTask ? <div className="bg-white p-4 rounded shadow text-2xl">{draggingTask.title}</div> : null}
-        </DragOverlay>
 
         <EditTaskDialog ref={ref} task={activeTask} onSubmit={fetchLists} />
       </div>

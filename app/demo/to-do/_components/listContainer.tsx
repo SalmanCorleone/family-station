@@ -13,7 +13,6 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { useCallback, useRef, useState } from 'react';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { ListType, TaskType } from '@/app/app/(modules)/to-do/action';
 import PageHeader from '@/components/pageHeader';
 import { delay, getRandomInt } from '@/utils';
@@ -212,16 +211,7 @@ const ListContainer = () => {
     >
       <PageHeader title="To-do" renderLeft={renderHeaderLeft} />
       <div className="flex gap-4 w-min p-4">
-        {lists?.map((list) => (
-          <SortableContext
-            key={list.id}
-            // items={list.tasks.map((_, index) => `${list.id}:${index}`)}
-            items={list.tasks.map((task: TaskType) => `${task.id}`)}
-            strategy={verticalListSortingStrategy}
-          >
-            <List key={list.id} {...{ renderAddTaskForm, renderTasks, list }} />
-          </SortableContext>
-        ))}
+        {lists?.map((list) => <List key={list.id} {...{ renderAddTaskForm, renderTasks, list }} />)}
         <DragOverlay>
           {draggingTask ? <div className="bg-white p-4 rounded shadow text-2xl">{draggingTask.title}</div> : null}
         </DragOverlay>
