@@ -7,6 +7,7 @@ import {
   closestCenter,
   DndContext,
   DragEndEvent,
+  DragOverlay,
   DragStartEvent,
   PointerSensor,
   useSensor,
@@ -245,7 +246,7 @@ const ListContainer = () => {
                     markAsCompleted={() => {
                       markTaskAsCompleted(task);
                     }}
-                  />
+                  />                  
                   <TaskDropZone key={'drop_zone_' + task.id} listId={list.id} taskId={task.id} index={idx} />
                 </>
               ))

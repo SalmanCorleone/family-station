@@ -44,6 +44,8 @@ function Button({
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
     loading?: boolean;
+    icon?: React.ReactNode;
+    title?: string;
   }) {
   const Comp = asChild ? Slot : 'button';
 
@@ -55,12 +57,16 @@ function Button({
       {...{
         ...props,
         children: loading ? (
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center justify-center gap-2 px-4">
             <Loader className="animate-spin" />
-            <p>Loading</p>
           </div>
-        ) : (
+        ) : !!props.children ? (
           props.children
+        ) : (
+          <div className="flex items-center gap-2">
+            {props.icon}
+            {props.title}
+          </div>
         ),
       }}
     />

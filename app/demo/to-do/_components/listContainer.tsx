@@ -1,28 +1,18 @@
 'use client';
 
-import useAutoSave from '@/utils/hooks/useAutoSave';
-import { Tables } from '@/utils/supabase/db';
-import {
-  closestCenter,
-  DndContext,
-  DragEndEvent,
-  DragOverlay,
-  DragStartEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import { useCallback, useRef, useState } from 'react';
-import { ListType, TaskType } from '@/app/app/(modules)/to-do/action';
-import PageHeader from '@/components/pageHeader';
-import { delay, getRandomInt } from '@/utils';
-import dayjs from 'dayjs';
-import { Loader } from 'lucide-react';
-import { DEMO_DATA } from '../../demoData';
-import EditTaskDialog from './editTaskDialog';
 import AddTaskForm from '@/app/app/(modules)/to-do/_components/addTaskForm';
 import List from '@/app/app/(modules)/to-do/_components/list';
 import TaskItem from '@/app/app/(modules)/to-do/_components/taskItem';
+import { ListType, TaskType } from '@/app/app/(modules)/to-do/action';
+import PageHeader from '@/components/pageHeader';
+import { delay, getRandomInt } from '@/utils';
+import useAutoSave from '@/utils/hooks/useAutoSave';
+import { Tables } from '@/utils/supabase/db';
+import dayjs from 'dayjs';
+import { Loader } from 'lucide-react';
+import { useCallback, useRef, useState } from 'react';
+import { DEMO_DATA } from '../../demoData';
+import EditTaskDialog from './editTaskDialog';
 
 const profile = DEMO_DATA.PROFILE;
 const members = DEMO_DATA.MEMBERS;
@@ -30,22 +20,14 @@ const membersImageMap = DEMO_DATA.MEMBERS_IMAGE_MAP;
 
 const ListContainer = () => {
   const [lists, setLists] = useState<ListType[]>(DEMO_DATA.LISTS);
-  const [draggingTask, setDraggingTask] = useState<TaskType>();
   const [activeTask, setActiveTask] = useState<Tables<'tasks'>>();
   const ref = useRef<HTMLButtonElement>(null);
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        delay: 150,
-        tolerance: 5,
-      },
-    }),
-  );
 
   const saveData = () =>
     new Promise<void>((resolve) => {
       setTimeout(() => {
         resolve();
+        removeCompletedTasks();
       }, 2000);
     });
   const { countdown, saving, trigger } = useAutoSave(saveData, 5);
@@ -72,15 +54,18 @@ const ListContainer = () => {
       );
       trigger();
       await delay(300);
-      const filteredList = { ...listToUpdate, tasks: listToUpdate.tasks.filter((t) => t.id !== task.id) };
-      setLists(
-        [...lists.filter((list) => list.id !== task.list_id), filteredList].sort(
-          (a, b) => (a.index || 0) - (b.index || 0),
-        ),
-      );
     },
     [lists, trigger],
   );
+
+  const removeCompletedTasks = () => {
+    setLists((prev) =>
+      prev.map((list) => ({
+        ...list,
+        tasks: list.tasks.filter((task) => !task.is_completed),
+      })),
+    );
+  };
 
   const onAddTask = async (payload: TaskType) => {
     const targetList = lists.find((list) => list.id === payload.list_id);
@@ -94,79 +79,6 @@ const ListContainer = () => {
         (a, b) => (a.index || 0) - (b.index || 0),
       ),
     );
-  };
-
-  const findTaskById = (id: string): { task: TaskType; listId: number } | null => {
-    for (const list of lists) {
-      const task = list.tasks.find((t: TaskType) => t.id.toString() === id);
-      if (task) return { task, listId: list.id };
-    }
-    return null;
-  };
-
-  const onDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    setDraggingTask(undefined);
-    if (!over || active.id === over.id || !lists) return;
-
-    const fromData = findTaskById(active.id as string);
-    const toData = findTaskById(over.id as string);
-    if (!fromData || !toData) return;
-
-    const updatedLists = [...lists];
-    const fromList = updatedLists.find((l) => l.id === fromData.listId);
-    const toList = updatedLists.find((l) => l.id === toData.listId);
-
-    if (!fromList || !toList) return;
-
-    const fromIndex = fromList.tasks.findIndex((t: TaskType) => t.id.toString() === active.id.toString());
-    const toIndex = toList.tasks.findIndex((t: TaskType) => t.id.toString() === over.id.toString());
-
-    const [movedTask] = fromList.tasks.splice(fromIndex, 1);
-    console.log([fromList.id, fromIndex], [toList.id, toIndex], { movedTask });
-    toList.tasks.splice(toIndex, 0, movedTask);
-
-    setLists(updatedLists);
-  };
-
-  const renderTasks = (tasks: TaskType[]) =>
-    tasks.map((task, idx) => (
-      <TaskItem
-        index={idx}
-        key={task.id}
-        task={task}
-        onClick={() => onTaskClick(task)}
-        markAsCompleted={() => {
-          markTaskAsCompleted(task);
-        }}
-        {...{ members, membersImageMap }}
-      />
-    ));
-
-  const renderAddTaskForm = (list: ListType) => (
-    <AddTaskForm
-      onSubmit={(data) =>
-        onAddTask({
-          ...data,
-          list_id: list.id,
-          index: list.tasks.length,
-          assigned_to: null,
-          created_at: dayjs().toISOString(),
-          created_by: profile.id,
-          deadline: null,
-          id: getRandomInt(),
-          is_completed: false,
-          is_urgent: false,
-          updated_at: dayjs().toISOString(),
-        })
-      }
-    />
-  );
-
-  const handleDragStart = (event: DragStartEvent) => {
-    const task = findTaskById(event.active.id as string);
-    if (!task) return;
-    setDraggingTask(task.task);
   };
 
   const renderHeaderLeft = () => {
@@ -202,23 +114,71 @@ const ListContainer = () => {
     [lists],
   );
 
+  const handleTaskDelete = useCallback(async () => {
+    console.log({ activeTask });
+    if (!activeTask) return;
+    const targetList = lists.find((list) => list.id === activeTask.list_id);
+    if (!targetList) return;
+    const updatedList = {
+      ...targetList,
+      tasks: targetList.tasks.filter((t: TaskType) => t.id !== activeTask.id),
+    };
+    setLists(
+      [...lists.filter((list) => list.id !== activeTask.list_id), updatedList].sort(
+        (a, b) => (a.index || 0) - (b.index || 0),
+      ),
+    );
+    setActiveTask(undefined);
+    ref.current?.click();
+  }, [activeTask, lists]);
+
   return (
-    <DndContext
-      onDragEnd={onDragEnd}
-      sensors={sensors}
-      onDragStart={handleDragStart}
-      collisionDetection={closestCenter}
-    >
+    <div>
       <PageHeader title="To-do" renderLeft={renderHeaderLeft} />
       <div className="flex gap-4 w-min p-4">
-        {lists?.map((list) => <List key={list.id} {...{ renderAddTaskForm, renderTasks, list }} />)}
-        <DragOverlay>
-          {draggingTask ? <div className="bg-white p-4 rounded shadow text-2xl">{draggingTask.title}</div> : null}
-        </DragOverlay>
+        {lists?.map((list) => (
+          <List
+            key={list.id}
+            renderTasks={() =>
+              list.tasks.map((task, idx) => (
+                <TaskItem
+                  index={idx}
+                  key={task.id}
+                  task={task}
+                  onClick={() => onTaskClick(task)}
+                  markAsCompleted={() => {
+                    markTaskAsCompleted(task);
+                  }}
+                  {...{ members, membersImageMap }}
+                />
+              ))
+            }
+            renderAddTaskForm={() => (
+              <AddTaskForm
+                onSubmit={(data) =>
+                  onAddTask({
+                    ...data,
+                    list_id: list.id,
+                    index: list.tasks.length,
+                    assigned_to: null,
+                    created_at: dayjs().toISOString(),
+                    created_by: profile.id,
+                    deadline: null,
+                    id: getRandomInt(),
+                    is_completed: false,
+                    is_urgent: false,
+                    updated_at: dayjs().toISOString(),
+                  })
+                }
+              />
+            )}
+            {...{ list }}
+          />
+        ))}
 
-        <EditTaskDialog ref={ref} task={activeTask} onSubmit={onEditTask} />
+        <EditTaskDialog ref={ref} task={activeTask} onSubmit={onEditTask} handleTaskDelete={handleTaskDelete} />
       </div>
-    </DndContext>
+    </div>
   );
 };
 

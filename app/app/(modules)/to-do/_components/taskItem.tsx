@@ -3,7 +3,6 @@ import { cn } from '@/utils/clsx';
 import { Check, Zap } from 'lucide-react';
 import { useMemo } from 'react';
 import { TaskType } from '../action';
-import { useDraggable } from '@dnd-kit/core';
 
 interface ITaskItemProps {
   task: TaskType;
@@ -14,11 +13,7 @@ interface ITaskItemProps {
   index: number;
 }
 
-const TaskItem = ({ task, onClick, markAsCompleted, members, membersImageMap, index }: ITaskItemProps) => {
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
-    id: `task-${task.id}-${task.list_id}-${index}`,
-    data: { taskId: task.id, listId: task.list_id, index },
-  });
+const TaskItem = ({ task, onClick, markAsCompleted, members, membersImageMap }: ITaskItemProps) => {
   const assignedTo = useMemo(
     () => members?.find((member) => member.profile_id === task.assigned_to),
     [members, task.assigned_to],
@@ -26,31 +21,33 @@ const TaskItem = ({ task, onClick, markAsCompleted, members, membersImageMap, in
 
   return (
     <div
-      ref={setNodeRef}
-      className={cn('flex items-center gap-2 p-4 rounded-lg bg-white cursor-pointer shadow-sm z-10', {
-        'z-20': isDragging,
-        'hover-bg-muted': !isDragging,
-      })}
+      className={cn('flex items-center rounded-lg bg-white cursor-pointer shadow-sm z-10 hover:bg-gray-50', {})}
       onClick={onClick}
-      style={{ transform: transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined }}
-      {...attributes}
-      {...listeners}
     >
+      {/* Mark as complete */}
       <div
         onClick={(e) => {
           e.stopPropagation();
           markAsCompleted();
         }}
-        className={cn('border w-4 h-4 rounded-3xl flex items-center justify-center', {
-          'bg-green border-0': task.is_completed,
-        })}
+        className="h-16 px-4 flex items-center justify-center"
       >
-        {task.is_completed ? <Check size={12} stroke="white" /> : null}
+        <div
+          className={cn('border w-4 h-4 rounded-3xl flex items-center justify-center', {
+            'bg-green border-0': task.is_completed,
+          })}
+        >
+          {task.is_completed ? <Check size={12} stroke="white" /> : null}
+        </div>
       </div>
+
+      {/* Title */}
       <div className="flex-1">
         <p>{task.title}</p>
       </div>
-      <div className="flex gap-2 items-center">
+
+      {/* Assigned to & Urgent */}
+      <div className="flex gap-2 items-center mr-4">
         {!!task.assigned_to && (
           <div className="">
             <Avatar style={{ width: 24, height: 24 }}>
